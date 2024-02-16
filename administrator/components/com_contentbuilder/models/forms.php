@@ -101,7 +101,7 @@ class ContentbuilderModelForms extends CBModel
                 $this->_db->insertObject('#__contentbuilder_list_states', $element);
             }
             
-            contentbuilder::createBackendMenuItem($insertId, $obj->name, true);
+            // contentbuilder::createBackendMenuItem($insertId, $obj->name, true);
         }
         
         $table->reorder();
