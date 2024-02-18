@@ -54,7 +54,7 @@ if(!class_exists('CBFactory'))
 
 		function __construct()
 		{
-			$this->dbo = JFactory::getDbo();
+			$this->dbo = Factory::getContainer()->get(DatabaseInterface::class);
 		}
 
 		public function setQuery($query, $offset = 0, $limit = 0)

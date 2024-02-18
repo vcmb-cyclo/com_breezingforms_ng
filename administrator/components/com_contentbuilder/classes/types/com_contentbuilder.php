@@ -6,9 +6,11 @@
  * @license     GNU/GPL
 */
 
-use Joomla\Utilities\ArrayHelper;
-
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 
 class contentbuilder_com_contentbuilder{
 
@@ -22,7 +24,7 @@ class contentbuilder_com_contentbuilder{
     
     
     function __construct($id){
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $this->form_id = intval($id);
         $db->setQuery("Select * From #__contentbuilder_storages Where id = ".intval($id)." And published = 1 Order By `ordering`");
         $this->properties = $db->loadObject();
@@ -38,7 +40,7 @@ class contentbuilder_com_contentbuilder{
     public function synchRecords(){
         if(!is_object($this->properties)) return;
         
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("
             
                 Select r.id
@@ -67,7 +69,7 @@ class contentbuilder_com_contentbuilder{
     }
     
     public static function getNumRecordsQuery($form_id, $user_id){
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("Select `name`,`bytable` From #__contentbuilder_storages Where id = " . intval($form_id));
         $res = $db->loadAssoc();
         $res['bytable'] = $res['bytable'] == 1 ? '' : '#__';
@@ -78,7 +80,7 @@ class contentbuilder_com_contentbuilder{
     }
     
     public function getUniqueValues($element_id, $where_field = '', $where = ''){
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("Select `name` From #__contentbuilder_storage_fields Where id = ".intval($element_id)." And storage_id = ".intval($this->properties->id)." And published = 1 Order By `ordering`");
         $name = $db->loadResult();
         $where_add = '';
@@ -97,7 +99,7 @@ class contentbuilder_com_contentbuilder{
     }
     
     public function getAllElements(){
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("Select * From #__contentbuilder_storage_fields Where storage_id = ".intval($this->properties->id)." And published = 1 Order By `ordering`");
         $e = $db->loadAssocList();
         $elements = array();
@@ -125,7 +127,7 @@ class contentbuilder_com_contentbuilder{
 
     public function getRecordMetadata($record_id){
          $data = new stdClass();
-         $db = JFactory::getDbo();
+         $db = Factory::getContainer()->get(DatabaseInterface::class);
          $db->setQuery("Select metakey, metadesc, author, robots, rights, xreference From #__contentbuilder_records Where `type` = 'com_contentbuilder' And reference_id = ".$db->Quote($this->properties->id)." And record_id = " . $db->Quote($record_id));
          $metadata = $db->loadObject();
          
@@ -174,7 +176,7 @@ class contentbuilder_com_contentbuilder{
             $show_all_languages = false
     ){
 
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
 
         $i = 0;
         $elSize = count($this->elements);
@@ -258,7 +260,7 @@ class contentbuilder_com_contentbuilder{
             return array();
         }
 
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
 
         $selectors = '';
         $bottom = '';
@@ -591,7 +593,7 @@ class contentbuilder_com_contentbuilder{
 
     public static function getFormsList(){
         $list = array();
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("Select `id`,`title`,`name` From #__contentbuilder_storages Where published = 1 Order By `ordering`");
         $rows = $db->loadAssocList();
         foreach($rows As $row){
@@ -607,7 +609,7 @@ class contentbuilder_com_contentbuilder{
      */
     
     public function isGroup($element_id){
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("Select is_group From #__contentbuilder_storage_fields Where id = " . intval($element_id));
         $result = $db->loadResult();
         
@@ -620,7 +622,7 @@ class contentbuilder_com_contentbuilder{
     
     public function getGroupDefinition($element_id){
         $return = array();
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("Select group_definition From #__contentbuilder_storage_fields Where id = " . intval($element_id));
         $result = $db->loadResult();
         if($result){
@@ -693,20 +695,20 @@ class contentbuilder_com_contentbuilder{
         if( intval($user_id) <= 0 ){
             return;
         }
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("Update ".$this->bytable.$this->properties->name." Set user_id = " . intval($user_id) . ", created_by = " . $db->Quote($fullname) . " Where id = " . $db->Quote($record_id));
         $db->execute();
     }
 
 	public function clearDirtyRecordUserData($record_id){
-		$db = JFactory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$db->setQuery("Delete From ".$this->bytable.$this->properties->name." Where user_id = 0 And id = " . $db->quote($record_id));
 		$db->execute();
 	}
     
     public function saveRecord($record_id, array $cleaned_values){
         $record_id = intval($record_id);
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $insert_id = 0;
         $user_id = 0;
         $username = '';
@@ -852,7 +854,7 @@ class contentbuilder_com_contentbuilder{
     }
     
     function delete($items, $form_id){
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         ArrayHelper::toInteger($items);
         if(count($items)){
             $db->setQuery("Select reference_id From #__contentbuilder_elements Where `type` = 'upload' And form_id = " . intval($form_id));
@@ -893,7 +895,7 @@ class contentbuilder_com_contentbuilder{
     }
     
     function isOwner($user_id, $record_id){
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("Select id From ".$this->bytable.$this->properties->name." Where id = " . intval($record_id) . " And user_id = " . intval($user_id));
         return $db->loadResult() !== null ? true : false;
     }
