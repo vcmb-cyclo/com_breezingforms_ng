@@ -9,6 +9,7 @@
 /** ensure this file is being included by a parent file */
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
 
 defined( '_JEXEC' ) or die( 'Direct Access to this location is not allowed.' );
 
@@ -75,10 +76,7 @@ class plgContentContentbuilder_verify extends JPlugin {
 
     function onContentPrepare($context, &$article, &$params, $limitstart = 0) {
         
-        jimport('joomla.filesystem.file');
-        jimport('joomla.filesystem.folder');
-        
-        if( !$article || !isset($article->text) || !JFile::exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php'))
+        if( !$article || !isset($article->text) || !File::exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php'))
         {
             return true;
         }

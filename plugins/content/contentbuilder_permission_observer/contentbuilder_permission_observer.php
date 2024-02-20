@@ -11,6 +11,7 @@
 defined( '_JEXEC' ) or die( 'Direct Access to this location is not allowed.' );
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
 
 if(!function_exists('cb_b64enc')){
     
@@ -49,10 +50,7 @@ class plgContentContentbuilder_permission_observer extends JPlugin {
 
     function onContentPrepare($context, &$article, &$params, $limitstart = 0) {
         
-        jimport('joomla.filesystem.file');
-        jimport('joomla.filesystem.folder');
-
-        if(!JFile::exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php'))
+        if(!File::exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php'))
         {
             return true;
         }
