@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 
 if(!function_exists('cb_b64enc')){
 
@@ -705,10 +706,10 @@ class plgContentContentbuilder_image_scale extends JPlugin {
 																$open_ = '';
 																$close_ = '';
 
-																$url = JURI::getInstance()->toString();
+																$url = Uri::getInstance()->toString();
 																//fixing downloads on other pages than page 1
 																if( CBRequest::getVar('controller','') == 'list' ){
-																	$url = JURI::getInstance()->base().'index.php?option=com_contentbuilder&amp;controller=list&amp;id='.intval($form_id).'&amp;limitstart='.CBRequest::getInt('limitstart',0);
+																	$url = Uri::getInstance()->base().'index.php?option=com_contentbuilder&amp;controller=list&amp;id='.intval($form_id).'&amp;limitstart='.CBRequest::getInt('limitstart',0);
 																}
 
 																if(trim($open) == 'true'){
@@ -716,7 +717,7 @@ class plgContentContentbuilder_image_scale extends JPlugin {
 																		$open_ = Route::_($url.(strstr($url,'?') !== false ? '&' : '?').'contentbuilder_display_detail=1&contentbuilder_detail_file='.  sha1($field.$the_value));
 																	}else{
 																		$ex = explode(JPATH_SITE . DS, JPath::clean($the_value), 2);
-																		$open_ = JURI::root(true) . '/' . str_replace("\\","/",$ex[count($ex)-1]);
+																		$open_ = Uri::root(true) . '/' . str_replace("\\","/",$ex[count($ex)-1]);
 																	}
 																}
 																if($open_){
@@ -729,7 +730,7 @@ class plgContentContentbuilder_image_scale extends JPlugin {
 																	$src = Route::_($url.(strstr($url,'?') !== false ? '&' : '?').'contentbuilder_display=1&contentbuilder_field='.  sha1($field.$filename));
 																}else{
 																	$ex = explode(JPATH_SITE . DS, $filename, 2);
-																	$src = JURI::root(true) . '/' . str_replace("\\","/",$ex[count($ex)-1]);
+																	$src = Uri::root(true) . '/' . str_replace("\\","/",$ex[count($ex)-1]);
 																}
 
 																$out .= $open_.'<img border="0" '.$the_image[3].' '.($align_ ? 'style="float: '.$align_.';" ' : '').'alt="'.$alt.'" title="'.$title.'" src="'.$src.'"/>'.$close_;
@@ -755,7 +756,7 @@ class plgContentContentbuilder_image_scale extends JPlugin {
 					}
 
 					if(trim($out) == '' && File::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . basename($default_image))){
-						$out = '<img width="'.$default_image_width.'" height="'.$default_image_height.'" alt="" src="'.JURI::root(true).'/media/contentbuilder/plugins/image_scale/'.basename($default_image).'"/>';
+						$out = '<img width="'.$default_image_width.'" height="'.$default_image_height.'" alt="" src="'.Uri::root(true).'/media/contentbuilder/plugins/image_scale/'.basename($default_image).'"/>';
 					}
 
 					if($is_series && $align && (strtolower($align) == 'left' || strtolower($align) == 'right' )){
