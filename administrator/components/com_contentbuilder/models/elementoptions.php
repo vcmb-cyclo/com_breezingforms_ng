@@ -229,12 +229,12 @@ class ContentbuilderModelElementoptions extends CBModel
                 if(!trim(CBRequest::getVar('upload_directory', '')) && !is_dir($upload_directory)){
                     
                     if(!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')){
-                        JFolder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
+                        Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
                         JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
                     }
                     
                     if(!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload')){
-                        JFolder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload');
+                        Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload');
                         JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . 'index.html', $def = '');
                     }
                     
@@ -255,7 +255,7 @@ class ContentbuilderModelElementoptions extends CBModel
                     
                     $upload_directory = contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
                     
-                    JFolder::create($upload_directory);
+                    Folder::create($upload_directory);
                     JFile::write($upload_directory . DS . 'index.html', $def = '');
                         
                     if($is_opt_relative){

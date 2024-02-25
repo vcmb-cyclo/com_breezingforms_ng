@@ -15,7 +15,6 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
 
 
-
 if (!function_exists('cb_b64enc')) {
 
     function cb_b64enc($str)
@@ -103,14 +102,14 @@ class plgContentContentbuilder_rating extends JPlugin
         }
 
         if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')) {
-            JFolder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
+            Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
         }
 
         if (!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html'))
             JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
 
         if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins')) {
-            JFolder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins');
+            Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins');
         }
 
         if (!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html'))

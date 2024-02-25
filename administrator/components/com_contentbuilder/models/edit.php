@@ -107,7 +107,7 @@ class ContentbuilderModelEdit extends CBModel
             if( !is_dir( $inner_path.$part ) ) {
                 $inner_path .= DS;
             }
-            JFolder::create($inner_path.$part);
+            Folder::create($inner_path.$part);
             $inner_path .= $part;    
         }
         return $endpath;
