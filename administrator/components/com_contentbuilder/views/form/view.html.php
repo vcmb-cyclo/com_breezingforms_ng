@@ -30,7 +30,7 @@ class ContentbuilderViewForm extends CBView
     {
         Factory::getApplication()->input->set('hidemainmenu', true);
 
-        $document = JFactory::getDocument();
+        $document = Factory::getDocument();
         $document->addScript(Uri::root(true) . '/administrator/components/com_contentbuilder/assets/js/jscolor/jscolor.js');
 
         echo '

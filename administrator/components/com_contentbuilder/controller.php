@@ -9,9 +9,9 @@
 // No direct access
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+Use Joomla\CMS\Factory;
 
 require_once(JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_contentbuilder'.DS.'classes'.DS.'joomla_compat.php');
-
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'controllerlegacy.php');
 
 class ContentbuilderController extends CBController
@@ -26,7 +26,7 @@ class ContentbuilderController extends CBController
         parent::display();
 
 	    if(CBRequest::getVar('market','') == 'true'){
-            JFactory::getApplication()->redirect('https://crosstec.org/joomla-forms-download.html');
+            Factory::getApplication()->redirect('https://crosstec.org/joomla-forms-download.html');
         }
     }
 

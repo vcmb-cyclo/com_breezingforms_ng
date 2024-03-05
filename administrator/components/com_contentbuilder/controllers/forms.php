@@ -3,6 +3,7 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   Copyright (C) 2024 by XDA+GIL
  * @license     GNU/GPL
  */
 
@@ -10,6 +11,7 @@
 
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
@@ -26,16 +28,16 @@ class ContentbuilderControllerForms extends CBController
         //JHtml::_('bootstrap.modal');
 
         if (CBRequest::getInt('email_users', -1) != -1) {
-            JFactory::getSession()->set('email_users', CBRequest::getVar('email_users', 'none'), 'com_contentbuilder');
+            Factory::getSession()->set('email_users', CBRequest::getVar('email_users', 'none'), 'com_contentbuilder');
         }
         if (CBRequest::getInt('email_admins', -1) != -1) {
-            JFactory::getSession()->set('email_admins', CBRequest::getVar('email_admins', ''), 'com_contentbuilder');
+            Factory::getSession()->set('email_admins', CBRequest::getVar('email_admins', ''), 'com_contentbuilder');
         }
         if (CBRequest::getInt('slideStartOffset', -1) != -1) {
-            JFactory::getSession()->set('slideStartOffset', CBRequest::getInt('slideStartOffset', 1));
+            Factory::getSession()->set('slideStartOffset', CBRequest::getInt('slideStartOffset', 1));
         }
         if (CBRequest::getInt('tabStartOffset', -1) != -1) {
-            JFactory::getSession()->set('tabStartOffset', CBRequest::getInt('tabStartOffset', 0));
+            Factory::getSession()->set('tabStartOffset', CBRequest::getInt('tabStartOffset', 0));
         }
         // Register Extra tasks
         $this->registerTask('add', 'edit');

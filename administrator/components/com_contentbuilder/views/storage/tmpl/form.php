@@ -510,7 +510,7 @@ echo HTMLHelper::_('uitab.endTabSet');
 <input type="hidden" name="filter_order" value="" />
 <input type="hidden" name="filter_order_Dir" value="" />
 <input type="hidden" name="boxchecked" value="0" />
-<input type="hidden" name="tabStartOffset" value="<?php echo JFactory::getSession()->get('tabStartOffset',0);?>" />
+<input type="hidden" name="tabStartOffset" value="<?php echo Factory::getSession()->get('tabStartOffset',0);?>" />
 <?php echo JHtml::_('form.token'); ?>
 </form>
 

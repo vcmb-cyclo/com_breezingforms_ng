@@ -3,10 +3,12 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright Copyright (C) 2024 by XDA+GIL
  * @license     GNU/GPL
  */
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
@@ -15,24 +17,24 @@ use Joomla\CMS\Router\Route;
 $edit_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('edit') : contentbuilder::authorize('edit');
 $delete_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('delete') : contentbuilder::authorize('delete');
 $view_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('view') : contentbuilder::authorize('view');
-JFactory::getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
+Factory::getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
 ?>
 
 <?php if ($this->author)
-    JFactory::getDocument()->setMetaData('author', $this->author); ?>
+    Factory::getDocument()->setMetaData('author', $this->author); ?>
 <?php if ($this->robots)
-    JFactory::getDocument()->setMetaData('robots', $this->robots); ?>
+    Factory::getDocument()->setMetaData('robots', $this->robots); ?>
 <?php if ($this->rights)
-    JFactory::getDocument()->setMetaData('rights', $this->rights); ?>
+    Factory::getDocument()->setMetaData('rights', $this->rights); ?>
 <?php if ($this->metakey)
-    JFactory::getDocument()->setMetaData('keywords', $this->metakey); ?>
+    Factory::getDocument()->setMetaData('keywords', $this->metakey); ?>
 <?php if ($this->metadesc)
-    JFactory::getDocument()->setMetaData('description', $this->metadesc); ?>
+    Factory::getDocument()->setMetaData('description', $this->metadesc); ?>
 <?php if ($this->xreference)
-    JFactory::getDocument()->setMetaData('xreference', $this->xreference); ?>
+    Factory::getDocument()->setMetaData('xreference', $this->xreference); ?>
 
-<?php JFactory::getDocument()->addStyleDeclaration($this->theme_css); ?>
-<?php JFactory::getDocument()->addScriptDeclaration($this->theme_js); ?>
+<?php Factory::getDocument()->addStyleDeclaration($this->theme_css); ?>
+<?php Factory::getDocument()->addScriptDeclaration($this->theme_js); ?>
 <script type="text/javascript">
 <!--
 function contentbuilder_delete(){

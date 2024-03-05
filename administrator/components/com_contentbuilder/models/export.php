@@ -28,14 +28,14 @@ class ContentbuilderModelExport extends CBModel
     function  __construct($config) {
         parent::__construct($config);
 
-        $this->frontend = JFactory::getApplication()->isClient('site');
+        $this->frontend = Factory::getApplication()->isClient('site');
         
-        $mainframe = JFactory::getApplication();
+        $mainframe = Factory::getApplication();
         $option = 'com_contentbuilder';
 
         $this->setId(CBRequest::getInt('id',0));
 
-        if(JFactory::getSession()->get($option.'formsd_id', 0) == 0 || JFactory::getSession()->get($option.'formsd_id', 0) == $this->_id ){
+        if(Factory::getSession()->get($option.'formsd_id', 0) == 0 || Factory::getSession()->get($option.'formsd_id', 0) == $this->_id ){
             $filter_order     = $mainframe->getUserStateFromRequest(  $option.'formsd_filter_order', 'filter_order', '', 'cmd' );
             $filter_order_Dir = $mainframe->getUserStateFromRequest( $option.'formsd_filter_order_Dir', 'filter_order_Dir', 'desc', 'cmd' );
             $filter           = $mainframe->getUserStateFromRequest(  $option.'formsd_filter', 'filter', '', 'string' );
@@ -97,7 +97,7 @@ class ContentbuilderModelExport extends CBModel
         
         @natsort($this->_menu_filter_order);
         
-        JFactory::getSession()->set($option.'forms_id', $this->_id);
+        Factory::getSession()->set($option.'forms_id', $this->_id);
     }
 
     function setId($id) {
@@ -155,7 +155,7 @@ class ContentbuilderModelExport extends CBModel
                     $data->labels = $data->form->getElementLabels();
                     
                     if(
-                            JFactory::getSession()->get('com_contentbuilder.filter_signal.'.$this->_id, false) 
+                            Factory::getSession()->get('com_contentbuilder.filter_signal.'.$this->_id, false) 
                                 
                             && $data->allow_external_filter){
                         
@@ -165,12 +165,12 @@ class ContentbuilderModelExport extends CBModel
                         $filters_to = array();
                         $calendar_formats = array();
                         
-                        $filters = JFactory::getSession()->get('com_contentbuilder.filter.'.$this->_id, array());
-                        $filters_from = JFactory::getSession()->get('com_contentbuilder.calendar_filter_from.'.$this->_id, array());
-                        $filters_to = JFactory::getSession()->get('com_contentbuilder.calendar_filter_to.'.$this->_id, array());
-                        $calendar_formats = JFactory::getSession()->get('com_contentbuilder.calendar_formats.'.$this->_id, array());
-                        $filter_keywords = JFactory::getSession()->get('com_contentbuilder.filter_keywords.'.$this->_id, '');
-                        $filter_cats = JFactory::getSession()->get('com_contentbuilder.filter_article_categories.'.$this->_id, -1);
+                        $filters = Factory::getSession()->get('com_contentbuilder.filter.'.$this->_id, array());
+                        $filters_from = Factory::getSession()->get('com_contentbuilder.calendar_filter_from.'.$this->_id, array());
+                        $filters_to = Factory::getSession()->get('com_contentbuilder.calendar_filter_to.'.$this->_id, array());
+                        $calendar_formats = Factory::getSession()->get('com_contentbuilder.calendar_formats.'.$this->_id, array());
+                        $filter_keywords = Factory::getSession()->get('com_contentbuilder.filter_keywords.'.$this->_id, '');
+                        $filter_cats = Factory::getSession()->get('com_contentbuilder.filter_article_categories.'.$this->_id, -1);
 
                         if($filter_keywords != ''){
                             $this->setState('formsd_filter', $filter_keywords);
@@ -314,7 +314,7 @@ class ContentbuilderModelExport extends CBModel
                         $act_as_registration[$data->registration_name_field] = 'registration_name_field';
                         $act_as_registration[$data->registration_email_field] = 'registration_email_field';
                     }
-                    $data->items = $data->form->getListRecords($ids, $this->getState('formsd_filter'), $searchable_elements, 0, 0, $this->getState('formsd_filter_order'), $order_types, $this->getState('formsd_filter_order_Dir'), 0, $data->published_only, $this->frontend && $data->own_only_fe ? JFactory::getUser()->get('id', 0) : -1, $this->getState('formsd_filter_state'), $this->getState('formsd_filter_publish'), $data->initial_sort_order == -1 ? -1 : 'col'. $data->initial_sort_order, $data->initial_sort_order2 == -1 ? -1 : 'col'. $data->initial_sort_order2, $data->initial_sort_order3 == -1 ? -1 : 'col'. $data->initial_sort_order3, $this->_menu_filter, $this->frontend ? $data->show_all_languages_fe : true, $this->getState('formsd_filter_language'), $act_as_registration, $data, $this->getState('article_category_filter'));
+                    $data->items = $data->form->getListRecords($ids, $this->getState('formsd_filter'), $searchable_elements, 0, 0, $this->getState('formsd_filter_order'), $order_types, $this->getState('formsd_filter_order_Dir'), 0, $data->published_only, $this->frontend && $data->own_only_fe ? Factory::getUser()->get('id', 0) : -1, $this->getState('formsd_filter_state'), $this->getState('formsd_filter_publish'), $data->initial_sort_order == -1 ? -1 : 'col'. $data->initial_sort_order, $data->initial_sort_order2 == -1 ? -1 : 'col'. $data->initial_sort_order2, $data->initial_sort_order3 == -1 ? -1 : 'col'. $data->initial_sort_order3, $this->_menu_filter, $this->frontend ? $data->show_all_languages_fe : true, $this->getState('formsd_filter_language'), $act_as_registration, $data, $this->getState('article_category_filter'));
                 }
 
                 return $data;

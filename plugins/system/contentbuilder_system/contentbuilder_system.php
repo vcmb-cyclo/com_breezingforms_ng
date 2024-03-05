@@ -159,7 +159,7 @@ class plgSystemContentbuilder_system extends JPlugin
         if ($app->isClient('site')) {
 
             // loading the required themes, if any
-            $body = JFactory::getDocument()->getBuffer('component');
+            $body = Factory::getDocument()->getBuffer('component');
             preg_match_all("/<!--\(cbArticleId:(\d{1,})\)-->/si", $body, $matched_ids);
 
             $ids = array();
@@ -173,7 +173,7 @@ class plgSystemContentbuilder_system extends JPlugin
             $the_ids = implode(',', $ids);
 
             if ($the_ids) {
-                JFactory::getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
+                Factory::getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
                 $db->setQuery("Select Distinct forms.theme_plugin From #__contentbuilder_forms As forms, #__contentbuilder_articles As articles, #__content As content Where forms.id = articles.form_id And articles.article_id In (" . $the_ids . ") And content.id = articles.article_id And (content.state = 1 Or content.state = 0)");
                 $themes = $db->loadColumn();
                 foreach ($themes as $theme) {
@@ -181,8 +181,8 @@ class plgSystemContentbuilder_system extends JPlugin
                         JPluginHelper::importPlugin('contentbuilder_themes', $theme);
                         $results_css = Factory::getApplication()->triggerEvent('onContentTemplateCss', array());
                         $results_js = Factory::getApplication()->triggerEvent('onContentTemplateJavascript', array());
-                        JFactory::getDocument()->addStyleDeclaration(implode('', $results_css));
-                        JFactory::getDocument()->addScriptDeclaration(implode('', $results_js));
+                        Factory::getDocument()->addStyleDeclaration(implode('', $results_css));
+                        Factory::getDocument()->addScriptDeclaration(implode('', $results_js));
                     }
                 }
             }
@@ -203,9 +203,9 @@ class plgSystemContentbuilder_system extends JPlugin
 
             // if somebody tries to submit an article through the built-in joomla content submit
             if ($pluginParams->def('disable_new_articles', 0) && trim(CBRequest::getCmd('option', '')) == 'com_content' && (trim(CBRequest::getCmd('task', '')) == 'new' || trim(CBRequest::getCmd('task', '')) == 'article.add' || (trim(CBRequest::getCmd('view', '')) == 'article' && trim(CBRequest::getCmd('layout', '')) == 'form') || (trim(CBRequest::getCmd('view', '')) == 'form' && trim(CBRequest::getCmd('layout', '')) == 'edit') && $a_id <= 0)) {
-                JFactory::getLanguage()->load('com_contentbuilder');
+                Factory::getLanguage()->load('com_contentbuilder');
                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), 'error');
-                JFactory::getApplication()->redirect('index.php');
+                Factory::getApplication()->redirect('index.php');
             }
 
             // redirect to content edit if there is a record existing for this article
@@ -214,7 +214,7 @@ class plgSystemContentbuilder_system extends JPlugin
                 $db->setQuery("Select article.record_id, article.form_id From #__contentbuilder_articles As article, #__content As content Where content.id = " . intval($id) . " And (content.state = 0 Or content.state = 1) And article.article_id = content.id");
                 $article = $db->loadAssoc();
                 if (is_array($article)) {
-                    JFactory::getApplication()->redirect('index.php?option=com_contentbuilder&controller=edit&id=' . $article['form_id'] . "&record_id=" . $article['record_id'] . "&jsback=1&Itemid=" . CBRequest::getInt('Itemid', 0));
+                    Factory::getApplication()->redirect('index.php?option=com_contentbuilder&controller=edit&id=' . $article['form_id'] . "&record_id=" . $article['record_id'] . "&jsback=1&Itemid=" . CBRequest::getInt('Itemid', 0));
                 }
             }
         }
@@ -375,7 +375,7 @@ class plgSystemContentbuilder_system extends JPlugin
             return;
         }
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         if (!$app->isClient('site')) {
             return;
@@ -519,7 +519,7 @@ class plgSystemContentbuilder_system extends JPlugin
             $list = $db->loadAssocList();
 
             if (isset($list[0])) {
-                $lang = JFactory::getLanguage();
+                $lang = Factory::getLanguage();
                 $lang->load('com_contentbuilder', JPATH_ADMINISTRATOR);
             }
 

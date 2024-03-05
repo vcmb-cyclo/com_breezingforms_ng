@@ -29,9 +29,9 @@ class ContentbuilderModelVerify extends CBModel
     {
         parent::__construct($config);
 
-        $this->frontend = JFactory::getApplication()->isClient('site');
+        $this->frontend = Factory::getApplication()->isClient('site');
 
-        $mainframe = JFactory::getApplication();
+        $mainframe = Factory::getApplication();
         $option = 'com_contentbuilder';
 
         $plugin = CBRequest::getVar('plugin', '');
@@ -48,7 +48,7 @@ class ContentbuilderModelVerify extends CBModel
 
         if (!$verification_id) {
             $user_id = Factory::getApplication()->getIdentity()->get('id', 0);
-            $setup = JFactory::getSession()->get($plugin . $verification_name, '', 'com_contentbuilder.verify.' . $plugin . $verification_name);
+            $setup = Factory::getSession()->get($plugin . $verification_name, '', 'com_contentbuilder.verify.' . $plugin . $verification_name);
         } else {
             $this->_db->setQuery("Select `setup`,`user_id` From #__contentbuilder_verifications Where `verification_hash` = " . $this->_db->Quote($verification_id));
             $setup = $this->_db->loadAssoc();
@@ -68,7 +68,7 @@ class ContentbuilderModelVerify extends CBModel
             // alright 
         } else {
             Factory::getApplication()->enqueueMessage('Spoofed data or invalid verification id', 'error');
-            JFactory::getApplication()->redirect('index.php');
+            Factory::getApplication()->redirect('index.php');
         }
 
         if (isset($out['plugin_options'])) {
@@ -101,9 +101,9 @@ class ContentbuilderModelVerify extends CBModel
 
         if (isset($out['require_view']) && is_numeric($out['require_view']) && intval($out['require_view']) > 0) {
 
-            if (JFactory::getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder')) {
-                $user_id = JFactory::getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder');
-                JFactory::getSession()->clear('cb_last_record_user_id', 'com_contentbuilder');
+            if (Factory::getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder')) {
+                $user_id = Factory::getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder');
+                Factory::getSession()->clear('cb_last_record_user_id', 'com_contentbuilder');
             }
 
             $id = intval($out['require_view']);
@@ -125,7 +125,7 @@ class ContentbuilderModelVerify extends CBModel
             }
 
             if (intval($user_id) == 0) {
-                JFactory::getApplication()->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . cb_b64enc(Uri::getInstance()->toString()) . '&controller=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
+                Factory::getApplication()->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . cb_b64enc(Uri::getInstance()->toString()) . '&controller=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
             }
 
             $rec = $form->getListRecords($ids, '', array(), 0, 1, '', array(), 'desc', 0, false, $user_id, 0, -1, -1, -1, -1, array(), true, null);
@@ -136,12 +136,12 @@ class ContentbuilderModelVerify extends CBModel
             }
 
             if (!$form->getListRecordsTotal($ids)) {
-                JFactory::getApplication()->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . cb_b64enc(Uri::getInstance()->toString()) . '&controller=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
+                Factory::getApplication()->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . cb_b64enc(Uri::getInstance()->toString()) . '&controller=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
             }
         }
 
         // clearing session after possible required view to make re-visits possible
-        JFactory::getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
+        Factory::getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
 
         $verification_data = '';
         if (is_array($rec) && count($rec)) {
@@ -183,7 +183,7 @@ class ContentbuilderModelVerify extends CBModel
         }
 
         /*
-         if(intval($out['client']) && !JFactory::getApplication()->isClient('administrator')){
+         if(intval($out['client']) && !Factory::getApplication()->isClient('administrator')){
             parse_str(Uri::getInstance()->getQuery(), $data1);
             $this_page = Uri::getInstance()->base() . 'administrator/index.php?'.http_build_query($data1, '', '&');
         }else{
@@ -192,7 +192,7 @@ class ContentbuilderModelVerify extends CBModel
             $this_page = $urlex[0] . '?' . http_build_query($data1, '', '&');
         }
          */
-        if (intval($out['client']) && !JFactory::getApplication()->isClient('administrator')) {
+        if (intval($out['client']) && !Factory::getApplication()->isClient('administrator')) {
             $this_page = Uri::getInstance()->base() . 'administrator/index.php?' . Uri::getInstance()->getQuery();
         } else {
             $this_page = Uri::getInstance()->toString();
@@ -205,7 +205,7 @@ class ContentbuilderModelVerify extends CBModel
 
             if (!CBRequest::getBool('verify', 0)) {
 
-                if (JFactory::getApplication()->isClient('administrator')) {
+                if (Factory::getApplication()->isClient('administrator')) {
                     $local = explode('/', Uri::getInstance()->base());
                     unset($local[count($local) - 1]);
                     unset($local[count($local) - 1]);
@@ -221,7 +221,7 @@ class ContentbuilderModelVerify extends CBModel
                 $forward = implode('', $forward_result);
 
                 if ($forward) {
-                    JFactory::getApplication()->redirect($forward);
+                    Factory::getApplication()->redirect($forward);
                 }
             } else {
 
@@ -251,7 +251,7 @@ class ContentbuilderModelVerify extends CBModel
                             }
 
                             if ((!$out['client'] && (!isset($out['return-site']) || !$out['return-site'])) || ($out['client'] && (!isset($out['return-admin']) || !$out['return-admin']))) {
-                                if (intval($out['client']) && !JFactory::getApplication()->isClient('administrator')) {
+                                if (intval($out['client']) && !Factory::getApplication()->isClient('administrator')) {
                                     $redirect_view = Uri::getInstance()->base() . 'administrator/index.php?option=com_contentbuilder&controller=list&lang=' . CBRequest::getCmd('lang', '') . '&id=' . $out['verify_view'];
                                 } else {
                                     $redirect_view = 'index.php?option=com_contentbuilder&controller=list&lang=' . CBRequest::getCmd('lang', '') . '&id=' . $out['verify_view'];
@@ -347,9 +347,9 @@ class ContentbuilderModelVerify extends CBModel
                 Factory::getApplication()->enqueueMessage($msg, 'warning');
 
                 if (!$out['client']) {
-                    JFactory::getApplication()->redirect($redirect_view ? $redirect_view : (!$out['client'] && isset($out['return-site']) && $out['return-site'] ? cb_b64dec($out['return-site']) : 'index.php'));
+                    Factory::getApplication()->redirect($redirect_view ? $redirect_view : (!$out['client'] && isset($out['return-site']) && $out['return-site'] ? cb_b64dec($out['return-site']) : 'index.php'));
                 } else {
-                    JFactory::getApplication()->redirect($redirect_view ? $redirect_view : ($out['client'] && isset($out['return-admin']) && $out['return-admin'] ? cb_b64dec($out['return-admin']) : 'index.php'));
+                    Factory::getApplication()->redirect($redirect_view ? $redirect_view : ($out['client'] && isset($out['return-admin']) && $out['return-admin'] ? cb_b64dec($out['return-admin']) : 'index.php'));
                 }
             }
         } else {
@@ -367,9 +367,9 @@ class ContentbuilderModelVerify extends CBModel
             throw new Exception('You are not allowed to perform this action.', 500);
         }
 
-        JFactory::getLanguage()->load('com_users', JPATH_SITE);
+        Factory::getLanguage()->load('com_users', JPATH_SITE);
 
-        $config = JFactory::getConfig();
+        $config = Factory::getConfig();
         $userParams = JComponentHelper::getParams('com_users');
         $db = $this->getDbo();
 
@@ -405,7 +405,7 @@ class ContentbuilderModelVerify extends CBModel
         }
 
         $params = JComponentHelper::getParams('com_users');
-        $config = JFactory::getConfig();
+        $config = Factory::getConfig();
 
         // Compile the notification mail values.
         $data = $user->getProperties();
@@ -442,17 +442,17 @@ class ContentbuilderModelVerify extends CBModel
 
 
         // Send the registration email.
-        $return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
+        $return = Factory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
 
-        JFactory::getApplication()->enqueueMessage(Text::_('COM_USERS_REGISTRATION_ADMINACTIVATE_SUCCESS'));
-        JFactory::getApplication()->redirect(Route::_('index.php?option=com_users', false));
+        Factory::getApplication()->enqueueMessage(Text::_('COM_USERS_REGISTRATION_ADMINACTIVATE_SUCCESS'));
+        Factory::getApplication()->redirect(Route::_('index.php?option=com_users', false));
     }
 
     public function activate($token)
     {
-        JFactory::getLanguage()->load('com_users', JPATH_SITE);
+        Factory::getLanguage()->load('com_users', JPATH_SITE);
 
-        $config = JFactory::getConfig();
+        $config = Factory::getConfig();
         $userParams = JComponentHelper::getParams('com_users');
         $db = $this->getDbo();
 
@@ -476,7 +476,7 @@ class ContentbuilderModelVerify extends CBModel
         $query = $db->getQuery(true);
 
         // Activate the user.
-        $user = JFactory::getUser($userId);
+        $user = Factory::getUser($userId);
 
         // Admin activation is on and user is verifying their email
         if (($userParams->get('useractivation') == 2) && !$user->getParam('activate', 0)) {
@@ -490,7 +490,7 @@ class ContentbuilderModelVerify extends CBModel
             $data['activate'] = Uri::root() . 'index.php?option=com_contentbuilder&controller=verify&token=' . $data['activation'] . '&verify_by_admin=1&format=raw';
 
             // Remove administrator/ from activate url in case this method is called from admin
-            if (JFactory::getApplication()->isClient('administrator')) {
+            if (Factory::getApplication()->isClient('administrator')) {
                 $adminPos = strrpos($data['activate'], 'administrator/');
                 $data['activate'] = substr_replace($data['activate'], '', $adminPos, 14);
             }
@@ -532,10 +532,10 @@ class ContentbuilderModelVerify extends CBModel
 
             // Send mail to all users with users creating permissions and receiving system emails
             foreach ($rows as $row) {
-                $usercreator = JFactory::getUser($row->id);
+                $usercreator = Factory::getUser($row->id);
 
                 if ($usercreator->authorise('core.create', 'com_users')) {
-                    $return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBody);
+                    $return = Factory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBody);
 
                     // Check for an error.
                     if ($return !== true) {
@@ -546,7 +546,7 @@ class ContentbuilderModelVerify extends CBModel
                 }
             }
 
-            JFactory::getApplication()->enqueueMessage(Text::_('COM_USERS_REGISTRATION_VERIFY_SUCCESS'));
+            Factory::getApplication()->enqueueMessage(Text::_('COM_USERS_REGISTRATION_VERIFY_SUCCESS'));
         }
         // Admin activation is on and admin is activating the account
         elseif (($userParams->get('useractivation') == 2) && $user->getParam('activate', 0)) {
@@ -573,7 +573,7 @@ class ContentbuilderModelVerify extends CBModel
                 $data['username']
             );
 
-            $return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
+            $return = Factory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
 
             // Check for an error.
             if ($return !== true) {
@@ -582,13 +582,13 @@ class ContentbuilderModelVerify extends CBModel
                 return false;
             }
 
-            JFactory::getApplication()->enqueueMessage(Text::_('COM_USERS_REGISTRATION_VERIFY_SUCCESS'));
+            Factory::getApplication()->enqueueMessage(Text::_('COM_USERS_REGISTRATION_VERIFY_SUCCESS'));
         } else {
 
             $user->set('activation', '');
             $user->set('block', '0');
 
-            JFactory::getApplication()->enqueueMessage(Text::_('COM_USERS_REGISTRATION_SAVE_SUCCESS'));
+            Factory::getApplication()->enqueueMessage(Text::_('COM_USERS_REGISTRATION_SAVE_SUCCESS'));
 
         }
 

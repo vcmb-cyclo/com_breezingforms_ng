@@ -1290,7 +1290,7 @@ $cbcompat = new CBCompat();
                 </h3>
             </div>
             <div id="email_admins_div"
-                style="display:<?php echo JFactory::getSession()->get('email_admins', '', 'com_contentbuilder'); ?>">
+                style="display:<?php echo Factory::getSession()->get('email_admins', '', 'com_contentbuilder'); ?>">
                 <table width="100%" class="adminform table table-striped">
                     <tr>
                         <td width="20%">
@@ -1490,7 +1490,7 @@ $cbcompat = new CBCompat();
         $title = Text::_('COM_CONTENTBUILDER_PERMISSIONS');
         echo $cbcompat->startPanel($title, "tab8");
 
-        $sliders = CBTabs::getInstance('sliders', array('startOffset' => JFactory::getSession()->get('slideStartOffset', 1), 'startTransition' => 0));
+        $sliders = CBTabs::getInstance('sliders', array('startOffset' => Factory::getSession()->get('slideStartOffset', 1), 'startTransition' => 0));
 
         echo $sliders->startPane("perm-pane");
 
@@ -2181,13 +2181,13 @@ $cbcompat = new CBCompat();
     <input type="hidden" name="filter_order_Dir" value="" />
     <input type="hidden" name="boxchecked" value="0" />
     <input type="hidden" name="hidemainmenu" value="0" />
-    <input type="hidden" name="tabStartOffset" value="<?php echo JFactory::getSession()->get('tabStartOffset', 0); ?>" />
+    <input type="hidden" name="tabStartOffset" value="<?php echo Factory::getSession()->get('tabStartOffset', 0); ?>" />
     <input type="hidden" name="slideStartOffset"
-        value="<?php echo JFactory::getSession()->get('slideStartOffset', 1); ?>" />
+        value="<?php echo Factory::getSession()->get('slideStartOffset', 1); ?>" />
     <input type="hidden" name="email_users"
-        value="<?php echo JFactory::getSession()->get('email_users', 'none', 'com_contentbuilder'); ?>" />
+        value="<?php echo Factory::getSession()->get('email_users', 'none', 'com_contentbuilder'); ?>" />
     <input type="hidden" name="email_admins"
-        value="<?php echo JFactory::getSession()->get('email_admins', '', 'com_contentbuilder'); ?>" />
+        value="<?php echo Factory::getSession()->get('email_admins', '', 'com_contentbuilder'); ?>" />
 
     <?php echo JHtml::_('form.token'); ?>
 

@@ -3,6 +3,7 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   Copyright (C) 2024 by XDA+GIL
  * @license     GNU/GPL
  */
 
@@ -11,6 +12,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.plugin.plugin');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseInterface;
 
@@ -31,7 +33,7 @@ class plgContentbuilder_listactionUntrash extends JPlugin
     {
         $db = Factory::getContainer()->get(DatabaseInterface::class);
 
-        $lang = JFactory::getLanguage();
+        $lang = Factory::getLanguage();
         $lang->load('plg_contentbuilder_listaction_untrash', JPATH_ADMINISTRATOR);
 
         foreach ($record_ids as $record_id) {
@@ -40,7 +42,7 @@ class plgContentbuilder_listactionUntrash extends JPlugin
             $db->execute();
         }
 
-        JFactory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_UNTRASH_SUCCESSFULL'));
+        Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_UNTRASH_SUCCESSFULL'));
 
         return ''; // no error
     }

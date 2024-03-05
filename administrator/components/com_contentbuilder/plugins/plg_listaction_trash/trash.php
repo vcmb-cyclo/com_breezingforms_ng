@@ -30,7 +30,7 @@ class plgContentbuilder_listactionTrash extends JPlugin
         function onBeforeAction($form_id, $record_ids){
             $db = Factory::getContainer()->get(DatabaseInterface::class);
             
-            $lang = JFactory::getLanguage();
+            $lang = Factory::getLanguage();
             $lang->load('plg_contentbuilder_listaction_trash', JPATH_ADMINISTRATOR);
             
             foreach($record_ids As $record_id){
@@ -39,7 +39,7 @@ class plgContentbuilder_listactionTrash extends JPlugin
                 $db->execute();
             }
             
-            JFactory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_TRASH_SUCCESSFULL'));
+            Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_TRASH_SUCCESSFULL'));
         
             return ''; // no error
         }

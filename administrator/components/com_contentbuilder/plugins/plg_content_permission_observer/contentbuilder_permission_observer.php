@@ -61,7 +61,7 @@ class plgContentContentbuilder_permission_observer extends JPlugin {
         if (isset($article->id) && $article->id) {
             
             $frontend = true;
-            if (JFactory::getApplication()->isClient('administrator')) {
+            if (Factory::getApplication()->isClient('administrator')) {
                 $frontend = false;
             }
             
@@ -78,7 +78,7 @@ class plgContentContentbuilder_permission_observer extends JPlugin {
             
             if ($form && !( CBRequest::getVar('option','') == 'com_contentbuilder' && CBRequest::getVar('controller','') == 'edit' )) {
                 
-                JFactory::getLanguage()->load('com_contentbuilder');
+                Factory::getLanguage()->load('com_contentbuilder');
                 contentbuilder::setPermissions($data['form_id'], $data['record_id'], $frontend ? '_fe' : '');
                 
                 if(CBRequest::getCmd('view') == 'article'){

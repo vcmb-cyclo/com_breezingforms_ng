@@ -2,31 +2,34 @@
 /**
  *
  * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2024 by XDA+GIL
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
+use Joomla\CMS\Factory;
+
 /**
  * Set the available masks for cleaning variables
  */
 
-if(!defined('CBREQUEST_NOTRIM')){
+if (!defined('CBREQUEST_NOTRIM')) {
 
 	define('CBREQUEST_NOTRIM', 1);
 }
 
-if(!defined('CBREQUEST_ALLOWRAW')){
+if (!defined('CBREQUEST_ALLOWRAW')) {
 
 	define('CBREQUEST_ALLOWRAW', 2);
 }
 
-if(!defined('CBREQUEST_ALLOWHTML')){
+if (!defined('CBREQUEST_ALLOWHTML')) {
 
 	define('CBREQUEST_ALLOWHTML', 4);
 }
 
-if(!class_exists('CBRequest')){
+if (!class_exists('CBRequest')) {
 
 
 	/**
@@ -109,8 +112,7 @@ if(!class_exists('CBRequest')){
 			// Ensure hash and type are uppercase
 			$hash = strtoupper($hash);
 
-			if ($hash === 'METHOD')
-			{
+			if ($hash === 'METHOD') {
 				$hash = strtoupper($_SERVER['REQUEST_METHOD']);
 			}
 
@@ -118,8 +120,7 @@ if(!class_exists('CBRequest')){
 			$sig = $hash . $type . $mask;
 
 			// Get the input hash
-			switch ($hash)
-			{
+			switch ($hash) {
 				case 'GET':
 					$input = &$_GET;
 					break;
@@ -144,33 +145,23 @@ if(!class_exists('CBRequest')){
 					break;
 			}
 
-			if (isset($GLOBALS['_CBREQUEST'][$name]['SET.' . $hash]) && ($GLOBALS['_CBREQUEST'][$name]['SET.' . $hash] === true))
-			{
+			if (isset($GLOBALS['_CBREQUEST'][$name]['SET.' . $hash]) && ($GLOBALS['_CBREQUEST'][$name]['SET.' . $hash] === true)) {
 				// Get the variable from the input hash
 				$var = (isset($input[$name]) && $input[$name] !== null) ? $input[$name] : $default;
 				$var = self::_cleanVar($var, $mask, $type);
-			}
-			elseif (!isset($GLOBALS['_CBREQUEST'][$name][$sig]))
-			{
-				if (isset($input[$name]))
-				{
+			} elseif (!isset($GLOBALS['_CBREQUEST'][$name][$sig])) {
+				if (isset($input[$name])) {
 					// Get the variable from the input hash and clean it
 					$var = self::_cleanVar($input[$name], $mask, $type);
 
 					$GLOBALS['_CBREQUEST'][$name][$sig] = $var;
-				}
-				elseif ($default !== null)
-				{
+				} elseif ($default !== null) {
 					// Clean the default value
 					$var = self::_cleanVar($default, $mask, $type);
-				}
-				else
-				{
+				} else {
 					$var = $default;
 				}
-			}
-			else
-			{
+			} else {
 				$var = $GLOBALS['_CBREQUEST'][$name][$sig];
 			}
 
@@ -343,11 +334,10 @@ if(!class_exists('CBRequest')){
 		 */
 		public static function setVar($name, $value = null, $hash = 'method', $overwrite = true)
 		{
-			JFactory::getApplication()->input->set($name, $value);
+			Factory::getApplication()->input->set($name, $value);
 
 			// If overwrite is true, makes sure the variable hasn't been set yet
-			if (!$overwrite && array_key_exists($name, $_REQUEST))
-			{
+			if (!$overwrite && array_key_exists($name, $_REQUEST)) {
 				return $_REQUEST[$name];
 			}
 
@@ -357,15 +347,13 @@ if(!class_exists('CBRequest')){
 			// Get the request hash value
 			$hash = strtoupper($hash);
 
-			if ($hash === 'METHOD')
-			{
+			if ($hash === 'METHOD') {
 				$hash = strtoupper($_SERVER['REQUEST_METHOD']);
 			}
 
 			$previous = array_key_exists($name, $_REQUEST) ? $_REQUEST[$name] : null;
 
-			switch ($hash)
-			{
+			switch ($hash) {
 				case 'GET':
 					$_GET[$name] = $value;
 					$_REQUEST[$name] = $value;
@@ -427,13 +415,11 @@ if(!class_exists('CBRequest')){
 		{
 			$hash = strtoupper($hash);
 
-			if ($hash === 'METHOD')
-			{
+			if ($hash === 'METHOD') {
 				$hash = strtoupper($_SERVER['REQUEST_METHOD']);
 			}
 
-			switch ($hash)
-			{
+			switch ($hash) {
 				case 'GET':
 					$input = $_GET;
 					break;
@@ -481,9 +467,8 @@ if(!class_exists('CBRequest')){
 		public static function set($array, $hash = 'default', $overwrite = true)
 		{
 
-			foreach ($array as $key => $value)
-			{
-				JFactory::getApplication()->input->set($key, $value);
+			foreach ($array as $key => $value) {
+				Factory::getApplication()->input->set($key, $value);
 				self::setVar($key, $value, $hash, $overwrite);
 			}
 		}
@@ -502,8 +487,7 @@ if(!class_exists('CBRequest')){
 		 */
 		public static function checkToken($method = 'post')
 		{
-			if ($method === 'default')
-			{
+			if ($method === 'default') {
 				$method = 'request';
 			}
 
@@ -532,25 +516,19 @@ if(!class_exists('CBRequest')){
 			$mask = (int) $mask;
 
 			// If the no trim flag is not set, trim the variable
-			if (!($mask & 1) && is_string($var))
-			{
+			if (!($mask & 1) && is_string($var)) {
 				$var = trim($var);
 			}
 
 			// Now we handle input filtering
-			if ($mask & 2)
-			{
+			if ($mask & 2) {
 
 				// If the allow raw flag is set, do not modify the variable
-			}
-			elseif ($mask & 4)
-			{
+			} elseif ($mask & 4) {
 				// If the allow HTML flag is set, apply a safe HTML filter to the variable
 				$safeHtmlFilter = JFilterInput::getInstance(array(), array(), 1, 1);
 				$var = $safeHtmlFilter->clean($var, $type);
-			}
-			else
-			{
+			} else {
 				// Since no allow flags were set, we will apply the most strict filter to the variable
 				// $tags, $attr, $tag_method, $attr_method, $xss_auto use defaults.
 				$noHtmlFilter = JFilterInput::getInstance();
@@ -561,7 +539,7 @@ if(!class_exists('CBRequest')){
 		}
 	}
 
-	$cb_request = JFactory::getApplication()->input->getArray(array(), null, 'RAW');
+	$cb_request = Factory::getApplication()->input->getArray(array(), null, 'RAW');
 	foreach ($cb_request as $cb_request_item_key => $cb_request_item_value) {
 		CBRequest::setVar($cb_request_item_key, $cb_request_item_value);
 	}

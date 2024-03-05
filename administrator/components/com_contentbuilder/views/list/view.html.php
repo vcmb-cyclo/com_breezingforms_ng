@@ -90,7 +90,7 @@ class ContentbuilderViewList extends CBView
         $this->items = $subject->items;
         $this->pagination = $pagination;
         $this->total = $total;
-        $own_only = JFactory::getApplication()->isClient('site') ? $subject->own_only_fe : $subject->own_only;
+        $own_only = Factory::getApplication()->isClient('site') ? $subject->own_only_fe : $subject->own_only;
         $this->own_only = $own_only;
         parent::display($tpl);
     }

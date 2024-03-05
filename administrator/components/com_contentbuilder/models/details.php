@@ -3,12 +3,14 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright Copyright (C) 2024 by XDA+GIL
  * @license     GNU/GPL
  */
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
@@ -45,7 +47,7 @@ class ContentbuilderModelDetails extends CBModel
 
         $option = 'com_contentbuilder';
 
-        $this->frontend = JFactory::getApplication()->isClient('site');
+        $this->frontend = Factory::getApplication()->isClient('site');
 
         // ATTTENTION: ALSO DEFINED IN DETAILS CONTROLLER!
         if ($this->frontend && CBRequest::getInt('Itemid', 0)) {
@@ -53,7 +55,7 @@ class ContentbuilderModelDetails extends CBModel
 
             // try menu item
 
-            $menu = JFactory::getApplication()->getMenu();
+            $menu = Factory::getApplication()->getMenu();
             $item = $menu->getActive();
             if (is_object($item)) {
                 if ($item->getParams()->get('record_id', null) !== null) {
@@ -199,10 +201,10 @@ class ContentbuilderModelDetails extends CBModel
                             $auth = $this->frontend ? contentbuilder::authorizeFe('new') : contentbuilder::authorize('new');
 
                             if ($auth) {
-                                JFactory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&controller=edit&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . $this->_id . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
+                                Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&controller=edit&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . $this->_id . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
                             } else {
-                                JFactory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_ADD_ENTRY_FIRST'));
-                                JFactory::getApplication()->redirect('index.php');
+                                Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_ADD_ENTRY_FIRST'));
+                                Factory::getApplication()->redirect('index.php');
                             }
                         }
                     }
@@ -216,11 +218,11 @@ class ContentbuilderModelDetails extends CBModel
                         if (!$this->_menu_item) {
                             $data->page_title = $data->use_view_name_as_title ? $data->name : $data->form->getPageTitle();
                         } else {
-                            $data->page_title = $data->use_view_name_as_title ? $data->name : JFactory::getDocument()->getTitle();
+                            $data->page_title = $data->use_view_name_as_title ? $data->name : Factory::getDocument()->getTitle();
                         }
                     }
                     if ($this->frontend) {
-                        $document = JFactory::getDocument();
+                        $document = Factory::getDocument();
                         $document->setTitle($data->page_title);
                     }
                     $data->show_back_button = $this->_show_back_button;
@@ -339,14 +341,14 @@ class ContentbuilderModelDetails extends CBModel
                         }
 
                         if ($this->frontend) {
-                            $document = JFactory::getDocument();
+                            $document = Factory::getDocument();
                             $document->setTitle(html_entity_decode($data->page_title, ENT_QUOTES, 'UTF-8'));
                         }
 
                         $data->template = contentbuilder::getTemplate($this->_id, $this->_record_id, $data->items, $ids);
 
                         if (
-                            JFactory::getApplication()->isClient('administrator')
+                            Factory::getApplication()->isClient('administrator')
                             && strpos($data->template, '[[hide-admin-title]]') !== false
                         ) {
 

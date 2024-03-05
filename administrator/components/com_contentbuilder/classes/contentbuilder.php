@@ -160,7 +160,7 @@ class contentbuilder
 
         if (!$cssLoaded) {
 
-            JFactory::getDocument()->addStyleDeclaration('.cbVotingDisplay, .cbVotingStarButtonWrapper {
+            Factory::getDocument()->addStyleDeclaration('.cbVotingDisplay, .cbVotingStarButtonWrapper {
 	height: 20px;
 	width: 100px;
 }
@@ -237,8 +237,8 @@ class contentbuilder
         }
         $rating_link = '';
         if ($rating_allowed) {
-            if (JFactory::getApplication()->isClient('site')) {
-                $rating_link = Uri::root(true) . (JFactory::getApplication()->isClient('administrator') ? '/administrator' : (CBRequest::getCmd('lang', '') && CBCompat::getJoomlaConfig('config.sef') && CBCompat::getJoomlaConfig('config.sef_rewrite') ? '/' . CBRequest::getCmd('lang', '') : '')) . '/?option=com_contentbuilder&lang=' . $lang . '&controller=ajax&format=raw&subject=rating&id=' . $form_id . '&record_id=' . $record_id;
+            if (Factory::getApplication()->isClient('site')) {
+                $rating_link = Uri::root(true) . (Factory::getApplication()->isClient('administrator') ? '/administrator' : (CBRequest::getCmd('lang', '') && CBCompat::getJoomlaConfig('config.sef') && CBCompat::getJoomlaConfig('config.sef_rewrite') ? '/' . CBRequest::getCmd('lang', '') : '')) . '/?option=com_contentbuilder&lang=' . $lang . '&controller=ajax&format=raw&subject=rating&id=' . $form_id . '&record_id=' . $record_id;
             } else {
                 $rating_link = 'index.php?option=com_contentbuilder&lang=' . $lang . '&controller=ajax&format=raw&subject=rating&id=' . $form_id . '&record_id=' . $record_id;
             }
@@ -1307,10 +1307,10 @@ class contentbuilder
     public static function getEditableTemplate($contentbuilder_form_id, $record_id, array $record, array $elements_allowed, $execPrepare = true)
     {
 
-        $failed_values = JFactory::getSession()->get('cb_failed_values', null, 'com_contentbuilder.' . $contentbuilder_form_id);
+        $failed_values = Factory::getSession()->get('cb_failed_values', null, 'com_contentbuilder.' . $contentbuilder_form_id);
 
         if ($failed_values !== null) {
-            JFactory::getSession()->clear('cb_failed_values', 'com_contentbuilder.' . $contentbuilder_form_id);
+            Factory::getSession()->clear('cb_failed_values', 'com_contentbuilder.' . $contentbuilder_form_id);
         }
 
         $db = Factory::getContainer()->get(DatabaseInterface::class);
@@ -1609,7 +1609,7 @@ class contentbuilder
 
                             $the_item = '<div class="cbFormField cbCaptchaField">';
 
-                            if (JFactory::getApplication()->isClient('site')) {
+                            if (Factory::getApplication()->isClient('site')) {
                                 $captcha_url = Uri::root(true) . '/components/com_contentbuilder/images/securimage/securimage_show.php';
                             } else {
                                 $captcha_url = Uri::root(true) . '/administrator/components/com_contentbuilder/assets/images/securimage_show.php';
@@ -1699,24 +1699,24 @@ class contentbuilder
     public static function createArticle($contentbuilder_form_id, $record_id, array $record, array $elements_allowed, $title_field = '', $metadata = null, $config = array(), $full = false, $limited_options = true, $menu_cat_id = null)
     {
 
-        $tz = new DateTimeZone(JFactory::getApplication()->getCfg('offset'));
+        $tz = new DateTimeZone(Factory::getApplication()->getCfg('offset'));
 
         if (isset($config['publish_up']) && $config['publish_up'] && $config['publish_up'] != '0000-00-00 00:00:00') {
-            $config['publish_up'] = JFactory::getDate($config['publish_up'], $tz);
+            $config['publish_up'] = Factory::getDate($config['publish_up'], $tz);
             $config['publish_up'] = $config['publish_up']->format('Y-m-d H:i:s');
         } else {
             $config['publish_up'] = '0000-00-00 00:00:00';
         }
 
         if (isset($config['created']) && $config['created'] && $config['created'] != '0000-00-00 00:00:00') {
-            $config['created'] = JFactory::getDate($config['created'], $tz);
+            $config['created'] = Factory::getDate($config['created'], $tz);
             $config['created'] = $config['created']->format('Y-m-d H:i:s');
         } else {
             $config['created'] = '0000-00-00 00:00:00';
         }
 
         if (isset($config['publish_down']) && $config['publish_down'] && $config['publish_down'] != '0000-00-00 00:00:00') {
-            $config['publish_down'] = JFactory::getDate($config['publish_down'], $tz);
+            $config['publish_down'] = Factory::getDate($config['publish_down'], $tz);
             $config['publish_down'] = $config['publish_down']->format('Y-m-d H:i:s');
         } else {
             $config['publish_down'] = '0000-00-00 00:00:00';
@@ -1843,18 +1843,18 @@ class contentbuilder
 
         if (is_array($article) && isset($article['article_id']) && intval($form['default_publish_up_days']) != 0) {
             // this will cause errors on 64bit systems, as strtotime's behavior is different for null dates
-            // $date = JFactory::getDate(strtotime('now +'.intval($form['default_publish_up_days']).' days'));
+            // $date = Factory::getDate(strtotime('now +'.intval($form['default_publish_up_days']).' days'));
             // fix as of forum post http://crosstec.de/forums/37-contentbuilder-general-forum-english/62084-64-bit-strtotime-bug.html#62084
             // thanks to user Fremmedkar
-            $date = JFactory::getDate(strtotime(((($created_up !== null) && ($created_up != '0000-00-00 00:00:00')) ? $created_up : $_now) . ' +' . intval($form['default_publish_down_days']) . ' days'));
+            $date = Factory::getDate(strtotime(((($created_up !== null) && ($created_up != '0000-00-00 00:00:00')) ? $created_up : $_now) . ' +' . intval($form['default_publish_down_days']) . ' days'));
             $created_up = $date->toSql();
         }
 
         $publish_up = $created_up;
 
         if (is_array($article) && isset($article['article_id']) && intval($form['default_publish_down_days']) != 0) {
-            //$date = JFactory::getDate(strtotime( ($created_up !== null ? $created_up : $_now).' +'.intval($form['default_publish_down_days']).' days'));
-            $date = JFactory::getDate(strtotime(($created_up !== null && $created_up != '0000-00-00 00:00:00' ? $created_up : $_now) . ' +' . intval($form['default_publish_down_days']) . ' days'));
+            //$date = Factory::getDate(strtotime( ($created_up !== null ? $created_up : $_now).' +'.intval($form['default_publish_down_days']).' days'));
+            $date = Factory::getDate(strtotime(($created_up !== null && $created_up != '0000-00-00 00:00:00' ? $created_up : $_now) . ' +' . intval($form['default_publish_down_days']) . ' days'));
             $created_down = $date->toSql();
         }
 
@@ -1945,7 +1945,7 @@ class contentbuilder
                 $created_article = isset($config['created']) ? $config['created'] : null;
 
                 // FULL
-                if (JFactory::getApplication()->isClient('administrator')) {
+                if (Factory::getApplication()->isClient('administrator')) {
                     $created_by = isset($config['created_by']) ? $config['created_by'] : 0;
                 }
 
@@ -2215,14 +2215,14 @@ class contentbuilder
 
         // cleaning cache
         // Trigger the onContentCleanCache event.
-        $conf = JFactory::getConfig();
+        $conf = Factory::getConfig();
         $options = array(
             'defaultgroup' => 'com_content',
             'cachebase' => $conf->get('cache_path', JPATH_SITE . DS . 'cache')
         );
-        $cache = JFactory::getCache('com_content');
+        $cache = Factory::getCache('com_content');
         $cache->clean();
-        $cache = JFactory::getCache('com_contentbuilder');
+        $cache = Factory::getCache('com_contentbuilder');
         $cache->clean();
 
         Factory::getApplication()->triggerEvent('onContentCleanCache', $options);
@@ -2243,7 +2243,7 @@ class contentbuilder
         $msg = implode('', $result);
 
         if ($msg) {
-            JFactory::getApplication()->enqueueMessage($msg);
+            Factory::getApplication()->enqueueMessage($msg);
         }
 
         return $article;
@@ -2341,7 +2341,7 @@ class contentbuilder
 
         $config = unserialize(cb_b64dec($result['config']));
 
-        JFactory::getSession()->clear('permissions' . $suffix, 'com_contentbuilder');
+        Factory::getSession()->clear('permissions' . $suffix, 'com_contentbuilder');
         $permissions = array();
 
         //if(!$exclude_own){
@@ -2564,7 +2564,7 @@ class contentbuilder
             }
         }
 
-        JFactory::getSession()->set('permissions' . $suffix, $permissions, 'com_contentbuilder');
+        Factory::getSession()->set('permissions' . $suffix, $permissions, 'com_contentbuilder');
     }
 
     public static function stringURLUnicodeSlug($string)
@@ -2597,13 +2597,13 @@ class contentbuilder
     {
 
         $allowed = false;
-        $permissions = JFactory::getSession()->get('permissions' . $suffix, array(), 'com_contentbuilder');
+        $permissions = Factory::getSession()->get('permissions' . $suffix, array(), 'com_contentbuilder');
 
         $published_return = $permissions['published'];
         if (!$published_return) {
             if (!$auth) {
                 Factory::getApplication()->enqueueMessage($error_msg, 'error');
-                JFactory::getApplication()->redirect('index.php');
+                Factory::getApplication()->redirect('index.php');
             } else {
                 return false;
             }
@@ -2615,7 +2615,7 @@ class contentbuilder
                 if (!$edit_return) {
                     if (!$auth) {
                         Factory::getApplication()->enqueueMessage($error_msg, 'error');
-                        JFactory::getApplication()->redirect('index.php');
+                        Factory::getApplication()->redirect('index.php');
                     } else {
                         return false;
                     }
@@ -2629,7 +2629,7 @@ class contentbuilder
                 if (!$add_return) {
                     if (!$auth) {
                         Factory::getApplication()->enqueueMessage($error_msg, 'error');
-                        JFactory::getApplication()->redirect('index.php');
+                        Factory::getApplication()->redirect('index.php');
                     } else {
                         return false;
                     }
@@ -2651,13 +2651,13 @@ class contentbuilder
 
                         if (!$auth) {
                             Factory::getApplication()->enqueueMessage($error_msg, 'error');
-                            JFactory::getApplication()->redirect('index.php');
+                            Factory::getApplication()->redirect('index.php');
                         } else {
                             return false;
                         }
                     } else if (is_string($verify_return)) {
                         if (!$auth) {
-                            JFactory::getApplication()->redirect($verify_return);
+                            Factory::getApplication()->redirect($verify_return);
                         } else {
                             return false;
                         }
@@ -2708,7 +2708,7 @@ class contentbuilder
                                 foreach ($user_return['record_id'] as $recid) {
                                     $db->setQuery("Select session_id From #__contentbuilder_records Where `record_id` = " . $db->Quote($recid) . " And `type` = " . $db->Quote($typerefid['type']) . " And `reference_id` = " . $db->Quote($typerefid['reference_id']) . "");
                                     $session_id = $db->loadResult();
-                                    if ($form && $session_id != JFactory::getSession()->getId() && !$form->isOwner(Factory::getApplication()->getIdentity()->get('id', 0), $recid)) {
+                                    if ($form && $session_id != Factory::getSession()->getId() && !$form->isOwner(Factory::getApplication()->getIdentity()->get('id', 0), $recid)) {
                                         $allowed = false;
                                         break;
                                     } else {
@@ -2720,7 +2720,7 @@ class contentbuilder
                                 $db->setQuery("Select session_id From #__contentbuilder_records Where `record_id` = " . $db->Quote($user_return['record_id']) . " And `type` = " . $db->Quote($typerefid['type']) . " And `reference_id` = " . $db->Quote($typerefid['reference_id']) . "");
                                 $session_id = $db->loadResult();
 
-                                if ($form && ($user_return['record_id'] == false || $session_id == JFactory::getSession()->getId() || ($form->isOwner(Factory::getApplication()->getIdentity()->get('id', 0), $user_return['record_id'])))) {
+                                if ($form && ($user_return['record_id'] == false || $session_id == Factory::getSession()->getId() || ($form->isOwner(Factory::getApplication()->getIdentity()->get('id', 0), $user_return['record_id'])))) {
                                     $allowed = true;
                                 }
                             }
@@ -2732,7 +2732,7 @@ class contentbuilder
 
         if (!$allowed) {
             if (!$auth) {
-                JFactory::getApplication()->redirect('index.php', 403);
+                Factory::getApplication()->redirect('index.php', 403);
             } else {
                 return false;
             }

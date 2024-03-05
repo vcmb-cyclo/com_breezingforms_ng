@@ -3,11 +3,14 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   Copyright (C) 2024 by XDA+GIL
  * @license     GNU/GPL
 */
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 
 jimport( 'joomla.plugin.plugin' );
@@ -23,7 +26,7 @@ class plgContentbuilder_validationDate_not_before extends JPlugin
         
         function onValidate($field, $fields, $record_id, $form, $value){
             
-            $lang = JFactory::getLanguage();
+            $lang = Factory::getLanguage();
             $lang->load('plg_contentbuilder_validation_date_not_before', JPATH_ADMINISTRATOR);
 
             foreach($fields As $other_field){

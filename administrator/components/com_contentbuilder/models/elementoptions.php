@@ -250,7 +250,7 @@ class ContentbuilderModelElementoptions extends CBModel
                         $tokens = '|'.$upl_ex[1];
                     }
                     
-                    JFactory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' ('.DS.'media'.DS.'contentbuilder'.DS.'upload'.')', 'warning');
+                    Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' ('.DS.'media'.DS.'contentbuilder'.DS.'upload'.')', 'warning');
                 
                 } else if(trim(CBRequest::getVar('upload_directory', '')) != '' && !is_dir(contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', '')))){
                     
@@ -268,7 +268,7 @@ class ContentbuilderModelElementoptions extends CBModel
                         $tokens = '|'.$upl_ex2[1];
                     }
                     
-                    JFactory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' ('.$upload_directory.')', 'warning');
+                    Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' ('.$upload_directory.')', 'warning');
                 
                 } else if(trim(CBRequest::getVar('upload_directory', '')) != '' && is_dir(contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', '')))){
                     

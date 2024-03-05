@@ -12,11 +12,13 @@
  * @subpackage  Pagination
  *
  * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @copyright Copyright (C) 2024 by XDA+GIL
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
@@ -364,7 +366,7 @@ class CBPagination
 		}
 
 		if ($this->total > $this->limit) {
-			return ($listOverride) ? pagination_list_render($list) : $this->_list_render($list);
+			return($listOverride) ? pagination_list_render($list) : $this->_list_render($list);
 		} else {
 			return '';
 		}
@@ -412,7 +414,7 @@ class CBPagination
 	 */
 	public function getLimitBox()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$limits = array();
 
 		// Make the option list.
@@ -556,7 +558,7 @@ class CBPagination
 	 */
 	protected function _item_active(JPaginationObject $item)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		if ($app->isClient('administrator')) {
 			if ($item->base > 0) {
 				return "<a title=\"" . $item->text . "\" onclick=\"document.adminForm." . $this->prefix . "limitstart.value=" . $item->base
@@ -581,7 +583,7 @@ class CBPagination
 	 */
 	protected function _item_inactive(JPaginationObject $item)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		if ($app->isClient('administrator')) {
 			return "<span>" . $item->text . "</span>";
 		} else {

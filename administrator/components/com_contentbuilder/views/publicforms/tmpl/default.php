@@ -3,10 +3,13 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   Copyright (C) 2024 by XDA+GIL
  * @license     GNU/GPL
  */
 
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
@@ -15,7 +18,7 @@ $th = 'th';
 if ($this->page_heading) {
     ?>
     <h1 class="contentheading">
-        <?php echo JFactory::getDocument()->getTitle(); ?>
+        <?php echo Factory::getDocument()->getTitle(); ?>
     </h1>
     <?php
 }
@@ -54,7 +57,7 @@ if ($this->page_heading) {
 
                     <<?php echo $th; ?> width="5" class="sectiontableheader">
                         <?php echo Text::_('COM_CONTENTBUILDER_ID'); ?>
-                        <?php //echo JHTML::_('grid.sort', Text::_( 'COM_CONTENTBUILDER_ID' ), 'id', $this->lists['order_Dir'], $this->lists['order'] );   ?>
+                        <?php //echo JHTML::_('grid.sort', Text::_( 'COM_CONTENTBUILDER_ID' ), 'id', $this->lists['order_Dir'], $this->lists['order'] );    ?>
                     </<?php echo $th; ?>>
 
                     <?php
@@ -63,7 +66,7 @@ if ($this->page_heading) {
 
                 <<?php echo $th; ?> style="width: 200px !important;" class="sectiontableheader">
                     <?php echo Text::_('COM_CONTENTBUILDER_VIEW_NAME'); ?>
-                    <?php // echo JHTML::_('grid.sort', Text::_( 'COM_CONTENTBUILDER_VIEW_NAME' ), 'name', $this->lists['order_Dir'], $this->lists['order'] );   ?>
+                    <?php // echo JHTML::_('grid.sort', Text::_( 'COM_CONTENTBUILDER_VIEW_NAME' ), 'name', $this->lists['order_Dir'], $this->lists['order'] );    ?>
                 </<?php echo $th; ?>>
 
                 <?php

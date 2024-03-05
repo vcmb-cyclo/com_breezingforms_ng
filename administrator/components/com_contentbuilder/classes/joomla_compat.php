@@ -99,12 +99,12 @@ class CBCompat
 
     public static function setJoomlaConfig($key, $value)
     {
-        JFactory::getConfig()->set($key, $value);
+        Factory::getConfig()->set($key, $value);
     }
 
     public static function getJoomlaConfig($key, $value = null)
     {
-        return JFactory::getConfig()->get(preg_replace("/^config./", '', $key, 1), $value);
+        return Factory::getConfig()->get(preg_replace("/^config./", '', $key, 1), $value);
     }
 
     public static function toSql(JDate $dateObj)

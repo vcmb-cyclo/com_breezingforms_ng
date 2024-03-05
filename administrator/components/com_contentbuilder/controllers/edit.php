@@ -3,12 +3,14 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   Copyright (C) 2024 by XDA+GIL
  * @license     GNU/GPL
  */
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
@@ -41,8 +43,8 @@ class ContentbuilderControllerEdit extends CBController
     function save($apply = false)
     {
 
-        if (JFactory::getApplication()->isClient('site') && CBRequest::getInt('Itemid', 0)) {
-            $menu = JFactory::getApplication()->getMenu();
+        if (Factory::getApplication()->isClient('site') && CBRequest::getInt('Itemid', 0)) {
+            $menu = Factory::getApplication()->getMenu();
             $item = $menu->getActive();
             if (is_object($item)) {
                 CBRequest::setVar('cb_controller', $item->getParams()->get('cb_controller', null));
@@ -76,11 +78,11 @@ class ContentbuilderControllerEdit extends CBController
 
                 if (!CBRequest::getBool('cbInternalCheck', 1)) {
                     Factory::getApplication()->enqueueMessage($msg, 'warning');
-                    JFactory::getApplication()->redirect($return);
+                    Factory::getApplication()->redirect($return);
                 }
                 if (Uri::isInternal($return)) {
                     Factory::getApplication()->enqueueMessage($msg, 'warning');
-                    JFactory::getApplication()->redirect($return);
+                    Factory::getApplication()->redirect($return);
                 }
             }
 

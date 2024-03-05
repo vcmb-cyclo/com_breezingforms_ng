@@ -146,7 +146,7 @@ class plgContentContentbuilder_download extends JPlugin
             return true;
         }
 
-        $lang = JFactory::getLanguage();
+        $lang = Factory::getLanguage();
         $lang->load('plg_content_contentbuilder_download', JPATH_ADMINISTRATOR);
 
         /*
@@ -214,7 +214,7 @@ class plgContentContentbuilder_download extends JPlugin
                 $type = '';
 
                 $frontend = true;
-                if (JFactory::getApplication()->isClient('administrator')) {
+                if (Factory::getApplication()->isClient('administrator')) {
                     $frontend = false;
                 }
 
@@ -390,7 +390,7 @@ class plgContentContentbuilder_download extends JPlugin
                                                 $download_name = basename(JFilterOutput::stringURLSafe($default_title) . '_' . $the_value);
                                                 $file_id = md5($type . $item->recElementId . $the_value);
 
-                                                if (!JFactory::getSession()->get('downloaded' . $type . $item->recElementId . $file_id, false, 'com_contentbuilder.plugin.download')) {
+                                                if (!Factory::getSession()->get('downloaded' . $type . $item->recElementId . $file_id, false, 'com_contentbuilder.plugin.download')) {
 
                                                     $db->setQuery("Select hits From #__contentbuilder_resource_access Where `type` = " . $db->Quote($type) . " And resource_id = '" . $file_id . "' And element_id = " . $db->Quote($item->recElementId));
                                                     if ($db->loadResult() === null) {
@@ -401,7 +401,7 @@ class plgContentContentbuilder_download extends JPlugin
                                                     $db->execute();
                                                 }
 
-                                                JFactory::getSession()->set('downloaded' . $type . $item->recElementId . $file_id, true, 'com_contentbuilder.plugin.download');
+                                                Factory::getSession()->set('downloaded' . $type . $item->recElementId . $file_id, true, 'com_contentbuilder.plugin.download');
 
                                                 // clean up before displaying
                                                 @ob_end_clean();

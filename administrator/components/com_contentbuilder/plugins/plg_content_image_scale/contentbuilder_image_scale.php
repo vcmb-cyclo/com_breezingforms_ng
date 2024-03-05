@@ -179,7 +179,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 				$record_id = 0;
 
 				$frontend = true;
-				if (JFactory::getApplication()->isClient('administrator')) {
+				if (Factory::getApplication()->isClient('administrator')) {
 					$frontend = false;
 				}
 

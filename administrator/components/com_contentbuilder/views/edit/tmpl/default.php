@@ -3,9 +3,12 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   Copyright (C) 2024 by XDA+GIL
  * @license     GNU/GPL
 */
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
@@ -16,8 +19,8 @@ $delete_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('dele
 $view_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('view') : contentbuilder::authorize('view');
 $fullarticle_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('fullarticle') : contentbuilder::authorize('fullarticle');
 ?>
-<?php JFactory::getDocument()->addStyleDeclaration($this->theme_css);?>
-<?php JFactory::getDocument()->addScriptDeclaration($this->theme_js);?>
+<?php Factory::getDocument()->addStyleDeclaration($this->theme_css);?>
+<?php Factory::getDocument()->addScriptDeclaration($this->theme_js);?>
 <a name="article_up"></a>
 <script type="text/javascript">
 <!--
@@ -183,7 +186,7 @@ if($this->edit_by_type){
     <ul class="adminformlist">
         
         <?php
-        if(!$this->limited_options && JFactory::getApplication()->isClient('administrator')){
+        if(!$this->limited_options && Factory::getApplication()->isClient('administrator')){
         ?>
         <li><?php echo $this->article_options->getLabel('created_by'); ?>
             <?php echo $this->article_options->getInput('created_by'); ?></li>
