@@ -3,6 +3,7 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   (C) 2024 by XDA+GIL
  * @license     GNU/GPL
  */
 
@@ -21,6 +22,7 @@ use Joomla\Registry\Registry;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Component\ComponentHelper;
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
@@ -1746,7 +1748,7 @@ var contentbuilder = new function(){
         Factory::getLanguage()->load('com_users', JPATH_SITE);
 
         $config = Factory::getConfig();
-        $params = JComponentHelper::getParams('com_users');
+        $params = ComponentHelper::getParams('com_users');
 
         // Initialise the table with JUser.
         $user = new JUser;
@@ -1957,7 +1959,7 @@ var contentbuilder = new function(){
         $email = $user->get('email');
         $username = $user->get('username');
 
-        $usersConfig = JComponentHelper::getParams('com_users');
+        $usersConfig = ComponentHelper::getParams('com_users');
         $sitename = $mainframe->getCfg('sitename');
         $useractivation = $usersConfig->get('useractivation');
         $mailfrom = $mainframe->getCfg('mailfrom');

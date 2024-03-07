@@ -3,6 +3,7 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   (C) 2024 by XDA+GIL
  * @license     GNU/GPL
  */
 
@@ -14,6 +15,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Component\ComponentHelper;
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
@@ -370,7 +372,7 @@ class ContentbuilderModelVerify extends CBModel
         Factory::getLanguage()->load('com_users', JPATH_SITE);
 
         $config = Factory::getConfig();
-        $userParams = JComponentHelper::getParams('com_users');
+        $userParams = ComponentHelper::getParams('com_users');
         $db = $this->getDbo();
 
         // Get the user id based on the token.
@@ -404,7 +406,7 @@ class ContentbuilderModelVerify extends CBModel
             throw new Exception(Text::sprintf('COM_USERS_REGISTRATION_ACTIVATION_SAVE_FAILED', $user->getError()), 500);
         }
 
-        $params = JComponentHelper::getParams('com_users');
+        $params = ComponentHelper::getParams('com_users');
         $config = Factory::getConfig();
 
         // Compile the notification mail values.
@@ -453,7 +455,7 @@ class ContentbuilderModelVerify extends CBModel
         Factory::getLanguage()->load('com_users', JPATH_SITE);
 
         $config = Factory::getConfig();
-        $userParams = JComponentHelper::getParams('com_users');
+        $userParams = ComponentHelper::getParams('com_users');
         $db = $this->getDbo();
 
         // Get the user id based on the token.
