@@ -1,9 +1,10 @@
 <?php
 /**
-* @version 1.0
-* @package ContentBuilder Image Scale
-* @copyright (C) 2011 by Markus Bopp
-* @license Released under the terms of the GNU General Public License
+* @version     1.0
+* @package     ContentBuilder Image Scale
+* @copyright   (C) 2011 by Markus Bopp
+* @copyright   Copyright (C) 2024 by XDA+GIL 
+* @license     Released under the terms of the GNU General Public License
 **/
 
 /** ensure this file is being included by a parent file */
@@ -16,6 +17,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Filesystem\Folder;
 use Joomla\Database\DatabaseInterface;
+use Joomla\CMS\Filter\OutputFilter;
 
 if(!function_exists('cb_b64enc')){
     
@@ -382,7 +384,7 @@ class plgContentContentbuilder_download extends JPlugin {
 
                                            if(CBRequest::getVar('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW) == sha1($field.$the_value)){
 
-                                                 $download_name = basename(JFilterOutput::stringURLSafe($default_title).'_'.$the_value);
+                                                 $download_name = basename(OutputFilter::stringURLSafe($default_title).'_'.$the_value);
                                                  $file_id = md5($type.$item->recElementId.$the_value);
                                                  
                                                  if( !Factory::getApplication()->getSession()->get('downloaded'.$type.$item->recElementId.$file_id, false, 'com_contentbuilder.plugin.download') ){
@@ -416,7 +418,7 @@ class plgContentContentbuilder_download extends JPlugin {
                                              $info_       = $info;
                                              $align_      = $align;
                                              
-                                             $download_name = basename(JFilterOutput::stringURLSafe($default_title).'_'.$the_value);
+                                             $download_name = basename(OutputFilter::stringURLSafe($default_title).'_'.$the_value);
                                              $file_id = md5($type.$item->recElementId.$the_value);
                                              
                                              $db->setQuery("Select hits From #__contentbuilder_resource_access Where resource_id = '".$file_id."' And `type` = ".intval($type)." And element_id = " . $db->Quote($item->recElementId));

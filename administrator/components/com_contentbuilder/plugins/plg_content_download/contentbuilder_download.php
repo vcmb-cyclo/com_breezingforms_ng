@@ -3,6 +3,7 @@
  * @version 1.0
  * @package ContentBuilder Image Scale
  * @copyright (C) 2011 by Markus Bopp
+ * @copyright   Copyright (C) 2024 by XDA+GIL 
  * @license Released under the terms of the GNU General Public License
  **/
 
@@ -387,7 +388,7 @@ class plgContentContentbuilder_download extends JPlugin
 
                                             if (CBRequest::getVar('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW) == sha1($field . $the_value)) {
 
-                                                $download_name = basename(JFilterOutput::stringURLSafe($default_title) . '_' . $the_value);
+                                                $download_name = basename(OutputFilter::stringURLSafe($default_title) . '_' . $the_value);
                                                 $file_id = md5($type . $item->recElementId . $the_value);
 
                                                 if (!Factory::getSession()->get('downloaded' . $type . $item->recElementId . $file_id, false, 'com_contentbuilder.plugin.download')) {
@@ -421,7 +422,7 @@ class plgContentContentbuilder_download extends JPlugin
                                             $info_ = $info;
                                             $align_ = $align;
 
-                                            $download_name = basename(JFilterOutput::stringURLSafe($default_title) . '_' . $the_value);
+                                            $download_name = basename(OutputFilter::stringURLSafe($default_title) . '_' . $the_value);
                                             $file_id = md5($type . $item->recElementId . $the_value);
 
                                             $db->setQuery("Select hits From #__contentbuilder_resource_access Where resource_id = '" . $file_id . "' And `type` = " . intval($type) . " And element_id = " . $db->Quote($item->recElementId));
