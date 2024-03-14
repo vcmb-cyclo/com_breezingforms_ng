@@ -178,7 +178,7 @@ class plgContentContentbuilder_verify extends JPlugin
                     PluginHelper::importPlugin('contentbuilder_verify', $plugin);
                     
                     $dispatcher = Factory::getApplication()->getDispatcher();
-                    $eventResult = $dispatcher->dispatch('onViewport', new Joomla\Event\Event('xonViewportxx', array($link, $plugin_settings)));
+                    $eventResult = $dispatcher->dispatch('onViewport', new Joomla\Event\Event('onViewport', array($link, $plugin_settings)));
                     $viewport_result = $eventResult->getArgument('result') ?: [];
                     $viewport_result = implode('', $viewport_result);
 
