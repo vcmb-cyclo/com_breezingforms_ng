@@ -593,7 +593,7 @@ var contentbuilder = new function(){
         CBRequest::checkToken('default') or jexit(Text::_('JInvalid_Token'));
 
         PluginHelper::importPlugin('contentbuilder_submit');
-        Factory::getSession()->clear('cb_failed_values', 'com_contentbuilder.' . $this->_id);
+        Factory::getApplication()->getSession()->clear('cb_failed_values', 'com_contentbuilder.' . $this->_id);
         CBRequest::setVar('cb_submission_failed', 0);
 
         $query = $this->_buildQuery();
@@ -1187,7 +1187,7 @@ var contentbuilder = new function(){
                     $submit_before_result = $dispatcher->dispatch('onBeforeSubmit', new Joomla\Event\Event('onBeforeSubmit', array(CBRequest::getCmd('record_id', 0), $data->form, $values)));
 
                     if (CBRequest::getVar('cb_submission_failed', 0)) {
-                        Factory::getSession()->set('cb_failed_values', $values, 'com_contentbuilder.' . $this->_id);
+                        Factory::getApplication()->getSession()->set('cb_failed_values', $values, 'com_contentbuilder.' . $this->_id);
                         return CBRequest::getCmd('record_id', 0);
                     }
 
@@ -1219,7 +1219,7 @@ var contentbuilder = new function(){
 
                             if (intval($user_id) > 0) {
 
-                                Factory::getSession()->set('cb_last_record_user_id', $user_id, 'com_contentbuilder');
+                                Factory::getApplication()->getSession()->set('cb_last_record_user_id', $user_id, 'com_contentbuilder');
 
                                 $data->form->saveRecordUserData(
                                     $record_return,
@@ -1269,7 +1269,7 @@ var contentbuilder = new function(){
 
                                 if (intval($user_id) > 0) {
 
-                                    Factory::getSession()->set('cb_last_record_user_id', $user_id, 'com_contentbuilder');
+                                    Factory::getApplication()->getSession()->set('cb_last_record_user_id', $user_id, 'com_contentbuilder');
 
                                     $data->form->saveRecordUserData(
                                         $record_return,
@@ -1289,8 +1289,8 @@ var contentbuilder = new function(){
 
                                     $_now = Factory::getDate();
 
-                                    $setup = Factory::getSession()->get($data->registration_bypass_plugin . $verification_name, '', 'com_contentbuilder.verify.' . $data->registration_bypass_plugin . $verification_name);
-                                    Factory::getSession()->clear($data->registration_bypass_plugin . $verification_name, 'com_contentbuilder.verify.' . $data->registration_bypass_plugin . $verification_name);
+                                    $setup = Factory::getApplication()->getSession()->get($data->registration_bypass_plugin . $verification_name, '', 'com_contentbuilder.verify.' . $data->registration_bypass_plugin . $verification_name);
+                                    Factory::getApplication()->getSession()->clear($data->registration_bypass_plugin . $verification_name, 'com_contentbuilder.verify.' . $data->registration_bypass_plugin . $verification_name);
                                     $___now = $_now->toSql();
 
                                     $this->_db->setQuery("
@@ -1391,7 +1391,7 @@ var contentbuilder = new function(){
                                 $date = Factory::getDate(strtotime($created_up . ' +' . intval($data->default_publish_down_days) . ' days'));
                                 $created_down = $date->toSql();
                             }
-                            $this->_db->setQuery("Insert Into #__contentbuilder_records (session_id,`type`,last_update,is_future,lang_code, sef, published, record_id, reference_id, publish_up, publish_down) Values ('" . Factory::getSession()->getId() . "'," . $this->_db->Quote($data->type) . "," . $this->_db->Quote($last_update) . ",$is_future," . $this->_db->Quote($language) . "," . $this->_db->Quote(trim($sef)) . "," . $this->_db->Quote($data->auto_publish && !$is_future ? 1 : 0) . ", " . $this->_db->Quote($record_return) . ", " . $this->_db->Quote($data->form->getReferenceId()) . ", " . $this->_db->Quote($created_up) . ", " . $this->_db->Quote($created_down) . ")");
+                            $this->_db->setQuery("Insert Into #__contentbuilder_records (session_id,`type`,last_update,is_future,lang_code, sef, published, record_id, reference_id, publish_up, publish_down) Values ('" . Factory::getApplication()->getSession()->getId() . "'," . $this->_db->Quote($data->type) . "," . $this->_db->Quote($last_update) . ",$is_future," . $this->_db->Quote($language) . "," . $this->_db->Quote(trim($sef)) . "," . $this->_db->Quote($data->auto_publish && !$is_future ? 1 : 0) . ", " . $this->_db->Quote($record_return) . ", " . $this->_db->Quote($data->form->getReferenceId()) . ", " . $this->_db->Quote($created_up) . ", " . $this->_db->Quote($created_down) . ")");
                             $this->_db->execute();
                         } else {
                             $this->_db->setQuery("Update #__contentbuilder_records Set last_update = " . $this->_db->Quote($last_update) . ",lang_code = " . $this->_db->Quote($language) . ", sef = " . $this->_db->Quote(trim($sef)) . ", edited = edited + 1 Where `type` = " . $this->_db->Quote($data->type) . " And  `reference_id` = " . $this->_db->Quote($data->form->getReferenceId()) . " And record_id = " . $this->_db->Quote($record_return));

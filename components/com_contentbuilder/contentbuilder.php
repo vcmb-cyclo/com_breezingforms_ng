@@ -78,11 +78,11 @@ if (CBRequest::getInt('Itemid', 0)) {
 	$option = 'com_contentbuilder';
 
 	if (CBRequest::getVar('layout', null) !== null) {
-		Factory::getSession()->set('com_contentbuilder.layout.' . CBRequest::getInt('Itemid', 0) . CBRequest::getVar('layout', null), CBRequest::getVar('layout', null));
+		Factory::getApplication()->getSession()->set('com_contentbuilder.layout.' . CBRequest::getInt('Itemid', 0) . CBRequest::getVar('layout', null), CBRequest::getVar('layout', null));
 	}
 
-	if (Factory::getSession()->get('com_contentbuilder.layout.' . CBRequest::getInt('Itemid', 0) . CBRequest::getVar('layout', null), null) !== null) {
-		CBRequest::setVar('layout', Factory::getSession()->get('com_contentbuilder.layout.' . CBRequest::getInt('Itemid', 0) . CBRequest::getVar('layout', null), null));
+	if (Factory::getApplication()->getSession()->get('com_contentbuilder.layout.' . CBRequest::getInt('Itemid', 0) . CBRequest::getVar('layout', null), null) !== null) {
+		CBRequest::setVar('layout', Factory::getApplication()->getSession()->get('com_contentbuilder.layout.' . CBRequest::getInt('Itemid', 0) . CBRequest::getVar('layout', null), null));
 	}
 
 	if (is_object($item)) {

@@ -172,8 +172,8 @@ class plgContentContentbuilder_verify extends JPlugin
 
                     $plugin_settings = 'return-site=' . ($return_site ? cb_b64enc($return_site) : '') . '&return-admin=' . ($return_admin ? cb_b64enc($return_admin) : '') . '&client=' . (Factory::getApplication()->isClient('site') ? 0 : 1) . '&plugin=' . $plugin . '&verification_msg=' . urlencode($verification_msg) . '&verification_name=' . urlencode($verification_name) . '&verify_view=' . $verify_view . '&verify_levels=' . $verify_levels . '&require_view=' . $require_view . '&plugin_options=' . cb_b64enc($this->buildStr($plugin_options));
 
-                    Factory::getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
-                    Factory::getSession()->set($plugin . $verification_name, $plugin_settings, 'com_contentbuilder.verify.' . $plugin . $verification_name);
+                    Factory::getApplication()->getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
+                    Factory::getApplication()->getSession()->set($plugin . $verification_name, $plugin_settings, 'com_contentbuilder.verify.' . $plugin . $verification_name);
 
                     $link = Uri::root(true) . '/index.php?option=com_contentbuilder&controller=verify&plugin=' . urlencode($plugin) . '&verification_name=' . urlencode($verification_name) . '&format=raw';
                     PluginHelper::importPlugin('contentbuilder_verify', $plugin);

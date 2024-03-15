@@ -53,7 +53,7 @@ class ContentbuilderModelVerify extends CBModel
 
         if (!$verification_id) {
             $user_id = Factory::getApplication()->getIdentity()->get('id', 0);
-            $setup = Factory::getSession()->get($plugin . $verification_name, '', 'com_contentbuilder.verify.' . $plugin . $verification_name);
+            $setup = Factory::getApplication()->getSession()->get($plugin . $verification_name, '', 'com_contentbuilder.verify.' . $plugin . $verification_name);
         } else {
             $this->_db->setQuery("Select `setup`,`user_id` From #__contentbuilder_verifications Where `verification_hash` = " . $this->_db->Quote($verification_id));
             $setup = $this->_db->loadAssoc();
@@ -106,9 +106,9 @@ class ContentbuilderModelVerify extends CBModel
 
         if (isset($out['require_view']) && is_numeric($out['require_view']) && intval($out['require_view']) > 0) {
 
-            if (Factory::getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder')) {
-                $user_id = Factory::getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder');
-                Factory::getSession()->clear('cb_last_record_user_id', 'com_contentbuilder');
+            if (Factory::getApplication()->getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder')) {
+                $user_id = Factory::getApplication()->getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder');
+                Factory::getApplication()->getSession()->clear('cb_last_record_user_id', 'com_contentbuilder');
             }
 
             $id = intval($out['require_view']);
@@ -146,7 +146,7 @@ class ContentbuilderModelVerify extends CBModel
         }
 
         // clearing session after possible required view to make re-visits possible
-        Factory::getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
+        Factory::getApplication()->getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
 
         $verification_data = '';
         if (is_array($rec) && count($rec)) {

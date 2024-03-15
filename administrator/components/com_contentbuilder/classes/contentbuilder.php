@@ -1317,10 +1317,10 @@ class contentbuilder
     public static function getEditableTemplate($contentbuilder_form_id, $record_id, array $record, array $elements_allowed, $execPrepare = true)
     {
 
-        $failed_values = Factory::getSession()->get('cb_failed_values', null, 'com_contentbuilder.' . $contentbuilder_form_id);
+        $failed_values = Factory::getApplication()->getSession()->get('cb_failed_values', null, 'com_contentbuilder.' . $contentbuilder_form_id);
 
         if ($failed_values !== null) {
-            Factory::getSession()->clear('cb_failed_values', 'com_contentbuilder.' . $contentbuilder_form_id);
+            Factory::getApplication()->getSession()->clear('cb_failed_values', 'com_contentbuilder.' . $contentbuilder_form_id);
         }
 
         $db = Factory::getContainer()->get(DatabaseInterface::class);
@@ -2360,7 +2360,7 @@ class contentbuilder
 
         $config = unserialize(cb_b64dec($result['config']));
 
-        Factory::getSession()->clear('permissions' . $suffix, 'com_contentbuilder');
+        Factory::getApplication()->getSession()->clear('permissions' . $suffix, 'com_contentbuilder');
         $permissions = array();
 
         //if(!$exclude_own){
@@ -2583,7 +2583,7 @@ class contentbuilder
             }
         }
 
-        Factory::getSession()->set('permissions' . $suffix, $permissions, 'com_contentbuilder');
+        Factory::getApplication()->getSession()->set('permissions' . $suffix, $permissions, 'com_contentbuilder');
     }
 
     public static function stringURLUnicodeSlug($string)
@@ -2616,7 +2616,7 @@ class contentbuilder
     {
 
         $allowed = false;
-        $permissions = Factory::getSession()->get('permissions' . $suffix, array(), 'com_contentbuilder');
+        $permissions = Factory::getApplication()->getSession()->get('permissions' . $suffix, array(), 'com_contentbuilder');
 
         $published_return = $permissions['published'];
         if (!$published_return) {
@@ -2727,7 +2727,7 @@ class contentbuilder
                                 foreach ($user_return['record_id'] as $recid) {
                                     $db->setQuery("Select session_id From #__contentbuilder_records Where `record_id` = " . $db->Quote($recid) . " And `type` = " . $db->Quote($typerefid['type']) . " And `reference_id` = " . $db->Quote($typerefid['reference_id']) . "");
                                     $session_id = $db->loadResult();
-                                    if ($form && $session_id != Factory::getSession()->getId() && !$form->isOwner(Factory::getApplication()->getIdentity()->get('id', 0), $recid)) {
+                                    if ($form && $session_id != Factory::getApplication()->getSession()->getId() && !$form->isOwner(Factory::getApplication()->getIdentity()->get('id', 0), $recid)) {
                                         $allowed = false;
                                         break;
                                     } else {
@@ -2739,7 +2739,7 @@ class contentbuilder
                                 $db->setQuery("Select session_id From #__contentbuilder_records Where `record_id` = " . $db->Quote($user_return['record_id']) . " And `type` = " . $db->Quote($typerefid['type']) . " And `reference_id` = " . $db->Quote($typerefid['reference_id']) . "");
                                 $session_id = $db->loadResult();
 
-                                if ($form && ($user_return['record_id'] == false || $session_id == Factory::getSession()->getId() || ($form->isOwner(Factory::getApplication()->getIdentity()->get('id', 0), $user_return['record_id'])))) {
+                                if ($form && ($user_return['record_id'] == false || $session_id == Factory::getApplication()->getSession()->getId() || ($form->isOwner(Factory::getApplication()->getIdentity()->get('id', 0), $user_return['record_id'])))) {
                                     $allowed = true;
                                 }
                             }

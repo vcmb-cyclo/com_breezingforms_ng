@@ -392,7 +392,7 @@ class plgContentContentbuilder_download extends JPlugin
                                                 $download_name = basename(OutputFilter::stringURLSafe($default_title) . '_' . $the_value);
                                                 $file_id = md5($type . $item->recElementId . $the_value);
 
-                                                if (!Factory::getSession()->get('downloaded' . $type . $item->recElementId . $file_id, false, 'com_contentbuilder.plugin.download')) {
+                                                if (!Factory::getApplication()->getSession()->get('downloaded' . $type . $item->recElementId . $file_id, false, 'com_contentbuilder.plugin.download')) {
 
                                                     $db->setQuery("Select hits From #__contentbuilder_resource_access Where `type` = " . $db->Quote($type) . " And resource_id = '" . $file_id . "' And element_id = " . $db->Quote($item->recElementId));
                                                     if ($db->loadResult() === null) {
@@ -403,7 +403,7 @@ class plgContentContentbuilder_download extends JPlugin
                                                     $db->execute();
                                                 }
 
-                                                Factory::getSession()->set('downloaded' . $type . $item->recElementId . $file_id, true, 'com_contentbuilder.plugin.download');
+                                                Factory::getApplication()->getSession()->set('downloaded' . $type . $item->recElementId . $file_id, true, 'com_contentbuilder.plugin.download');
 
                                                 // clean up before displaying
                                                 @ob_end_clean();
