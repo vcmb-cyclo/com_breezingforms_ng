@@ -3,18 +3,18 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   Copyright (C) 2024 by XDA+GIL 
  * @license     GNU/GPL
 */
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-jimport( 'joomla.plugin.plugin' );
-
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
+use Joomla\CMS\Plugin\CMSPlugin;
 
-class plgContentbuilder_themesBlank extends JPlugin
+class plgContentbuilder_themesBlank extends CMSPlugin
 {
         function __construct( &$subject, $params )
         {

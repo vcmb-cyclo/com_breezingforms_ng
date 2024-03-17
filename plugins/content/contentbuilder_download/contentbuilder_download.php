@@ -19,6 +19,7 @@ use Joomla\Filesystem\Folder;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
 
 if(!function_exists('cb_b64enc')){
     
@@ -38,11 +39,9 @@ if(!function_exists('cb_b64dec')){
     }
 }
 
-jimport( 'joomla.plugin.plugin' );
-
 require_once(JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_contentbuilder'.DS.'classes'.DS.'joomla_compat.php');
 
-class plgContentContentbuilder_download extends JPlugin {
+class plgContentContentbuilder_download extends CMSPlugin {
 
     function __construct( &$subject, $params )
     {

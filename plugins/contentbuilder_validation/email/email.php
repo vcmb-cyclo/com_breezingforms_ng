@@ -12,12 +12,11 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-
-jimport('joomla.plugin.plugin');
+use Joomla\CMS\Plugin\CMSPlugin;
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder_helpers.php');
 
-class plgContentbuilder_validationEmail extends JPlugin
+class plgContentbuilder_validationEmail extends CMSPlugin
 {
     function __construct(&$subject, $params)
     {

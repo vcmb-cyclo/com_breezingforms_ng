@@ -15,6 +15,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
 
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
@@ -22,9 +23,7 @@ if (!defined('DS')) {
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
 
-jimport('joomla.plugin.plugin');
-
-class plgSystemContentbuilder_system extends JPlugin
+class plgSystemContentbuilder_system extends CMSPlugin
 {
     private $caching = 0;
 

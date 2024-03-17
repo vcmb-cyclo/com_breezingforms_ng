@@ -16,6 +16,7 @@ use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
 
 if (!function_exists('cb_b64enc')) {
 
@@ -37,9 +38,7 @@ if (!function_exists('cb_b64dec')) {
     }
 }
 
-jimport('joomla.plugin.plugin');
-
-class plgContentContentbuilder_verify extends JPlugin
+class plgContentContentbuilder_verify extends CMSPlugin
 {
 
     function __construct(&$subject, $params)

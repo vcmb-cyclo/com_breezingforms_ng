@@ -83,7 +83,7 @@ class ContentbuilderModelList extends CBModel
         $this->setState('limit', $limit);
         $this->setState('limitstart', $limitstart);
 
-        if(Factory::getApplication()->getSession()->get($option.'formsd_id', 0) == 0 || Factory::getApplication()->getSession()->get($option.'formsd_id', 0) == $this->_id ){
+        if (Factory::getApplication()->getSession()->get($option.'formsd_id', 0) == 0 || Factory::getApplication()->getSession()->get($option.'formsd_id', 0) == $this->_id ){
             $filter_order     = $mainframe->getUserStateFromRequest(  $option.'formsd_filter_order', 'filter_order', '', 'cmd' );
             $filter_order_Dir = $mainframe->getUserStateFromRequest( $option.'formsd_filter_order_Dir', 'filter_order_Dir', '', 'cmd' );
             $filter           = $mainframe->getUserStateFromRequest(  $option.'formsd_filter', 'filter', '', 'string' );

@@ -10,14 +10,12 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.plugin.plugin');
-
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseInterface;
+use Joomla\CMS\Plugin\CMSPlugin;
 
-
-class plgContentbuilder_listactionUntrash extends JPlugin
+class plgContentbuilder_listactionUntrash extends CMSPlugin
 {
     function __construct(&$subject, $params)
     {

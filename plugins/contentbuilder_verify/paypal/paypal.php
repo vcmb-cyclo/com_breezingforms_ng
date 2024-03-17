@@ -11,12 +11,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Plugin\PluginHelper;
-
-jimport('joomla.plugin.plugin');
+use Joomla\CMS\Plugin\CMSPlugin;
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
 
-class plgContentbuilder_verifyPaypal extends JPlugin
+class plgContentbuilder_verifyPaypal extends CMSPlugin
 {
     private $test = false;
     private $url = 'https://www.paypal.com';

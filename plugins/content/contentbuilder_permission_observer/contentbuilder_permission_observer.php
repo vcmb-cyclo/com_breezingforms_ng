@@ -14,6 +14,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\Database\DatabaseInterface;
+use Joomla\CMS\Plugin\CMSPlugin;
 
 if(!function_exists('cb_b64enc')){
     
@@ -33,9 +34,7 @@ if(!function_exists('cb_b64dec')){
     }
 }
 
-jimport( 'joomla.plugin.plugin' );
-
-class plgContentContentbuilder_permission_observer extends JPlugin {
+class plgContentContentbuilder_permission_observer extends CMSPlugin {
 
     function __construct( &$subject, $params )
     {

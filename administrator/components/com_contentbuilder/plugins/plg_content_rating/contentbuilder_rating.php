@@ -16,6 +16,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
 
 if (!function_exists('cb_b64enc')) {
 
@@ -41,7 +42,7 @@ jimport('joomla.plugin.plugin');
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
 
-class plgContentContentbuilder_rating extends JPlugin
+class plgContentContentbuilder_rating extends CMSPlugin
 {
 
     function __construct(&$subject, $params)

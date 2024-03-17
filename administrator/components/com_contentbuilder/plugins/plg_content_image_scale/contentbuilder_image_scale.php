@@ -8,7 +8,7 @@
  **/
 
 /** ensure this file is being included by a parent file */
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
@@ -19,6 +19,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\Filesystem\Path;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
 
 if (!function_exists('cb_b64enc')) {
 
@@ -56,8 +57,8 @@ function fatalErrorShutdownHandler()
 }
 
 jimport('joomla.plugin.plugin');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder_helpers.php');
+require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
+require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder_helpers.php');
 
 // some hosting providers think it is a good idea not to compile in exif with php...
 if (!function_exists('exif_imagetype')) {
@@ -70,7 +71,7 @@ if (!function_exists('exif_imagetype')) {
 	}
 }
 
-class plgContentContentbuilder_image_scale extends JPlugin
+class plgContentContentbuilder_image_scale extends CMSPlugin
 {
 
 	function __construct(&$subject, $params)
@@ -105,7 +106,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 		if (function_exists('ini_get')) {
 			$max_exec_time = @ini_get('max_execution_time');
 		}
-		$max_time = !empty($max_exec_time) ? intval($max_exec_time) / 2 : 15;
+		$max_time = !empty ($max_exec_time) ? intval($max_exec_time) / 2 : 15;
 
 		$plugin = PluginHelper::getPlugin('content', 'contentbuilder_image_scale');
 		jimport('joomla.html.parameter');
@@ -127,9 +128,9 @@ class plgContentContentbuilder_image_scale extends JPlugin
 		 * (for instance with categories).
 		 * But we need the article id, so we use the article id flag from content generation.
 		 */
-		if (is_object($article) && !isset($article->id) && !isset($article->cbrecord) && isset($article->text) && $article->text) {
+		if (is_object($article) && !isset ($article->id) && !isset ($article->cbrecord) && isset ($article->text) && $article->text) {
 			preg_match_all("/<!--\(cbArticleId:(\d{1,})\)-->/si", $article->text, $matched_id);
-			if (isset($matched_id[1]) && isset($matched_id[1][0])) {
+			if (isset ($matched_id[1]) && isset ($matched_id[1][0])) {
 				$article->id = intval($matched_id[1][0]);
 			}
 		}
@@ -166,7 +167,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 			Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale');
 		}
 
-		if (isset($article->id) || isset($article->cbrecord)) {
+		if (isset ($article->id) || isset ($article->cbrecord)) {
 
 			$db = Factory::getContainer()->get(DatabaseInterface::class);
 
@@ -174,7 +175,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 
 			preg_match_all("/\{CBImageScale([^}]*)\}/i", $article->text, $matches);
 
-			if (isset($matches[0]) && is_array($matches[0]) && isset($matches[1]) && is_array($matches[1])) {
+			if (isset ($matches[0]) && is_array($matches[0]) && isset ($matches[1]) && is_array($matches[1])) {
 
 				$record = null;
 				$default_title = '';
@@ -187,13 +188,13 @@ class plgContentContentbuilder_image_scale extends JPlugin
 					$frontend = false;
 				}
 
-				if (isset($article->id) && $article->id && !isset($article->cbrecord)) {
+				if (isset ($article->id) && $article->id && !isset ($article->cbrecord)) {
 
 					// try to obtain the record id if if this is just an article
 					$db->setQuery("Select form.`title_field`,form.`protect_upload_directory`,form.`reference_id`,article.`record_id`,article.`form_id`,form.`type`,form.`published_only`,form.`own_only`,form.`own_only_fe` From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.`published` = 1 And form.id = article.`form_id` And article.`article_id` = " . $db->quote($article->id));
 					$data = $db->loadAssoc();
 
-					require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
+					require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
 					$form = contentbuilder::getForm($data['type'], $data['reference_id']);
 					if (!$form || !$form->exists) {
 						return true;
@@ -213,7 +214,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 						$ref_own_only = $data['own_only'];
 					}
 
-				} else if (isset($article->cbrecord) && isset($article->cbrecord->id) && $article->cbrecord->id) {
+				} else if (isset ($article->cbrecord) && isset ($article->cbrecord->id) && $article->cbrecord->id) {
 
 					$protect = $article->cbrecord->protect_upload_directory;
 					$record = $article->cbrecord->items;
@@ -265,7 +266,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 						if (!contentbuilder::authorizeFe('view')) {
 							if (CBRequest::getInt('contentbuilder_display', 0) || ($protect && CBRequest::getInt('contentbuilder_display_detail', 0))) {
 								ob_end_clean();
-								die('No Access');
+								die ('No Access');
 							} else {
 								return true;
 							}
@@ -274,7 +275,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 						if (!contentbuilder::authorize('view')) {
 							if (CBRequest::getInt('contentbuilder_display', 0) || ($protect && CBRequest::getInt('contentbuilder_display_detail', 0))) {
 								ob_end_clean();
-								die('No Access');
+								die ('No Access');
 							} else {
 								return true;
 							}
@@ -374,13 +375,13 @@ class plgContentContentbuilder_image_scale extends JPlugin
 
 						if (!$use_form) {
 
-							require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
+							require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
 							$use_form = contentbuilder::getForm($ref_type, $ref_id);
 						}
 
 						if ($use_form && $use_form->exists) {
 
-							if (!is_array($use_title) || !isset($use_title[intval($default_title)])) {
+							if (!is_array($use_title) || !isset ($use_title[intval($default_title)])) {
 
 								$use_record = $use_form->getRecord($record_id, $ref_published_only, $frontend ? ($ref_own_only_fe ? Factory::getApplication()->getIdentity()->get('id', 0) : -1) : ($ref_own_only ? Factory::getApplication()->getIdentity()->get('id', 0) : -1), true);
 
@@ -413,7 +414,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 
 						if ($record !== null) {
 
-							if (isset($record) && is_array($record)) {
+							if (isset ($record) && is_array($record)) {
 
 								foreach ($record as $item) {
 									if ($default_title == $item->recElementId) {
@@ -524,8 +525,8 @@ class plgContentContentbuilder_image_scale extends JPlugin
 															while (false !== ($file = @readdir($handle))) {
 																if ($file != "." && $file != "..") {
 																	$parts = explode('_', $file);
-																	$exparts = explode('.', isset($parts[count($parts) - 1]) ? $parts[count($parts) - 1] : array());
-																	if (isset($exparts[0]) && $exparts[0] == 'cbresized') {
+																	$exparts = explode('.', isset ($parts[count($parts) - 1]) ? $parts[count($parts) - 1] : array());
+																	if (isset ($exparts[0]) && $exparts[0] == 'cbresized') {
 																		if (@file_exists($sourcePath . $file) && @is_readable($sourcePath . $file)) {
 																			$fileCreationTime = @filectime($sourcePath . $file);
 																			$fileAge = time() - $fileCreationTime;
@@ -844,63 +845,63 @@ class plgContentContentbuilder_image_scale extends JPlugin
 	public function measureTime()
 	{
 		$a = explode(' ', microtime());
-		return((double) $a[0] + $a[1]) / 1000;
+		return ((double) $a[0] + $a[1]) / 1000;
 	}
 	/*
-				   public function resize_image($source_image, $destination_width, $destination_height, $type = 0, $bgcolor = array(0,0,0)) {
-					   // $type (1=crop to fit, 2=letterbox)
-					   $source_width = imagesx($source_image);
-					   $source_height = imagesy($source_image);
-					   $source_ratio = $source_width / $source_height;
-					   $destination_ratio = $destination_width / $destination_height;
-					   if ($type == 1) {
-						   // crop to fit
-						   if ($source_ratio > $destination_ratio) {
-							   // source has a wider ratio
-							   $temp_width = (int) ($source_height * $destination_ratio);
-							   $temp_height = $source_height;
-							   $source_x = (int) (($source_width - $temp_width) / 2);
-							   $source_y = 0;
-						   } else {
-							   // source has a taller ratio
-							   $temp_width = $source_width;
-							   $temp_height = (int) ($source_width * $destination_ratio);
-							   $source_x = 0;
-							   $source_y = (int) (($source_height - $temp_height) / 2);
-						   }
-						   $destination_x = 0;
-						   $destination_y = 0;
-						   $source_width = $temp_width;
-						   $source_height = $temp_height;
-						   $new_destination_width = $destination_width;
-						   $new_destination_height = $destination_height;
-					   } else {
-						   // letterbox
-						   if ($source_ratio < $destination_ratio) {
-							   // source has a taller ratio
-							   $temp_width = (int) ($destination_height * $source_ratio);
-							   $temp_height = $destination_height;
-							   $destination_x = (int) (($destination_width - $temp_width) / 2);
-							   $destination_y = 0;
-						   } else {
-							   // source has a wider ratio
-							   $temp_width = $destination_width;
-							   $temp_height = (int) ($destination_width / $source_ratio);
-							   $destination_x = 0;
-							   $destination_y = (int) (($destination_height - $temp_height) / 2);
-						   }
-						   $source_x = 0;
-						   $source_y = 0;
-						   $new_destination_width = $temp_width;
-						   $new_destination_height = $temp_height;
-					   }
-					   $destination_image = imagecreatetruecolor($destination_width, $destination_height);
-					   if ($type > 1) {
-						   imagefill($destination_image, 0, 0, imagecolorallocate($destination_image, $bgcolor[0], $bgcolor[1], $bgcolor[2]));
-					   }
-					   imagecopyresampled($destination_image, $source_image, $destination_x, $destination_y, $source_x, $source_y, $new_destination_width, $new_destination_height, $source_width, $source_height);
-					   return $destination_image;
-				   }*/
+					  public function resize_image($source_image, $destination_width, $destination_height, $type = 0, $bgcolor = array(0,0,0)) {
+						  // $type (1=crop to fit, 2=letterbox)
+						  $source_width = imagesx($source_image);
+						  $source_height = imagesy($source_image);
+						  $source_ratio = $source_width / $source_height;
+						  $destination_ratio = $destination_width / $destination_height;
+						  if ($type == 1) {
+							  // crop to fit
+							  if ($source_ratio > $destination_ratio) {
+								  // source has a wider ratio
+								  $temp_width = (int) ($source_height * $destination_ratio);
+								  $temp_height = $source_height;
+								  $source_x = (int) (($source_width - $temp_width) / 2);
+								  $source_y = 0;
+							  } else {
+								  // source has a taller ratio
+								  $temp_width = $source_width;
+								  $temp_height = (int) ($source_width * $destination_ratio);
+								  $source_x = 0;
+								  $source_y = (int) (($source_height - $temp_height) / 2);
+							  }
+							  $destination_x = 0;
+							  $destination_y = 0;
+							  $source_width = $temp_width;
+							  $source_height = $temp_height;
+							  $new_destination_width = $destination_width;
+							  $new_destination_height = $destination_height;
+						  } else {
+							  // letterbox
+							  if ($source_ratio < $destination_ratio) {
+								  // source has a taller ratio
+								  $temp_width = (int) ($destination_height * $source_ratio);
+								  $temp_height = $destination_height;
+								  $destination_x = (int) (($destination_width - $temp_width) / 2);
+								  $destination_y = 0;
+							  } else {
+								  // source has a wider ratio
+								  $temp_width = $destination_width;
+								  $temp_height = (int) ($destination_width / $source_ratio);
+								  $destination_x = 0;
+								  $destination_y = (int) (($destination_height - $temp_height) / 2);
+							  }
+							  $source_x = 0;
+							  $source_y = 0;
+							  $new_destination_width = $temp_width;
+							  $new_destination_height = $temp_height;
+						  }
+						  $destination_image = imagecreatetruecolor($destination_width, $destination_height);
+						  if ($type > 1) {
+							  imagefill($destination_image, 0, 0, imagecolorallocate($destination_image, $bgcolor[0], $bgcolor[1], $bgcolor[2]));
+						  }
+						  imagecopyresampled($destination_image, $source_image, $destination_x, $destination_y, $source_x, $source_y, $new_destination_width, $new_destination_height, $source_width, $source_height);
+						  return $destination_image;
+					  }*/
 
 	public function resize_image($source_image, $destination_width, $destination_height, $type = 0, $bgcolor = array(0, 0, 0))
 	{

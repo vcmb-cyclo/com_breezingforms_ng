@@ -9,11 +9,13 @@
 
 /** ensure this file is being included by a parent file */
 
+defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
+
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Plugin\CMSPlugin;
 
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 if (!function_exists('cb_b64enc')) {
 
@@ -35,9 +37,7 @@ if (!function_exists('cb_b64dec')) {
     }
 }
 
-jimport('joomla.plugin.plugin');
-
-class plgContentContentbuilder_verify extends JPlugin
+class plgContentContentbuilder_verify extends CMSPlugin
 {
 
     function __construct(&$subject, $params)
@@ -86,7 +86,7 @@ class plgContentContentbuilder_verify extends JPlugin
         jimport('joomla.filesystem.file');
         jimport('joomla.filesystem.folder');
 
-        if (!$article || !isset($article->text) || !file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
+        if (!$article || !isset ($article->text) || !file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
             return true;
         }
 
@@ -94,7 +94,7 @@ class plgContentContentbuilder_verify extends JPlugin
         $matches = array();
         preg_match_all("/\{CBVerify([^}]*)\}/i", $article->text, $matches);
 
-        if (isset($matches[0]) && is_array($matches[0]) && isset($matches[1]) && is_array($matches[1])) {
+        if (isset ($matches[0]) && is_array($matches[0]) && isset ($matches[1]) && is_array($matches[1])) {
 
             $i = 0;
             foreach ($matches[1] as $match) {

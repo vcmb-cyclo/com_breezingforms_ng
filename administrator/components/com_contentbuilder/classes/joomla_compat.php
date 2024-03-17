@@ -3,6 +3,7 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   Copyright (C) 2024 by XDA+GIL
  * @license     GNU/GPL
  */
 
@@ -16,6 +17,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Date\Date;
+use Joomla\CMS\Plugin\CMSPlugin;
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'CBFile.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'CBFactory.php');
@@ -41,7 +43,6 @@ if (!function_exists('cb_b64dec')) {
     }
 }
 
-jimport('joomla.version');
 $version = new JVersion();
 define('CBJOOMLAVERSION', $version->getShortVersion());
 
@@ -93,7 +94,7 @@ class CBCompat
         return $params;
     }
 
-    public static function getPluginParams(JPlugin $plgObj, $dir, $plg)
+    public static function getPluginParams(CMSPlugin $plgObj, $dir, $plg)
     {
         return $plgObj->params;
     }

@@ -20,6 +20,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\Filter\OutputFilter;
 use Joomla\Filesystem\Path;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
 
 if (!function_exists('cb_b64enc')) {
 
@@ -71,7 +72,7 @@ if (!function_exists('exif_imagetype')) {
 	}
 }
 
-class plgContentContentbuilder_image_scale extends JPlugin
+class plgContentContentbuilder_image_scale extends CMSPlugin
 {
 
 	function __construct(&$subject, $params)
