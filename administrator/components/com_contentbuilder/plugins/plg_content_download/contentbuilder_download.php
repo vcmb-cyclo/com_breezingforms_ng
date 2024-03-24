@@ -10,12 +10,11 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
-use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
-use Joomla\CMS\Uri\Uri;
 use Joomla\Filesystem\File;
+use Joomla\Filter\OutputFilter;
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
@@ -44,6 +43,21 @@ require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_c
 
 class plgContentContentbuilder_download extends CMSPlugin
 {
+    /**
+     * Application object.
+     *
+     * @var    \Joomla\CMS\Application\CMSApplication
+     * @since  5.0.0
+     */
+    protected $app;
+    
+    /**
+     * Database object.
+     *
+     * @var    \Joomla\Database\DatabaseDriver
+     * @since  5.0.0
+     */
+    protected $db;
 
     function __construct(&$subject, $params)
     {
@@ -140,14 +154,11 @@ class plgContentContentbuilder_download extends CMSPlugin
         jimport('joomla.html.parameter');
         $pluginParams = CBCompat::getParams($plugin->params);
 
-        jimport('joomla.filesystem.file');
-        jimport('joomla.filesystem.folder');
-
         if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
             return true;
         }
 
-        $lang = Factory::getLanguage();
+        $lang = $this->app->getLanguage();
         $lang->load('plg_content_contentbuilder_download', JPATH_ADMINISTRATOR);
 
         /*
@@ -199,8 +210,6 @@ class plgContentContentbuilder_download extends CMSPlugin
 
         if (isset($article->id) || isset($article->cbrecord)) {
 
-            $db = Factory::getContainer()->get(DatabaseInterface::class);
-
             $matches = array();
 
             preg_match_all("/\{CBDownload([^}]*)\}/i", $article->text, $matches);
@@ -215,15 +224,15 @@ class plgContentContentbuilder_download extends CMSPlugin
                 $type = '';
 
                 $frontend = true;
-                if (Factory::getApplication()->isClient('administrator')) {
+                if ($this->app->isClient('administrator')) {
                     $frontend = false;
                 }
 
                 if (isset($article->id) && $article->id && !isset($article->cbrecord)) {
 
                     // try to obtain the record id if if this is just an article
-                    $db->setQuery("Select form.`title_field`,form.`protect_upload_directory`,form.`reference_id`,article.`record_id`,article.`form_id`,form.`type`,form.`published_only`,form.`own_only`,form.`own_only_fe` From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.`published` = 1 And form.id = article.`form_id` And article.`article_id` = " . $db->quote($article->id));
-                    $data = $db->loadAssoc();
+                    $this->db->setQuery("Select form.`title_field`,form.`protect_upload_directory`,form.`reference_id`,article.`record_id`,article.`form_id`,form.`type`,form.`published_only`,form.`own_only`,form.`own_only_fe` From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.`published` = 1 And form.id = article.`form_id` And article.`article_id` = " . $this->db->quote($article->id));
+                    $data = $this->db->loadAssoc();
 
                     require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
                     $form = contentbuilder::getForm($data['type'], $data['reference_id']);
@@ -234,7 +243,7 @@ class plgContentContentbuilder_download extends CMSPlugin
                     if ($form) {
 
                         $protect = $data['protect_upload_directory'];
-                        $record = $form->getRecord($data['record_id'], $data['published_only'], $frontend ? ($data['own_only_fe'] ? Factory::getApplication()->getIdentity()->get('id', 0) : -1) : ($data['own_only'] ? Factory::getApplication()->getIdentity()->get('id', 0) : -1), true);
+                        $record = $form->getRecord($data['record_id'], $data['published_only'], $frontend ? ($data['own_only_fe'] ? $this->app->getIdentity()->get('id', 0) : -1) : ($data['own_only'] ? $this->app->getIdentity()->get('id', 0) : -1), true);
                         $default_title = $data['title_field'];
                         $form_id = $data['form_id'];
                         $record_id = $data['record_id'];
@@ -391,18 +400,18 @@ class plgContentContentbuilder_download extends CMSPlugin
                                                 $download_name = basename(OutputFilter::stringURLSafe($default_title) . '_' . $the_value);
                                                 $file_id = md5($type . $item->recElementId . $the_value);
 
-                                                if (!Factory::getApplication()->getSession()->get('downloaded' . $type . $item->recElementId . $file_id, false, 'com_contentbuilder.plugin.download')) {
+                                                if (!$this->app->getSession()->get('downloaded' . $type . $item->recElementId . $file_id, false, 'com_contentbuilder.plugin.download')) {
 
-                                                    $db->setQuery("Select hits From #__contentbuilder_resource_access Where `type` = " . $db->Quote($type) . " And resource_id = '" . $file_id . "' And element_id = " . $db->Quote($item->recElementId));
-                                                    if ($db->loadResult() === null) {
-                                                        $db->setQuery("Insert Into #__contentbuilder_resource_access (`type`, form_id, element_id, resource_id, hits) values (" . $db->Quote($type) . "," . intval($form_id) . ", " . $db->Quote($item->recElementId) . ", '" . $file_id . "',1)");
+                                                    $this->db->setQuery("Select hits From #__contentbuilder_resource_access Where `type` = " . $this->db->Quote($type) . " And resource_id = '" . $file_id . "' And element_id = " . $this->db->Quote($item->recElementId));
+                                                    if ($this->db->loadResult() === null) {
+                                                        $this->db->setQuery("Insert Into #__contentbuilder_resource_access (`type`, form_id, element_id, resource_id, hits) values (" . $this->db->Quote($type) . "," . intval($form_id) . ", " . $this->db->Quote($item->recElementId) . ", '" . $file_id . "',1)");
                                                     } else {
-                                                        $db->setQuery("Update #__contentbuilder_resource_access Set `type` = " . $db->Quote($type) . ", resource_id = '" . $file_id . "', form_id = " . intval($form_id) . ", element_id = " . $db->Quote($item->recElementId) . ", hits = hits + 1 Where `type` = " . $db->Quote($type) . " And resource_id = '" . $file_id . "' And element_id = " . $db->Quote($item->recElementId));
+                                                        $this->db->setQuery("Update #__contentbuilder_resource_access Set `type` = " . $this->db->Quote($type) . ", resource_id = '" . $file_id . "', form_id = " . intval($form_id) . ", element_id = " . $this->db->Quote($item->recElementId) . ", hits = hits + 1 Where `type` = " . $this->db->Quote($type) . " And resource_id = '" . $file_id . "' And element_id = " . $this->db->Quote($item->recElementId));
                                                     }
-                                                    $db->execute();
+                                                    $this->db->execute();
                                                 }
 
-                                                Factory::getApplication()->getSession()->set('downloaded' . $type . $item->recElementId . $file_id, true, 'com_contentbuilder.plugin.download');
+                                                $this->app->getSession()->set('downloaded' . $type . $item->recElementId . $file_id, true, 'com_contentbuilder.plugin.download');
 
                                                 // clean up before displaying
                                                 @ob_end_clean();
@@ -425,8 +434,8 @@ class plgContentContentbuilder_download extends CMSPlugin
                                             $download_name = basename(OutputFilter::stringURLSafe($default_title) . '_' . $the_value);
                                             $file_id = md5($type . $item->recElementId . $the_value);
 
-                                            $db->setQuery("Select hits From #__contentbuilder_resource_access Where resource_id = '" . $file_id . "' And `type` = " . intval($type) . " And element_id = " . $db->Quote($item->recElementId));
-                                            $hits = $db->loadResult();
+                                            $this->db->setQuery("Select hits From #__contentbuilder_resource_access Where resource_id = '" . $file_id . "' And `type` = " . intval($type) . " And element_id = " . $this->db->Quote($item->recElementId));
+                                            $hits = $this->db->loadResult();
 
                                             if (!$hits) {
                                                 $hits = 0;

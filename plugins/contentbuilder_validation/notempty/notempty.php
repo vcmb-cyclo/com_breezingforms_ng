@@ -10,12 +10,27 @@
 // no direct access
 defined('_JEXEC') or die ('Restricted access');
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
 
 class plgContentbuilder_validationNotempty extends CMSPlugin
 {
+
+    /**
+     * Application object.
+     *
+     * @var    \Joomla\CMS\Application\CMSApplication
+     * @since  5.0.0
+     */
+    protected $app;
+
+    /**
+     * Database object.
+     *
+     * @var    \Joomla\Database\DatabaseDriver
+     * @since  5.0.0
+     */
+    protected $db;
+
     function __construct(&$subject, $params)
     {
         parent::__construct($subject, $params);
@@ -24,10 +39,9 @@ class plgContentbuilder_validationNotempty extends CMSPlugin
     function onValidate($field, $fields, $record_id, $form, $value)
     {
 
-        $lang = Factory::getLanguage();
+        $lang = $this->app->getLanguage();
         $lang->load('plg_contentbuilder_validation_notempty', JPATH_ADMINISTRATOR);
 
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $msg = '';
 
         if (!is_array($value)) {

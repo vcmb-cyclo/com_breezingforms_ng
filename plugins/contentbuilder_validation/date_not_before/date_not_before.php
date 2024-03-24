@@ -10,7 +10,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 
@@ -18,6 +17,14 @@ require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_c
 
 class plgContentbuilder_validationDate_not_before extends CMSPlugin
 {
+    /**
+     * Application object.
+     *
+     * @var    \Joomla\CMS\Application\CMSApplication
+     * @since  5.0.0
+     */
+    protected $app;
+
     function __construct(&$subject, $params)
     {
         parent::__construct($subject, $params);
@@ -26,7 +33,7 @@ class plgContentbuilder_validationDate_not_before extends CMSPlugin
     function onValidate($field, $fields, $record_id, $form, $value)
     {
 
-        $lang = Factory::getLanguage();
+        $lang = $this->app->getLanguage();
         $lang->load('plg_contentbuilder_validation_date_not_before', JPATH_ADMINISTRATOR);
 
         foreach ($fields as $other_field) {

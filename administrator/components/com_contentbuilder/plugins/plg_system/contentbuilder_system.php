@@ -11,9 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
-use Joomla\Filesystem\Folder;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
@@ -26,6 +24,22 @@ require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_c
 
 class plgSystemContentbuilder_system extends CMSPlugin
 {
+    /**
+     * Application object.
+     *
+     * @var    \Joomla\CMS\Application\CMSApplication
+     * @since  5.0.0
+     */
+    protected $app;
+
+    /**
+     * Database object.
+     *
+     * @var    \Joomla\Database\DatabaseDriver
+     * @since  5.0.0
+     */
+    protected $db;
+
     private $caching = 0;
 
     function __construct(&$subject, $params)
@@ -36,26 +50,18 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
     function onBeforeRender()
     {
-
         $pluginParams = CBCompat::getPluginParams($this, 'system', 'contentbuilder_system');
 
         if ($pluginParams->def('nocache', 1)) {
-            Factory::getConfig()->set('config.caching', $this->caching);
+            $this->app->getConfig()->set('config.caching', $this->caching);
         }
     }
 
     function onAfterDispatch()
     {
-
-        jimport('joomla.filesystem.file');
-        jimport('joomla.filesystem.folder');
-
         if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
             return;
         }
-
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
-        $app = Factory::getApplication();
 
         // managing auto-groups
 
@@ -64,9 +70,6 @@ class plgSystemContentbuilder_system extends CMSPlugin
             $pluginParams = CBCompat::getPluginParams($this, 'system', 'contentbuilder_system');
 
             if (intval($pluginParams->get('is_auto_groups', 0)) == 1 && count($pluginParams->get('auto_groups', array()))) {
-
-                $db = Factory::getContainer()->get(DatabaseInterface::class);
-
                 $operateViews = array();
                 if ($pluginParams->get('auto_groups_limit_views', '') != '') {
                     $operateViews = explode(',', $pluginParams->get('auto_groups_limit_views', ''));
@@ -77,13 +80,12 @@ class plgSystemContentbuilder_system extends CMSPlugin
                 }
 
                 // KUNENA SUPPORT, REMOVES THE KUNENA SESSION IF EXISTING ON GROUP UPDATES
-                jimport('joomla.filesystem.folder');
                 $kill_kunena_session = false;
                 if (is_dir(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_kunena' . DS)) {
                     $kill_kunena_session = true;
                 }
 
-                $db->setQuery("
+                $this->db->setQuery("
                         Select cv.userid, cv.verified_view, cv.verification_date_view, forms.verification_days_view, groups.group_id, groups.user_id
                             From 
                         (
@@ -115,21 +117,21 @@ class plgSystemContentbuilder_system extends CMSPlugin
                             )
                         )");
 
-                $users = $db->loadAssocList();
+                $users = $this->db->loadAssocList();
 
                 foreach ($users as $user) {
                     $groups = $pluginParams->get('auto_groups', array());
                     foreach ($groups as $group) {
-                        $db->setQuery("Insert Ignore Into #__user_usergroup_map (user_id, group_id) Values (" . $user['userid'] . ", " . intval($group) . ")");
-                        $db->execute();
+                        $this->db->setQuery("Insert Ignore Into #__user_usergroup_map (user_id, group_id) Values (" . $user['userid'] . ", " . intval($group) . ")");
+                        $this->db->execute();
                         if ($kill_kunena_session) {
-                            $db->setQuery("Delete From #__kunena_sessions Where userid = " . $user['userid']);
-                            $db->execute();
+                            $this->db->setQuery("Delete From #__kunena_sessions Where userid = " . $user['userid']);
+                            $this->db->execute();
                         }
                     }
                 }
 
-                $db->setQuery("
+                $this->db->setQuery("
                         Select cv.id, groups.user_id, groups.group_id, cv.userid, cv.verified_view
                             From 
                         #__user_usergroup_map As groups
@@ -144,24 +146,23 @@ class plgSystemContentbuilder_system extends CMSPlugin
                             Having Sum(cv.verified_view) = 0"
                 );
 
-                $user_groups = $db->loadAssocList();
+                $user_groups = $this->db->loadAssocList();
 
                 foreach ($user_groups as $user_group) {
-                    $db->setQuery("Delete From #__user_usergroup_map Where user_id = " . $user_group['user_id'] . " And group_id = " . intval($user_group['group_id']) . "");
-                    $db->execute();
+                    $this->db->setQuery("Delete From #__user_usergroup_map Where user_id = " . $user_group['user_id'] . " And group_id = " . intval($user_group['group_id']) . "");
+                    $this->db->execute();
                     if ($kill_kunena_session) {
-                        $db->setQuery("Delete From #__kunena_sessions Where userid = " . $user_group['user_id']);
-                        $db->execute();
+                        $this->db->setQuery("Delete From #__kunena_sessions Where userid = " . $user_group['user_id']);
+                        $this->db->execute();
                     }
                 }
             }
         }
         // managing auto-groups END
 
-        if ($app->isClient('site')) {
-
+        if ($this->app->isClient('site')) {
             // loading the required themes, if any
-            $body = Factory::getApplication()->getDocument()->getBuffer('component');
+            $body = $this->app->getDocument()->getBuffer('component');
             preg_match_all("/<!--\(cbArticleId:(\d{1,})\)-->/si", $body, $matched_ids);
 
             $ids = array();
@@ -175,20 +176,20 @@ class plgSystemContentbuilder_system extends CMSPlugin
             $the_ids = implode(',', $ids);
 
             if ($the_ids) {
-                Factory::getApplication()->getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
-                $db->setQuery("Select Distinct forms.theme_plugin From #__contentbuilder_forms As forms, #__contentbuilder_articles As articles, #__content As content Where forms.id = articles.form_id And articles.article_id In (" . $the_ids . ") And content.id = articles.article_id And (content.state = 1 Or content.state = 0)");
-                $themes = $db->loadColumn();
+                $this->app->getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
+                $this->db->setQuery("Select Distinct forms.theme_plugin From #__contentbuilder_forms As forms, #__contentbuilder_articles As articles, #__content As content Where forms.id = articles.form_id And articles.article_id In (" . $the_ids . ") And content.id = articles.article_id And (content.state = 1 Or content.state = 0)");
+                $themes = $this->db->loadColumn();
                 foreach ($themes as $theme) {
                     if ($theme) {
                         PluginHelper::importPlugin('contentbuilder_themes', $theme);
-                        $dispatcher = Factory::getApplication()->getDispatcher();
+                        $dispatcher = $this->app->getDispatcher();
                         $eventresults_css = $dispatcher->dispatch('onContentTemplateCss', new Joomla\Event\Event('onContentTemplateCss', array()));
                         $eventresults_js = $dispatcher->dispatch('onContentTemplateJavascript', new Joomla\Event\Event('onContentTemplateJavascript', array()));
                         $results_css = $eventresults_css->getArgument('result');
                         $results_js = $eventresults_js->getArgument('result');
 
-                        Factory::getApplication()->getDocument()->addStyleDeclaration(implode('', $results_css));
-                        Factory::getApplication()->getDocument()->addScriptDeclaration(implode('', $results_js));
+                        $this->app->getDocument()->addStyleDeclaration(implode('', $results_css));
+                        $this->app->getDocument()->addScriptDeclaration(implode('', $results_js));
                     }
                 }
             }
@@ -209,18 +210,18 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
             // if somebody tries to submit an article through the built-in joomla content submit
             if ($pluginParams->def('disable_new_articles', 0) && trim(CBRequest::getCmd('option', '')) == 'com_content' && (trim(CBRequest::getCmd('task', '')) == 'new' || trim(CBRequest::getCmd('task', '')) == 'article.add' || (trim(CBRequest::getCmd('view', '')) == 'article' && trim(CBRequest::getCmd('layout', '')) == 'form') || (trim(CBRequest::getCmd('view', '')) == 'form' && trim(CBRequest::getCmd('layout', '')) == 'edit') && $a_id <= 0)) {
-                Factory::getLanguage()->load('com_contentbuilder');
-                Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), 'error');
-                Factory::getApplication()->redirect('index.php');
+                $this->app->getLanguage()->load('com_contentbuilder');
+                $this->app->enqueueMessage(Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), 'error');
+                $this->app->redirect('index.php');
             }
 
             // redirect to content edit if there is a record existing for this article
             if ($option == 'com_content' && (($id && $view == 'article' && $task == 'edit') || ($a_id && $view == 'form' && $layout == 'edit'))) {
                 $id = $a_id;
-                $db->setQuery("Select article.record_id, article.form_id From #__contentbuilder_articles As article, #__content As content Where content.id = " . intval($id) . " And (content.state = 0 Or content.state = 1) And article.article_id = content.id");
-                $article = $db->loadAssoc();
+                $this->db->setQuery("Select article.record_id, article.form_id From #__contentbuilder_articles As article, #__content As content Where content.id = " . intval($id) . " And (content.state = 0 Or content.state = 1) And article.article_id = content.id");
+                $article = $this->db->loadAssoc();
                 if (is_array($article)) {
-                    Factory::getApplication()->redirect('index.php?option=com_contentbuilder&controller=edit&id=' . $article['form_id'] . "&record_id=" . $article['record_id'] . "&jsback=1&Itemid=" . CBRequest::getInt('Itemid', 0));
+                    $this->app->redirect('index.php?option=com_contentbuilder&controller=edit&id=' . $article['form_id'] . "&record_id=" . $article['record_id'] . "&jsback=1&Itemid=" . CBRequest::getInt('Itemid', 0));
                 }
             }
         }
@@ -228,22 +229,15 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
     function onAfterRoute()
     {
-
-        jimport('joomla.filesystem.file');
-        jimport('joomla.filesystem.folder');
-
         if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
             return;
         }
 
         // register non-existent records
         if (in_array(CBRequest::getVar('option', ''), array('com_contentbuilder', 'com_content'))) {
-
-            $db = Factory::getContainer()->get(DatabaseInterface::class);
-
             require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
-            $db->setQuery("Select `type`, `reference_id` From #__contentbuilder_forms Where published = 1");
-            $views = $db->loadAssocList();
+            $this->db->setQuery("Select `type`, `reference_id` From #__contentbuilder_forms Where published = 1");
+            $views = $this->db->loadAssocList();
             $typeview = array();
             foreach ($views as $view) {
                 if (!isset($typeview[$view['type'] . $view['reference_id']])) {
@@ -258,15 +252,13 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
         if (CBRequest::getCmd('option', '') == 'com_content' || CBRequest::getCmd('option', '') == 'com_contentbuilder') {
             // managing published states
-
-            $db = Factory::getContainer()->get(DatabaseInterface::class);
             $date = Factory::getDate()->toSql();
 
-            $db->setQuery("Update #__contentbuilder_records Set published = 1 Where is_future = 1 And publish_up <> '0000-00-00 00:00:00' And publish_up <= '" . $date . "'");
-            $db->execute();
+            $this->db->setQuery("Update #__contentbuilder_records Set published = 1 Where is_future = 1 And publish_up <> '0000-00-00 00:00:00' And publish_up <= '" . $date . "'");
+            $this->db->execute();
 
-            $db->setQuery("Update #__contentbuilder_records Set published = 0 Where publish_down <> '0000-00-00 00:00:00' And publish_down <= '" . $date . "'");
-            $db->execute();
+            $this->db->setQuery("Update #__contentbuilder_records Set published = 0 Where publish_down <> '0000-00-00 00:00:00' And publish_down <= '" . $date . "'");
+            $this->db->execute();
 
             // published states END
         }
@@ -301,13 +293,13 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
             if ($pluginParams->def('nocache', 1)) {
                 $this->caching = CBCompat::getJoomlaConfig('config.caching');
-                Factory::getConfig()->set('config.caching', 0);
+                $this->app->getConfig()->set('config.caching', 0);
             }
         }
 
         if (CBRequest::getVar('option') == 'com_contentbuilder') {
 
-            Factory::getContainer()->get(DatabaseInterface::class)->setQuery("
+            $this->db->setQuery("
                     Update 
                         #__contentbuilder_records As records,
                         #__contentbuilder_forms As forms,
@@ -336,9 +328,9 @@ class plgSystemContentbuilder_system extends CMSPlugin
                         )
                       )
                     ");
-            Factory::getContainer()->get(DatabaseInterface::class)->execute();
+            $this->db->execute();
 
-            Factory::getContainer()->get(DatabaseInterface::class)->setQuery("
+            $this->db->setQuery("
                     Update 
                         #__contentbuilder_records As records,
                         #__contentbuilder_forms As forms,
@@ -363,7 +355,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
                     And
                         users.block = 0
                     ");
-            Factory::getContainer()->get(DatabaseInterface::class)->execute();
+            $this->db->execute();
         }
     }
 
@@ -374,14 +366,11 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
     function onAfterInitialize()
     {
-        jimport('joomla.filesystem.file');
-        jimport('joomla.filesystem.folder');
-
         if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
             return;
         }
 
-        $app = Factory::getApplication();
+        $app = $this->app;
 
         if (!$app->isClient('site')) {
             return;
@@ -389,11 +378,9 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
         // synch the records if there are any changes
         if ($app->isClient('site')) {
+            $user = $this->app->getIdentity();
 
-            $db = Factory::getContainer()->get(DatabaseInterface::class);
-            $user = Factory::getApplication()->getIdentity();
-
-            $db->setQuery("
+            $this->db->setQuery("
                     Update
                         #__contentbuilder_articles As articles,
                         #__content As content, 
@@ -423,9 +410,9 @@ class plgSystemContentbuilder_system extends CMSPlugin
                         )
                       )
                     ");
-            $db->execute();
+            $this->db->execute();
 
-            $db->setQuery("
+            $this->db->setQuery("
                     Update 
                         #__contentbuilder_articles As articles,
                         #__content As content, 
@@ -456,13 +443,13 @@ class plgSystemContentbuilder_system extends CMSPlugin
                     And
                         users.block = 0
                     ");
-            $db->execute();
+            $this->db->execute();
 
             $pluginParams = CBCompat::getPluginParams($this, 'system', 'contentbuilder_system');
 
             require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
 
-            $db->setQuery("
+            $this->db->setQuery("
                 Select 
                     form.id As form_id,
                     form.act_as_registration,
@@ -522,10 +509,10 @@ class plgSystemContentbuilder_system extends CMSPlugin
                      )
                    )
                 Limit " . intval($pluginParams->def('limit_per_turn', 50)));
-            $list = $db->loadAssocList();
+            $list = $this->db->loadAssocList();
 
             if (isset($list[0])) {
-                $lang = Factory::getLanguage();
+                $lang = $this->app->getLanguage();
                 $lang->load('com_contentbuilder', JPATH_ADMINISTRATOR);
             }
 
@@ -546,12 +533,12 @@ class plgSystemContentbuilder_system extends CMSPlugin
                         $data['labels'] = $form->getElementLabels();
                         $ids = array();
                         foreach ($data['labels'] as $reference_id => $label) {
-                            $ids[] = $db->Quote($reference_id);
+                            $ids[] = $this->db->Quote($reference_id);
                         }
 
                         if (count($ids)) {
-                            $db->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval($data['form_id']) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
-                            $rows = $db->loadAssocList();
+                            $this->db->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval($data['form_id']) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
+                            $rows = $this->db->loadAssocList();
                             $ids = array();
                             foreach ($rows as $row) {
                                 $ids[] = $row['reference_id'];
@@ -563,8 +550,8 @@ class plgSystemContentbuilder_system extends CMSPlugin
                         $article_id = contentbuilder::createArticle($data['form_id'], $data['record_id'], $data['items'], $ids, $data['title_field'], $form->getRecordMetadata($data['record_id']), array(), false, 1, $data['default_category']);
 
                         if ($article_id) {
-                            $db->setQuery("Update #__contentbuilder_articles Set `last_update`=" . $db->Quote($now) . " Where article_id = " . $db->Quote($article_id) . " And record_id = " . $db->Quote($data['record_id']) . " And form_id = " . $db->Quote($data['form_id']));
-                            $db->execute();
+                            $this->db->setQuery("Update #__contentbuilder_articles Set `last_update`=" . $this->db->Quote($now) . " Where article_id = " . $this->db->Quote($article_id) . " And record_id = " . $this->db->Quote($data['record_id']) . " And form_id = " . $this->db->Quote($data['form_id']));
+                            $this->db->execute();
                         }
                     }
                 }

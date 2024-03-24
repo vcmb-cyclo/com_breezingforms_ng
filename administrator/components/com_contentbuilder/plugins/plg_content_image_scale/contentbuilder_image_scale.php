@@ -10,8 +10,6 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
 
-use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Filesystem\File;
@@ -74,6 +72,22 @@ if (!function_exists('exif_imagetype')) {
 class plgContentContentbuilder_image_scale extends CMSPlugin
 {
 
+	/**
+     * Application object.
+     *
+     * @var    \Joomla\CMS\Application\CMSApplication
+     * @since  5.0.0
+     */
+    protected $app;
+
+	/**
+     * Database object.
+     *
+     * @var    \Joomla\Database\DatabaseDriver
+     * @since  5.0.0
+     */
+    protected $db;
+
 	function __construct(&$subject, $params)
 	{
 		parent::__construct($subject, $params);
@@ -114,9 +128,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 
 		$max_filesize = (8 * 8 * 8 * 1024 * 2) * intval($pluginParams->def('max_filesize', 4)); // 4M default
 
-		jimport('joomla.filesystem.file');
-		jimport('joomla.filesystem.folder');
-
+		
 		if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
 			return true;
 		}
@@ -168,9 +180,6 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 		}
 
 		if (isset ($article->id) || isset ($article->cbrecord)) {
-
-			$db = Factory::getContainer()->get(DatabaseInterface::class);
-
 			$matches = array();
 
 			preg_match_all("/\{CBImageScale([^}]*)\}/i", $article->text, $matches);
@@ -184,15 +193,15 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 				$record_id = 0;
 
 				$frontend = true;
-				if (Factory::getApplication()->isClient('administrator')) {
+				if ($this->app->isClient('administrator')) {
 					$frontend = false;
 				}
 
 				if (isset ($article->id) && $article->id && !isset ($article->cbrecord)) {
 
 					// try to obtain the record id if if this is just an article
-					$db->setQuery("Select form.`title_field`,form.`protect_upload_directory`,form.`reference_id`,article.`record_id`,article.`form_id`,form.`type`,form.`published_only`,form.`own_only`,form.`own_only_fe` From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.`published` = 1 And form.id = article.`form_id` And article.`article_id` = " . $db->quote($article->id));
-					$data = $db->loadAssoc();
+					$this->db->setQuery("Select form.`title_field`,form.`protect_upload_directory`,form.`reference_id`,article.`record_id`,article.`form_id`,form.`type`,form.`published_only`,form.`own_only`,form.`own_only_fe` From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.`published` = 1 And form.id = article.`form_id` And article.`article_id` = " . $this->db->quote($article->id));
+					$data = $this->db->loadAssoc();
 
 					require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
 					$form = contentbuilder::getForm($data['type'], $data['reference_id']);
@@ -203,7 +212,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 					if ($form) {
 
 						$protect = $data['protect_upload_directory'];
-						$record = $form->getRecord($data['record_id'], $data['published_only'], $frontend ? ($data['own_only_fe'] ? Factory::getApplication()->getIdentity()->get('id', 0) : -1) : ($data['own_only'] ? Factory::getApplication()->getIdentity()->get('id', 0) : -1), true);
+						$record = $form->getRecord($data['record_id'], $data['published_only'], $frontend ? ($data['own_only_fe'] ? $this->app->getIdentity()->get('id', 0) : -1) : ($data['own_only'] ? $this->app->getIdentity()->get('id', 0) : -1), true);
 						$default_title = $data['title_field'];
 						$form_id = $data['form_id'];
 						$record_id = $data['record_id'];
@@ -383,7 +392,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 
 							if (!is_array($use_title) || !isset ($use_title[intval($default_title)])) {
 
-								$use_record = $use_form->getRecord($record_id, $ref_published_only, $frontend ? ($ref_own_only_fe ? Factory::getApplication()->getIdentity()->get('id', 0) : -1) : ($ref_own_only ? Factory::getApplication()->getIdentity()->get('id', 0) : -1), true);
+								$use_record = $use_form->getRecord($record_id, $ref_published_only, $frontend ? ($ref_own_only_fe ? $this->app->getIdentity()->get('id', 0) : -1) : ($ref_own_only ? $this->app->getIdentity()->get('id', 0) : -1), true);
 
 								foreach ($use_record as $use_item) {
 									if ($default_title == $use_item->recElementId) {
@@ -396,7 +405,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 									}
 								}
 
-								$use_title[intval($default_title)] = $db->loadResult();
+								$use_title[intval($default_title)] = $this->db->loadResult();
 							}
 
 							$alt = $use_title[intval($default_title)];

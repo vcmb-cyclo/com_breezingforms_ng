@@ -18,6 +18,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Version;
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'CBFile.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'CBFactory.php');
@@ -43,7 +44,7 @@ if (!function_exists('cb_b64dec')) {
     }
 }
 
-$version = new JVersion();
+$version = new Version();
 define('CBJOOMLAVERSION', $version->getShortVersion());
 
 class CBCompat
@@ -122,7 +123,7 @@ class CBCompat
         settype($tables, 'array');
 
         foreach ($tables as $table) {
-            $results[$table] = $db = Factory::getContainer()->get(DatabaseInterface::class)->getTableColumns($table, $typeOnly);
+            $results[$table] = Factory::getContainer()->get(DatabaseInterface::class)->getTableColumns($table, $typeOnly);
         }
 
         return $results;

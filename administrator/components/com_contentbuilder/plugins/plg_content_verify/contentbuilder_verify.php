@@ -11,11 +11,9 @@
 
 defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
 
-use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Plugin\CMSPlugin;
-
+use Joomla\CMS\Plugin\PluginHelper;
 
 if (!function_exists('cb_b64enc')) {
 
@@ -39,6 +37,23 @@ if (!function_exists('cb_b64dec')) {
 
 class plgContentContentbuilder_verify extends CMSPlugin
 {
+
+    /**
+     * Application object.
+     *
+     * @var    \Joomla\CMS\Application\CMSApplication
+     * @since  5.0.0
+     */
+    protected $app;
+
+    /**
+     * Database object.
+     *
+     * @var    \Joomla\Database\DatabaseDriver
+     * @since  5.0.0
+     */
+    protected $db;
+
 
     function __construct(&$subject, $params)
     {
@@ -83,14 +98,10 @@ class plgContentContentbuilder_verify extends CMSPlugin
     function onContentPrepare($context, &$article, &$params, $limitstart = 0)
     {
 
-        jimport('joomla.filesystem.file');
-        jimport('joomla.filesystem.folder');
-
         if (!$article || !isset ($article->text) || !file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
             return true;
         }
 
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $matches = array();
         preg_match_all("/\{CBVerify([^}]*)\}/i", $article->text, $matches);
 
@@ -170,15 +181,16 @@ class plgContentContentbuilder_verify extends CMSPlugin
 
                 if ($plugin && $verification_name && $verify_view) {
 
-                    $plugin_settings = 'return-site=' . ($return_site ? cb_b64enc($return_site) : '') . '&return-admin=' . ($return_admin ? cb_b64enc($return_admin) : '') . '&client=' . (Factory::getApplication()->isClient('site') ? 0 : 1) . '&plugin=' . $plugin . '&verification_msg=' . urlencode($verification_msg) . '&verification_name=' . urlencode($verification_name) . '&verify_view=' . $verify_view . '&verify_levels=' . $verify_levels . '&require_view=' . $require_view . '&plugin_options=' . cb_b64enc($this->buildStr($plugin_options));
+                    $plugin_settings = 'return-site=' . ($return_site ? cb_b64enc($return_site) : '') . '&return-admin=' . ($return_admin ? cb_b64enc($return_admin) : '') . '&client=' . ($this->app->isClient('site') ? 0 : 1) . '&plugin=' . $plugin . '&verification_msg=' . urlencode($verification_msg) . '&verification_name=' . urlencode($verification_name) . '&verify_view=' . $verify_view . '&verify_levels=' . $verify_levels . '&require_view=' . $require_view . '&plugin_options=' . cb_b64enc($this->buildStr($plugin_options));
 
-                    Factory::getApplication()->getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
-                    Factory::getApplication()->getSession()->set($plugin . $verification_name, $plugin_settings, 'com_contentbuilder.verify.' . $plugin . $verification_name);
+                    $this->app->getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
+                    $this->app->getSession()->set($plugin . $verification_name, $plugin_settings, 'com_contentbuilder.verify.' . $plugin . $verification_name);
 
                     $link = Uri::root(true) . '/index.php?option=com_contentbuilder&controller=verify&plugin=' . urlencode($plugin) . '&verification_name=' . urlencode($verification_name) . '&format=raw';
                     PluginHelper::importPlugin('contentbuilder_verify', $plugin);
-                    $viewport_result = Factory::getApplication()->getDispatcher()->dispatch('onViewport', array($link, $plugin_settings));
-                    $viewport_result = implode('', $viewport_result);
+                    $eventResult = $this->app->getDispatcher()->dispatch('onViewport', new Joomla\Event\Event('onVerify', array($link, $plugin_settings)));
+                    $results = $eventResult->getArgument('result') ?: [];
+                    $viewport_result = implode('', $results);
 
                     if ($viewport_result) {
                         $article->text = str_replace($matches[0][$i], $viewport_result, $article->text);
