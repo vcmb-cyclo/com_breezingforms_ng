@@ -15,7 +15,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\Component\Tags\Site\Helper\RouteHelper;
 use Joomla\Registry\Registry;
 
-$authorised = Factory::getApplication()->getIdentity()->getAuthorisedViewLevels();
+$authorised = Factory::getUser()->getAuthorisedViewLevels();
 
 ?>
 <?php if (!empty($displayData)) : ?>

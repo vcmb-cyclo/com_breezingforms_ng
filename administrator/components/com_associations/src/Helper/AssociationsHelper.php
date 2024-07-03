@@ -296,7 +296,7 @@ class AssociationsHelper extends ContentHelper
 
                 $title      = Text::_('COM_ASSOCIATIONS_NO_ASSOCIATION');
                 $additional = $addLink ? Text::_('COM_ASSOCIATIONS_ADD_NEW_ASSOCIATION') : '';
-                $labelClass = 'bg-warning text-dark';
+                $labelClass = 'bg-warning';
                 $target     = $langCode . ':0:add';
                 $allow      = $canCreate;
             }
@@ -495,7 +495,7 @@ class AssociationsHelper extends ContentHelper
             return $helper->allowEdit($typeName, $itemId);
         }
 
-        return Factory::getApplication()->getIdentity()->authorise('core.edit', $extensionName);
+        return Factory::getUser()->authorise('core.edit', $extensionName);
     }
 
     /**
@@ -521,7 +521,7 @@ class AssociationsHelper extends ContentHelper
             return $helper->allowAdd($typeName);
         }
 
-        return Factory::getApplication()->getIdentity()->authorise('core.create', $extensionName);
+        return Factory::getUser()->authorise('core.create', $extensionName);
     }
 
     /**
@@ -591,7 +591,7 @@ class AssociationsHelper extends ContentHelper
 
         $checkedOutFieldName = $helper->getTypeFieldName($typeName, 'checked_out');
 
-        $userId = Factory::getApplication()->getIdentity()->id;
+        $userId = Factory::getUser()->id;
 
         return ($item->{$checkedOutFieldName} == $userId || $item->{$checkedOutFieldName} == 0);
     }

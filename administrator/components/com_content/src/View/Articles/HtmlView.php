@@ -5,7 +5,6 @@
  * @subpackage  com_content
  *
  * @copyright   (C) 2008 Open Source Matters, Inc. <https://www.joomla.org>
- * @copyright Copyright (C) 2024 by XDA+GIL
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -197,7 +196,7 @@ class HtmlView extends BaseHtmlView
                     ->buttonClass('text-center py-2 h3');
 
                 $cmd      = "Joomla.submitbutton('articles.runTransition');";
-                $messages = "{error: [Joomla.Text._('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST')]}";
+                $messages = "{error: [Joomla.JText._('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST')]}";
                 $alert    = 'Joomla.renderMessages(' . $messages . ')';
                 $cmd      = 'if (document.adminForm.boxchecked.value == 0) { ' . $alert . ' } else { ' . $cmd . ' }';
 

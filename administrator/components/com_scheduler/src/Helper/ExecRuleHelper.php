@@ -17,7 +17,6 @@ use Joomla\Component\Scheduler\Administrator\Task\Task;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Utilities\ArrayHelper;
 
-
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
 // phpcs:enable PSR1.Files.SideEffects
@@ -105,7 +104,8 @@ class ExecRuleHelper
             case 'cron-expression':
                 // @todo: testing
                 $cExp     = new CronExpression((string) $this->rule->exp);
-                $nextExec = $cExp->getNextRunDate('now', 0, false, 'UTC');
+                $nextExec = $cExp->getNextRunDate('now', 0, false, Factory::getApplication()->get('offset', 'UTC'));
+                $nextExec->setTimezone(new \DateTimeZone('UTC'));
                 $nextExec = $string ? $this->dateTimeToSql($nextExec) : $nextExec;
                 break;
             default:
@@ -118,7 +118,7 @@ class ExecRuleHelper
 
     /**
      * Returns a sql-formatted string for a DateTime object.
-     * Only needed for DateTime objects returned by CronExpression, Date supports this as class method.
+     * Only needed for DateTime objects returned by CronExpression, JDate supports this as class method.
      *
      * @param   \DateTime  $dateTime  A DateTime object to format
      *

@@ -13,7 +13,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Exception\RouteNotFoundException;
 use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Router\Route;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -65,11 +64,11 @@ class Router
      * @since  1.5
      */
     protected $rules = [
-        'buildpreprocess' => [],
-        'build' => [],
+        'buildpreprocess'  => [],
+        'build'            => [],
         'buildpostprocess' => [],
-        'parsepreprocess' => [],
-        'parse' => [],
+        'parsepreprocess'  => [],
+        'parse'            => [],
         'parsepostprocess' => [],
     ];
 
@@ -110,7 +109,7 @@ class Router
     {
         if (empty(self::$instances[$client])) {
             // Create a Router object
-            $classname = 'Router' . ucfirst($client);
+            $classname = 'JRouter' . ucfirst($client);
 
             if (!class_exists($classname)) {
                 throw new \RuntimeException(Text::sprintf('JLIB_APPLICATION_ERROR_ROUTER_LOAD', $client), 500);
