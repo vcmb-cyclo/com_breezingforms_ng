@@ -16,6 +16,7 @@ require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuil
 require __DIR__ . '/../../../librairies/PhpSpreadsheet/vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Joomla\CMS\Factory;
 
 $spreadsheet = new Spreadsheet();
 $spreadsheet->getProperties()->setCreator("ContentBuilder")->setLastModifiedBy("ContentBuilder");
@@ -35,11 +36,24 @@ $spreadsheet
 
 // 1 -- Labels.
 $labels = $this->data->visible_labels;
+$colreserved = 0;
 
-// In case of show_id_column true -> First column reserved.
+// Case of show_id_column true -> First column reserved.
+$col_id = 0;
+$reserved_labels = [];
 if ($this->data->show_id_column) {
-    array_unshift($labels , Text::_('COM_CONTENTBUILDER_ID'));
+    $col_id = ++$colreserved;
+    array_push($reserved_labels, Text::_('COM_CONTENTBUILDER_ID'));
 }
+
+// Case of state true -> column reserved.
+$col_state = 0;
+if ($this->data->list_state) {
+    $col_state = ++$colreserved;
+    array_push($reserved_labels, Text::_('COM_CONTENTBUILDER_EDIT_STATE'));
+}
+
+$labels = array_merge($reserved_labels, $labels);
 
 $col = 1;
 foreach ($labels as $label) {
@@ -52,9 +66,36 @@ foreach ($labels as $label) {
 $raw = 2;
 foreach ($this->data->items as $item) {
     $i = 1;
-    if ($this->data->show_id_column) {
+    if ($col_id > 0) {
         $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $raw], $item->colRecord);
     }
+
+    if ($col_state > 0) {
+        $database = Factory::getDBO();
+        // Select data from DB
+        $sql = "SELECT title, color FROM `#__contentbuilder_list_states` WHERE id = (SELECT state_id FROM `#__contentbuilder_list_records` WHERE record_id = $item->colRecord)";
+        $database->setQuery($sql);
+        $result = $database->loadRow();
+
+        /*
+        if ($result[1] < 1)
+            $result[1] = 'FFFFFF';
+        if ($result[1] != 'FFFFFF') {
+            $sharedStyle1 = new PHPExcel_Style();
+            $sharedStyle1->applyFromArray(
+                array(
+                    'fill' => array(
+                        'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                        'color' => array('rgb' => $result[1])
+                    )
+                )
+            );
+            $objPHPExcel->getActiveSheet()->setSharedStyle($sharedStyle1, "$ch" . "$i");
+        }*/
+
+        $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $raw], $result[0]);
+    }
+
     foreach ($item as $key => $value) {
         if ($key != 'colRecord' && in_array(str_replace('col', '', $key), $this->data->visible_cols)) {
             $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $raw], $value);
@@ -92,8 +133,6 @@ foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
 header("Expires: 0");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");// HTTP/1.1
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-header("Content-Type: application/force-download");
-header("Content-Type: application/octet-stream");
 header("Content-Type: application/download");;
 header('Content-Disposition: attachment; filename=' . $filename);
 header("Content-Transfer-Encoding: binary ");*/
