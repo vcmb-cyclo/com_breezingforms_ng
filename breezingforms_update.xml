@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+
+	<update>
+		<name>BreezingForms</name>
+		<description>BreezingForms Update</description>
+		<element>com_breezingforms</element>
+		<type>component</type>
+		<client>1</client>
+		<version>5.0.0-RC2</version>
+		<infourl title="ContentBuilder">https://breezingforms.vcmb.fr/</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://breezingforms.vcmb.fr/download/com_breezingforms-5.0.0-RC2.zip</downloadurl>
+		</downloads>
+		<tags>
+			<tag>stable</tag>
+		</tags>
+		<maintainer>XDA+GIL</maintainer>
+		<maintainerurl>https://breezingforms.vcmb.fr</maintainerurl>
+		<targetplatform name="joomla" version="5.1"/>
+	</update>
+</updates>
