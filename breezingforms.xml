@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="4.0" method="upgrade">
+<!--~
+  ~ @component Breezinforms
+  ~ @author: XDA/GIL (Joomla! 5, 2024) | Markus Bopp | until FacileForms v1.4.7: Peter Koch
+  ~ @copyright Copyright (c)20xx-2024
+  ~ @license GNU General Public License version 2, or later
+  -->
+  
+<extension type="component" version="5.0" method="upgrade">
 	<name>COM_BREEZINGFORMS</name>
-	<creationDate>2023-03-04</creationDate>
-	<author>Markus Bopp | Until FacileForms Version 1.4.7: Peter Koch</author>
+	<creationDate>2024-07-14</creationDate>
+	<author>XDA/GIL (J5)</author>
 	<copyright>This Joomla! component is released under the GNU/GPL license</copyright>
         <license>GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html</license>
-	<authorEmail>markus.bopp@crosstec.org</authorEmail>
-	<authorUrl>www.crosstec.org</authorUrl>
-	<version>1.9.1 Stable (944)</version>
+	<authorEmail>no-reply@vcmb.fr</authorEmail>
+	<authorUrl>https://breezingforms.vcmb.fr</authorUrl>
+	<version>5.0.0-RC2</version>
 	<description>Installation successful. Next find BreezingForms in the Components menu, and finish the installation process.</description>
 	<installfile>install.php</installfile>
         <uninstallfile>uninstall.php</uninstallfile>
@@ -15,7 +22,7 @@
         <scriptfile>script.php</scriptfile>
 
         <updateservers>
-            <server type="extension" name="BreezingForms Pro" priority="1">https://crosstec.org/updates/breezingforms/breezingforms_j4_update.xml</server>
+            <server type="extension" name="BreezingForms" priority="1">https://breezingforms.vcmb.fr/download/breezingforms_update.xml</server>
          </updateservers>
 
 	<files folder="site">
@@ -87,25 +94,25 @@
 
 		<languages folder="admin">
 			<language tag="de-DE">languages/de-DE/admin/de-DE.com_breezingforms.ini</language>
-                        <language tag="de-DE">languages/de-DE/admin/de-DE.com_breezingforms.sys.ini</language>
+            		<language tag="de-DE">languages/de-DE/admin/de-DE.com_breezingforms.sys.ini</language>
 
-                        <language tag="en-GB">languages/en-GB/admin/en-GB.com_breezingforms.ini</language>
-                        <language tag="en-GB">languages/en-GB/admin/en-GB.com_breezingforms.sys.ini</language>
+            		<language tag="en-GB">languages/en-GB/admin/en-GB.com_breezingforms.ini</language>
+            		<language tag="en-GB">languages/en-GB/admin/en-GB.com_breezingforms.sys.ini</language>
 
 			<language tag="hu-HU">languages/hu-HU/admin/hu-HU.com_breezingforms.ini</language>
-                        <language tag="hu-HU">languages/hu-HU/admin/hu-HU.com_breezingforms.sys.ini</language>
+            		<language tag="hu-HU">languages/hu-HU/admin/hu-HU.com_breezingforms.sys.ini</language>
 
-                        <language tag="tr-TR">languages/tr-TR/admin/tr-TR.com_breezingforms.ini</language>
-            <language tag="tr-TR">languages/tr-TR/admin/tr-TR.com_breezingforms.sys.ini</language>
+            		<language tag="tr-TR">languages/tr-TR/admin/tr-TR.com_breezingforms.ini</language>
+            		<language tag="tr-TR">languages/tr-TR/admin/tr-TR.com_breezingforms.sys.ini</language>
 
-                        <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_breezingforms.ini</language>
-                        <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_breezingforms.sys.ini</language>
+            		<language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_breezingforms.ini</language>
+            		<language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_breezingforms.sys.ini</language>
 
 			<language tag="es-ES">languages/es-ES/admin/es-ES.com_breezingforms.ini</language>
-                        <language tag="es-ES">languages/es-ES/admin/es-ES.com_breezingforms.sys.ini</language>
+            		<language tag="es-ES">languages/es-ES/admin/es-ES.com_breezingforms.sys.ini</language>
 
 			<language tag="nl-NL">languages/nl-NL/admin/nl-NL.com_breezingforms.ini</language>
-                        <language tag="nl-NL">languages/nl-NL/admin/nl-NL.com_breezingforms.sys.ini</language>
+            		<language tag="nl-NL">languages/nl-NL/admin/nl-NL.com_breezingforms.sys.ini</language>
 		</languages>
 
 	</administration>
