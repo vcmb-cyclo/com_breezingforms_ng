@@ -2,7 +2,7 @@
 Constat Eddy
 #########
 
-Installation de BreezingForms 5.0.0-RC1 -> OK
+Installation de BreezingForms 5.0.0-RC1 -> OK<br />
 Mise à jour automatique vers RC2 -> OK
 Désactivation du plusgin de compatibilité -> Provoque une erreur "0 Class "JPlugin" not found"
 
