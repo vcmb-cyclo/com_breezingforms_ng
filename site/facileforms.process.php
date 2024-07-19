@@ -350,7 +350,7 @@ function _ff_errorHandler($errno, $errstr, $errfile, $errline)
     );
 
     $n = 0;
-    if (isset($ff_processor)) {
+    if (isset($ff_processor) && is_countable($ff_processor->traceStack)) {
         $n = count($ff_processor->traceStack);
     }
 
