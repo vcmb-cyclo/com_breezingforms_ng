@@ -667,14 +667,14 @@ Query List Settings: border / cellspacing / cellpadding / <tr(h)>class / <tr(1)>
 
 class facileFormsScripts extends Table
 {
-	public $id = null;     // identifier
-	public $published = null;     // is published
+	public $id = null;     		// identifier
+	public $published = null;   // is published
 	public $package = null;     // package name
-	public $name = null;     // function name
-	public $title = null;     // fancy name
-	public $description = null;     // description
-	public $type = null;     // type name
-	public $code = null;     // the code
+	public $name = null;     	// function name
+	public $title = null;     	// fancy name
+	public $description = null; // description
+	public $type = null;     	// type name
+	public $code = null;     	// the code
 
 	function __construct(&$db)
 	{
@@ -737,6 +737,11 @@ class facileFormsPieces extends Table
 					@$this->$prop = $row->$prop;
 				}
 			}
+			// Deprecated in PHP 7.2 version so code above is used
+
+			// while (list($prop, $val) = each($arr))
+			// 	if ($prop[0] != '_')
+			// 		$this->$prop = $row->$prop;
 			return true;
 		} // if
 		return false;
@@ -789,12 +794,12 @@ class facileFormsRecords extends Table
 
 class facileFormsSubrecords extends Table
 {
-	public $id = null;     // identifier
-	public $record = null;     // record id
-	public $element = null;     // element id
-	public $name = null;     // element name
-	public $type = null;     // data type
-	public $value = null;     // data value
+	public $id = null;     	// identifier
+	public $record = null;  // record id
+	public $element = null; // element id
+	public $name = null;    // element name
+	public $type = null;    // data type
+	public $value = null;   // data value
 
 	function __construct(&$db)
 	{
@@ -822,17 +827,23 @@ class facileFormsSubrecords extends Table
 
 class facileFormsQuerycols
 {
-	public $title = null;     // column title
+	public $title = null;    // column title
 	public $name = null;     // column name
-	public $class1 = null;     // class for th
-	public $class2 = null;     // class for td(1)
-	public $class3 = null;     // class for td(2)
-	public $thspan = null;     // th span
-	public $align = null;     // 0-left 1-center 2-right
-	public $valign = null;     // 0-top 1-middle 2-bottom 3-baseline
+	public $class1 = null;   // class for th
+	public $class2 = null;   // class for td(1)
+	public $class3 = null;   // class for td(2)
+	public $thspan = null;   // th span
+	public $align = null;    // 0-left 1-center 2-right
+	public $valign = null;   // 0-top 1-middle 2-bottom 3-baseline
 	public $wrap = null;     // 0-nowrap 1-wrap
-	public $value = null;     // value field (php allowed)
+	public $value = null;    // value field (php allowed)
 	public $comp = null;     // complied value: array of array(type, value/code)
+
+	public $width = null;
+	public $widthmd = null;
+	public $thalign = null;
+	public $thvalign = null;
+	public $thwrap = null;
 
 	function __construct()
 	{

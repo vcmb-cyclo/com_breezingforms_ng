@@ -3,7 +3,7 @@
  * BreezingForms - A Joomla Forms Application
  * @version 5.0.0
  * @package BreezingForms
- * @copyright   Copyright (C) 2024 by XDA+GIL | Until 1.4.4 - 2004-2005 by Peter Koch
+ * @copyright   Copyright (C) 2024 by XDA+GIL | Until 1.4.4 - 2004-2005 by Peter Koch | Until 2008-2020 by Markus Bopp
  * @license Released under the terms of the GNU General Public License
  **/
 
@@ -32,11 +32,13 @@ if (isset($_POST['value']) && is_numeric($_POST['value'])) {
 	echo json_encode($result);
 	exit;
 }
+
+
 /**
  * BreezingForms - A Joomla Forms Application
- * @version 1.9
+ * @version 5.0.0
  * @package BreezingForms
- * @copyright (C) 2008-2020 by Markus Bopp
+ * @copyright   Copyright (C) 2024 by XDA+GIL | Until 1.4.4 - 2004-2005 by Peter Koch | Until 2008-2020 by Markus Bopp
  * @license Released under the terms of the GNU General Public License
  **/
 defined('_JEXEC') or die('Direct Access to this location is not allowed.');
@@ -45,17 +47,17 @@ require_once ($ff_compath . '/facileforms.xml.php');
 
 class ff_importPackage extends ff_xmlPackage
 {
-	public $xscripts = NULL;     // script id crossreference
-	public $xpieces = NULL;     // piece id crossreference
-	public $oldscripts = NULL;     // old scripts relink xref
-	public $oldpieces = NULL;     // old pieces relink xref
-	public $scripts = NULL;     // ids of scripts imported
-	public $pieces = NULL;     // ids of pieces imported
-	public $forms = NULL;     // ids of forms imported
-	public $elements = NULL;     // ids of elements imported
-	public $menus = NULL;     // ids of menus imported
-	public $pubmenus = NULL;     // ids of publisched menus imported
-	public $warnings = NULL;     // warnings emitted
+	public $xscripts = NULL;     	// script id crossreference
+	public $xpieces = NULL;     	// piece id crossreference
+	public $oldscripts = NULL;     	// old scripts relink xref
+	public $oldpieces = NULL;     	// old pieces relink xref
+	public $scripts = NULL;     	// ids of scripts imported
+	public $pieces = NULL;     		// ids of pieces imported
+	public $forms = NULL;     		// ids of forms imported
+	public $elements = NULL;     	// ids of elements imported
+	public $menus = NULL;     		// ids of menus imported
+	public $pubmenus = NULL;     	// ids of publisched menus imported
+	public $warnings = NULL;     	// warnings emitted
 	public $saveErrors = NULL;
 
 	function __construct()
@@ -311,7 +313,6 @@ class ff_importPackage extends ff_xmlPackage
 			if ($this->pubmenus > 0)
 				updateComponentMenus();
 
-
 			$id = $this->getText(0, 'pkgid');
 			if ($id != '') {
 				relinkScripts($this->oldscripts);
@@ -330,9 +331,9 @@ class ff_importPackage extends ff_xmlPackage
 				);
 			} // if
 
-			require_once(JPATH_SITE . '/administrator/components/com_breezingforms/admin/quickmode.class.php');
-			require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/Zend/Json/Decoder.php');
-			require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/Zend/Json/Encoder.php');
+			require_once (JPATH_SITE . '/administrator/components/com_breezingforms/admin/quickmode.class.php');
+			require_once (JPATH_SITE . '/administrator/components/com_breezingforms/libraries/Zend/Json/Decoder.php');
+			require_once (JPATH_SITE . '/administrator/components/com_breezingforms/libraries/Zend/Json/Encoder.php');
 
 			foreach ($this->forms as $form_id) {
 				$db->setQuery("Select template_areas, template_code_processed, template_code From #__facileforms_forms Where id = " . intval($form_id));
@@ -388,26 +389,31 @@ class ff_importPackage extends ff_xmlPackage
 				"delete from `#__facileforms_compmenus` " .
 				"where id in(" . implode(',', $this->menus) . ")"
 			);
+
 		if (count($this->elements))
 			_ff_query(
 				"delete from `#__facileforms_elements` " .
 				"where id in(" . implode(',', $this->elements) . ")"
 			);
+
 		if (count($this->forms))
 			_ff_query(
 				"delete from `#__facileforms_forms` " .
 				"where id in(" . implode(',', $this->forms) . ")"
 			);
+
 		if (count($this->pieces))
 			_ff_query(
 				"delete from `#__facileforms_forms` " .
 				"where id in(" . implode(',', $this->pieces) . ")"
 			);
+
 		if (count($this->scripts))
 			_ff_query(
 				"delete from `#__facileforms_forms` " .
 				"where id in(" . implode(',', $this->scripts) . ")"
 			);
+
 		$errors = $saveErrors;
 		$errmode = $saveErrmode;
 	} // rollback
@@ -417,11 +423,12 @@ class ff_importPackage extends ff_xmlPackage
 		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		if ($this->hasErrors())
 			return;
-		
+
 		$this->oldscripts = _ff_select("select id, name from #__facileforms_scripts where package =  " . $db->Quote($id) . "");
 		$this->oldpieces = _ff_select("select id, name from #__facileforms_pieces where package =  " . $db->Quote($id) . "");
 		dropPackage($id); // the one in admin.facileforms.php
 	} // dropPackage
+
 
 	function emitScript()
 	{
@@ -431,6 +438,7 @@ class ff_importPackage extends ff_xmlPackage
 		// Sanity check
 		if ($this->hasErrors())
 			return;
+
 		// save new row
 		$row = new facileFormsScripts($database);
 		$row->published = $this->getInt(1, 'published', 1);
@@ -440,16 +448,20 @@ class ff_importPackage extends ff_xmlPackage
 		$row->description = $this->getText(1, 'description');
 		$row->type = $this->getText(1, 'type', 'Untyped');
 		$row->code = $this->getText(1, 'code');
+
 		if (!$row->store()) {
 			$this->setError($row->getError(), true);
 			return;
 		} // if
+
 		// remember me
 		$this->scripts[] = $row->id;
+		
 		// add to crossreference
 		if (array_key_exists('id', $this->params[1]))
 			$this->xscripts[] = array($this->params[1]['id'], $row->id);
 	} // emitScript
+
 
 	function emitPiece()
 	{
@@ -459,12 +471,22 @@ class ff_importPackage extends ff_xmlPackage
 		// Sanity check
 		if ($this->hasErrors())
 			return;
-		
-		// Save new row
+
+
 		$row = new facileFormsPieces($database);
+		$package = $this->getText(1, 'package');
+		$name = $this->getText(1, 'name', BFText::_('COM_BREEZINGFORMS_INSTALLER_UNKNOWN'));
+
+		// Find previous piece version.
+		$id = _ff_selectValue("select id from #__facileforms_pieces where name = " .$database->Quote($name) ." and package = " .$database->Quote($package));
+
+		if (! $this->hasErrors() && !empty($id)) {
+			$row->load($id);
+		}
+
 		$row->published = $this->getInt(1, 'published', 1);
-		$row->package = $this->getText(1, 'package');
-		$row->name = $this->getText(1, 'name', BFText::_('COM_BREEZINGFORMS_INSTALLER_UNKNOWN'));
+		$row->package = $package;
+		$row->name = $name;
 		$row->title = $this->getText(1, 'title', BFText::_('COM_BREEZINGFORMS_INSTALLER_UNKNOWN'));
 		$row->description = $this->getText(1, 'description');
 		$row->type = $this->getText(1, 'type', 'Untyped');
@@ -474,10 +496,10 @@ class ff_importPackage extends ff_xmlPackage
 			$this->setError($row->getError(), true);
 			return;
 		} // if
-		
+
 		// Remember me
 		$this->pieces[] = $row->id;
-		
+
 		// Add to crossreference
 		if (array_key_exists('id', $this->params[1]))
 			$this->xpieces[] = array($this->params[1]['id'], $row->id);
@@ -491,7 +513,7 @@ class ff_importPackage extends ff_xmlPackage
 		// Sanity check
 		if ($this->hasErrors())
 			return;
-		
+
 		if (!array_key_exists('emitted', $this->params[1])) {
 			// save new row
 			$row = new facileFormsForms($database);
@@ -533,25 +555,32 @@ class ff_importPackage extends ff_xmlPackage
 			$this->getScriptPiece(1, $row, '#__facileforms_scripts', 'script1', $this->xscripts);
 			if ($this->hasErrors())
 				return;
+
 			$this->getScriptPiece(1, $row, '#__facileforms_scripts', 'script2', $this->xscripts);
 			if ($this->hasErrors())
 				return;
+
 			$this->getScriptPiece(1, $row, '#__facileforms_pieces', 'piece1', $this->xpieces);
 			if ($this->hasErrors())
 				return;
+
 			$this->getScriptPiece(1, $row, '#__facileforms_pieces', 'piece2', $this->xpieces);
 			if ($this->hasErrors())
 				return;
+
 			$this->getScriptPiece(1, $row, '#__facileforms_pieces', 'piece3', $this->xpieces);
 			if ($this->hasErrors())
 				return;
+
 			$this->getScriptPiece(1, $row, '#__facileforms_pieces', 'piece4', $this->xpieces);
 			if ($this->hasErrors())
 				return;
+
 			if (!$row->store()) {
 				$this->setError($row->getError(), true);
 				return;
 			} // if
+
 			// final tasks
 			$this->forms[] = $row->id;
 			$this->params[1]['form_id'] = $row->id;
@@ -559,6 +588,7 @@ class ff_importPackage extends ff_xmlPackage
 			$this->params[1]['emitted'] = true;
 		} // if
 	} // emitForm
+
 
 	public function resetQuickModeDbId(&$dataObject)
 	{
@@ -654,6 +684,7 @@ class ff_importPackage extends ff_xmlPackage
 							if ($this->hasErrors())
 								return;
 						} // if
+
 						if ($id == NULL) {
 							// finally change to type 2 and emit warning
 							$cond = 2;
@@ -675,6 +706,7 @@ class ff_importPackage extends ff_xmlPackage
 			'$row->' . $tag . 'code = $code;'
 			);
 	} // getScriptPiece
+
 
 	function emitElement()
 	{

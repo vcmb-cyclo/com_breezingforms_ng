@@ -3,8 +3,7 @@
  * BreezingForms - A Joomla Forms Application
  * @version     5.0.0
  * @package     BreezingForms
- * @copyright   (C) 2008-2020 by Markus Bopp
- * @copyright   Copyright (C) 2024 by XDA+GIL 
+ * @copyright   Copyright (C) 2024 by XDA+GIL | Until 1.9, 2008-2020 by Markus Bopp
  * @license     Released under the terms of the GNU General Public License
  **/
 
@@ -17,10 +16,10 @@ use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Log\Log;
-use Joomla\CMS\Cache\CacheControllerFactoryInterface;
+//use Joomla\CMS\Cache\CacheControllerFactoryInterface;
 
-require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFFactory.php');
-require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFRequest.php');
+require_once (JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFFactory.php');
+require_once (JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFRequest.php');
 
 if (BFRequest::getVar('mosmsg', '') != '') {
     Factory::getApplication()->enqueueMessage(BFRequest::getVar('mosmsg', ''));
@@ -48,7 +47,7 @@ if (!function_exists('bf_b64dec')) {
     }
 }
 
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_breezingforms' . DS . 'libraries' . DS . 'crosstec' . DS . 'classes' . DS . 'BFJoomlaConfig.php');
+require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_breezingforms' . DS . 'libraries' . DS . 'crosstec' . DS . 'classes' . DS . 'BFJoomlaConfig.php');
 
 function bf_getTableFields($tables, $typeOnly = true)
 {
@@ -284,7 +283,7 @@ if (BFRequest::getBool('checkCaptcha')) {
 
     ob_end_clean();
 
-    require_once(JPATH_SITE . '/components/com_breezingforms/images/captcha/securimage.php');
+    require_once (JPATH_SITE . '/components/com_breezingforms/images/captcha/securimage.php');
     $securimage = new Securimage();
     if (!$securimage->check(str_replace('?', '', BFRequest::getVar('value', '')))) {
         echo 'capResult=>false';
@@ -330,11 +329,11 @@ if (isset($tables[BFJoomlaConfig::get('dbprefix') . 'facileforms_forms'])) {
 
 }
 
-require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFTabs.php');
-require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFText.php');
-require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFTableElements.php');
-require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/functions/helpers.php');
-require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/constants.php');
+require_once (JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFTabs.php');
+require_once (JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFText.php');
+require_once (JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFTableElements.php');
+require_once (JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/functions/helpers.php');
+require_once (JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/constants.php');
 
 
 $_POST = bf_stripslashes_deep($_POST);
@@ -357,14 +356,14 @@ $my = Factory::getApplication()->getIdentity();
 if (!isset($ff_compath)) { // joomla!
     // get paths
     $comppath = '/components/com_breezingforms';
-#    $ff_admpath = dirname(__FILE__);
+    #    $ff_admpath = dirname(__FILE__);
     $ff_admpath = JPATH_ADMINISTRATOR . '/components/com_breezingforms';
 
     $ff_mospath = str_replace('\\', '/', dirname(dirname(dirname($ff_admpath))));
     $ff_admpath = str_replace('\\', '/', $ff_admpath);
     $ff_compath = $ff_mospath . $comppath;
 
-    require_once($ff_admpath . '/toolbar.facileforms.php');
+    require_once ($ff_admpath . '/toolbar.facileforms.php');
 } // if
 
 $errors = array();
@@ -395,46 +394,46 @@ echo '<div class="row" id="bf-content"><div class="col-md-12">';
 
 switch ($act) {
     case 'installation':
-        require_once($ff_admpath . '/admin/install.php');
+        require_once ($ff_admpath . '/admin/install.php');
         break;
     case 'configuration':
-        require_once($ff_admpath . '/admin/config.php');
+        require_once ($ff_admpath . '/admin/config.php');
         break;
     case 'managemenus':
-        require_once($ff_admpath . '/admin/menu.php');
+        require_once ($ff_admpath . '/admin/menu.php');
         break;
     case 'manageforms':
-        require_once($ff_admpath . '/admin/form.php');
+        require_once ($ff_admpath . '/admin/form.php');
         break;
     case 'editpage':
-        require_once($ff_admpath . '/admin/element.php');
+        require_once ($ff_admpath . '/admin/element.php');
         break;
     case 'managescripts':
-        require_once($ff_admpath . '/admin/script.php');
+        require_once ($ff_admpath . '/admin/script.php');
         break;
     case 'managepieces':
-        require_once($ff_admpath . '/admin/piece.php');
+        require_once ($ff_admpath . '/admin/piece.php');
         break;
     case 'run':
-        require_once($ff_admpath . '/admin/run.php');
+        require_once ($ff_admpath . '/admin/run.php');
         break;
     case 'easymode':
-        require_once($ff_admpath . '/admin/easymode.php');
+        require_once ($ff_admpath . '/admin/easymode.php');
         break;
     case 'quickmode':
-        require_once($ff_admpath . '/admin/quickmode.php');
+        require_once ($ff_admpath . '/admin/quickmode.php');
         break;
     case 'quickmode_editor':
-        require_once($ff_admpath . '/admin/quickmode-editor.php');
+        require_once ($ff_admpath . '/admin/quickmode-editor.php');
         break;
     case 'integrate':
-        require_once($ff_admpath . '/admin/integrator.php');
+        require_once ($ff_admpath . '/admin/integrator.php');
         break;
     case 'recordmanagement':
-        require_once($ff_admpath . '/admin/recordmanagement.php');
+        require_once ($ff_admpath . '/admin/recordmanagement.php');
         break;
     default:
-        require_once($ff_admpath . '/admin/recordmanagement.php');
+        require_once ($ff_admpath . '/admin/recordmanagement.php');
         break;
 } // switch
 
@@ -524,7 +523,12 @@ function _ff_selectValue($sql)
     try {
         $value = $database->loadResult();
     } catch (\Exception $e) {
-        die($e->getMessage());
+        if (isset($errmode) && $errmode == 'log') {
+            $errors[] = $e->getMessage();
+            Log::add(Text::sprintf('JLIB_DATABASE_ERROR_FUNCTION_FAILED', $e->getCode(), $e->getMessage()), Log::WARNING, 'jerror');
+        } else {
+            die($e->getMessage());
+        }
     }
 
     return $value;
@@ -664,6 +668,7 @@ function updateComponentMenus($copy = false)
     return '';
 } // updateComponentMenus
 
+
 function dropPackage($id)
 {
     $db = Factory::getContainer()->get(DatabaseInterface::class);
@@ -693,6 +698,7 @@ function dropPackage($id)
     _ff_query("delete from #__facileforms_pieces where package =  " . $db->Quote($id) . "");
 } // dropPackage
 
+
 function savePackage($id, $name, $title, $version, $created, $author, $email, $url, $description, $copyright)
 {
     $db = Factory::getContainer()->get(DatabaseInterface::class);
@@ -715,6 +721,7 @@ function savePackage($id, $name, $title, $version, $created, $author, $email, $u
         );
     } // if
 } // savePackage
+
 
 function relinkScripts(&$oldscripts)
 {

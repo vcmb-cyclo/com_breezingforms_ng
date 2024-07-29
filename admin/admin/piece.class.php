@@ -57,10 +57,12 @@ class facileFormsPiece
 		Factory::getApplication()->redirect("index.php?option=$option&act=managepieces&pkg=$pkg");
 	} // save
 
+
 	static function cancel($option, $pkg)
 	{
 		Factory::getApplication()->redirect("index.php?option=$option&act=managepieces&pkg=$pkg");
 	} // cancel
+
 
 	static function copy($option, $pkg, $ids)
 	{
@@ -78,6 +80,7 @@ class facileFormsPiece
 		Factory::getApplication()->redirect("index.php?option=$option&act=managepieces&pkg=$pkg&mosmsg=$msg");
 	} // copy
 
+
 	static function del($option, $pkg, $ids)
 	{
 		$database = Factory::getContainer()->get(DatabaseInterface::class);
@@ -93,6 +96,7 @@ class facileFormsPiece
 		} // if
 		Factory::getApplication()->redirect("index.php?option=$option&act=managepieces&pkg=$pkg");
 	} // del
+
 
 	static function publish($option, $pkg, $ids, $publish)
 	{
@@ -112,6 +116,7 @@ class facileFormsPiece
 		Factory::getApplication()->redirect("index.php?option=$option&act=managepieces&pkg=$pkg");
 	} // publish
 
+
 	static function listitems($option, $pkg)
 	{
 		$database = Factory::getContainer()->get(DatabaseInterface::class);
@@ -119,7 +124,7 @@ class facileFormsPiece
 		$database->setQuery(
 			"select distinct  package as name " .
 			"from #__facileforms_pieces " .
-			"where package is not null and package!='' " .
+			"where package is not null and package != '' " .
 			"order by name"
 		);
 

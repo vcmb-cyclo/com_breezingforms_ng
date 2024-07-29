@@ -12,10 +12,9 @@ use Joomla\CMS\Language\Text;
 
 /**
  * BreezingForms - A Joomla Forms Application
- * @version 1.9
+ * @version 5.0.0
  * @package BreezingForms
- * @copyright (C) 2008-2020 by Markus Bopp
- * @copyright Copyright (C) 2024 by XDA+GIL
+ * @copyright Copyright (C) 2024 by XDA+GIL | Until 1.9 2008-2020 by Markus Bopp
  * @license Released under the terms of the GNU General Public License
  **/
 final class BFText

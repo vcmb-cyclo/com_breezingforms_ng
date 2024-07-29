@@ -111,8 +111,10 @@ class facileFormsConfig extends facileFormsConf
 		);
 		for ($r = 0; $r < count($rows); $r++)
 			facileFormsConfig::addToAll($all, $rows[$r]);
+
 		return $all;
 	} // getAllPackages
+
 
 	function makePackage($option, $caller, $pkg)
 	{
@@ -121,7 +123,7 @@ class facileFormsConfig extends facileFormsConf
 		facileFormsConfig::getAllPackages($lists['pkgnames']);
 
 		$lists['packages'] = _ff_select(
-			"select *  from #__facileforms_packages order by  id"
+			"select *  from #__facileforms_packages order by id"
 		);
 		$lists['forms'] = _ff_select(
 			"select id, concat(package,'::',name) as title from #__facileforms_forms " .
@@ -151,7 +153,7 @@ class facileFormsConfig extends facileFormsConf
 			if ($cond == 1) {
 				if ($id) {
 					$xml .= indent($ind) . '<' . $name . 'id>' . $id . '</' . $name . 'id>' . nl();
-					$funcname = _ff_selectValue('select name from `' . $table . '` where id=' . Factory::getContainer()->get(DatabaseInterface::class)->Quote($id));
+					$funcname = _ff_selectValue('select name from `' . $table . '` where id=' . $db->Quote($id));
 					if ($funcname && $funcname != '')
 						$xml .= indent($ind) . '<' . $name . 'name>' . $funcname . '</' . $name . 'name>' . nl();
 				}
@@ -177,6 +179,8 @@ class facileFormsConfig extends facileFormsConf
 		$url = BFRequest::getVar('pkg_url', '');
 		$description = BFRequest::getVar('pkg_description', '');
 		$copyright = BFRequest::getVar('pkg_copyright', '');
+
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		savePackage(
 			$id,
@@ -204,8 +208,10 @@ class facileFormsConfig extends facileFormsConf
 			'<FacileFormsPackage';
 		if ($id != '')
 			$xml .= ' id="' . $id . '"';
+		
 		if ($id == '')
 			$xml .= ' id="' . $name . '"';
+
 		$xml .=
 			' type="autoincrement" version="' . $ff_version . '">' . nl() .
 			indent(1) . '<name>' . expstring($name) . '</name>' . nl() .
@@ -224,7 +230,7 @@ class facileFormsConfig extends facileFormsConf
 			$ids = array();
 			$rows = _ff_select(
 				"select id from #__facileforms_scripts " .
-				"where package =  " . Factory::getContainer()->get(DatabaseInterface::class)->Quote($id) . " " .
+				"where package =  " . $db->Quote($id) . " " .
 				"order by id"
 			);
 			if (count($rows))
@@ -236,31 +242,37 @@ class facileFormsConfig extends facileFormsConf
 			$quoted_ids = array();
 
 			foreach ($ids as $the_id) {
-				$quoted_ids[] = Factory::getContainer()->get(DatabaseInterface::class)->Quote($the_id);
+				$quoted_ids[] = $db->Quote($the_id);
 			}
 
 			$ids = implode(',', $quoted_ids);
 
 			$scripts = _ff_select(
-				"select * from #__facileforms_scripts where id in ($ids) order by  package, name, id"
+				"select * from #__facileforms_scripts where id in ($ids) order by package, name, id"
 			);
 			for ($s = 0; $s < count($scripts); $s++) {
 				$script = $scripts[$s];
 				$xml .= indent(1) . '<script id="' . $script->id . '">' . nl();
 				if ($script->published != 1)
 					$xml .= indent(2) . '<published>' . $script->published . '</published>' . nl();
+
 				if ($script->package != '')
 					$xml .= indent(2) . '<package>' . expstring($script->package) . '</package>' . nl();
+
 				$xml .= indent(2) . '<name>' . expstring($script->name) . '</name>' . nl() .
 					indent(2) . '<title>' . expstring($script->title) . '</title>' . nl();
+
 				if ($script->type != 'Untyped')
 					$xml .= indent(2) . '<type>' . expstring($script->type) . '</type>' . nl();
+
 				$script->description = trim($script->description);
 				if ($script->description != '')
 					$xml .= indent(2) . '<description>' . expstring($script->description) . '</description>' . nl();
+
 				$script->code = trim($script->code);
 				if ($script->code != '')
 					$xml .= indent(2) . '<code>' . expstring($script->code) . '</code>' . nl();
+
 				$xml .= indent(1) . '</script>' . nl();
 			} // for
 		} // if
@@ -271,7 +283,7 @@ class facileFormsConfig extends facileFormsConf
 			$ids = array();
 			$rows = _ff_select(
 				"select id from #__facileforms_pieces " .
-				"where package =  " . Factory::getContainer()->get(DatabaseInterface::class)->Quote($id) . " " .
+				"where package =  " . $db->Quote($id) . " " .
 				"order by id"
 			);
 			if (count($rows))
@@ -283,12 +295,12 @@ class facileFormsConfig extends facileFormsConf
 			$quoted_ids = array();
 
 			foreach ($ids as $the_id) {
-				$quoted_ids[] = Factory::getContainer()->get(DatabaseInterface::class)->Quote($the_id);
+				$quoted_ids[] = $db->Quote($the_id);
 			}
 
 			$ids = implode(',', $quoted_ids);
 			$pieces = _ff_select(
-				"select * from #__facileforms_pieces where id in ($ids) order by  package, name, id"
+				"select * from #__facileforms_pieces where id in ($ids) order by package, name, id"
 			);
 			for ($p = 0; $p < count($pieces); $p++) {
 				$piece = $pieces[$p];
@@ -323,38 +335,43 @@ class facileFormsConfig extends facileFormsConf
 			$ids = array();
 			$rows = _ff_select(
 				"select id from #__facileforms_forms " .
-				"where package =  " . Factory::getContainer()->get(DatabaseInterface::class)->Quote($id) . " " .
+				"where package =  " . $db->Quote($id) . " " .
 				"order by id"
 			);
 			if (count($rows))
 				foreach ($rows as $row)
 					$ids[] = $row->id;
 		} // if
+
 		if (count($ids) > 0) {
 			$quoted_ids = array();
 
 			foreach ($ids as $the_id) {
-				$quoted_ids[] = Factory::getContainer()->get(DatabaseInterface::class)->Quote($the_id);
+				$quoted_ids[] = $db->Quote($the_id);
 			}
 
 			$ids = implode(',', $quoted_ids);
 			$forms = _ff_select(
-				"select * from #__facileforms_forms where id in ($ids) order by  package, ordering, id"
+				"select * from #__facileforms_forms where id in ($ids) order by package, ordering, id"
 			);
 			for ($f = 0; $f < count($forms); $f++) {
 				$form = $forms[$f];
 				$xml .= indent(1) . '<form id="' . $form->id . '">' . nl();
 				if ($form->published != 1)
 					$xml .= indent(2) . '<published>' . $form->published . '</published>' . nl();
+
 				if ($form->runmode != 0)
 					$xml .= indent(2) . '<runmode>' . $form->runmode . '</runmode>' . nl();
+
 				if ($form->package != '')
 					$xml .= indent(2) . '<package>' . expstring($form->package) . '</package>' . nl();
+
 				$xml .=
 					indent(2) . '<name>' . expstring($form->name) . '</name>' . nl() .
 					indent(2) . '<title>' . expstring($form->title) . '</title>' . nl();
 				if ($form->description != '')
 					$xml .= indent(2) . '<description>' . expstring($form->description) . '</description>' . nl();
+
 				if ($form->class1 != '')
 					$xml .= indent(2) . '<class1>' . expstring($form->class1) . '</class1>' . nl();
 				
@@ -364,6 +381,7 @@ class facileFormsConfig extends facileFormsConf
 				$xml .= indent(2) . '<width>' . $form->width . '</width>' . nl();
 				if ($form->widthmode != 0)
 					$xml .= indent(2) . '<widthmode>' . $form->widthmode . '</widthmode>' . nl();
+
 				$xml .= indent(2) . '<height>' . $form->height . '</height>' . nl();
 
 				if ($form->heightmode != 0)
@@ -584,7 +602,7 @@ class facileFormsConfig extends facileFormsConf
 			$ids = array();
 			$rows = _ff_select(
 				"select id from #__facileforms_compmenus " .
-				"where package =  " . Factory::getContainer()->get(DatabaseInterface::class)->Quote($id) . " and parent = 0 " .
+				"where package =  " . $db->Quote($id) . " and parent = 0 " .
 				"order by id"
 			);
 			if (count($rows))
@@ -595,7 +613,7 @@ class facileFormsConfig extends facileFormsConf
 			$quoted_ids = array();
 
 			foreach ($ids as $the_id) {
-				$quoted_ids[] = Factory::getContainer()->get(DatabaseInterface::class)->Quote($the_id);
+				$quoted_ids[] = $db->Quote($the_id);
 			}
 
 			$ids = implode(',', $quoted_ids);
@@ -752,7 +770,7 @@ class facileFormsConfig extends facileFormsConf
 			return BFText::_('COM_BREEZINGFORMS_INSTALLER_UPLOADNODIR');
 
 		if (!is_writable($baseDir))
-			return BFText::_('COM_BREEZINGFORMS_INSTALLER_UPLOADDIRNOTWRT');
+			return BFText::_('COM_BREEZINGFORMS_INSTALLER_UPLOADDIRNOTWRT') .' ' .$baseDir;
 
 		$path = $baseDir . '/' . $userfile_name;
 		if (!move_uploaded_file($filename, $path))
