@@ -13,7 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\HTML\Helpers\Sidebar;
-
+use Joomla\CMS\HTML\HTMLHelper;
 
 class BreezingformsViewBreezingforms extends HtmlView
 {
@@ -23,10 +23,15 @@ class BreezingformsViewBreezingforms extends HtmlView
     {
 
         ToolbarHelper::title('BreezingForms');
-        Factory::getApplication()->getDocument()->setTitle("BreezingForms");
+        $doc = Factory::getApplication()->getDocument();
+        $doc->setTitle("BreezingForms");
 
         require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFRequest.php');
         require_once(JPATH_SITE . '/administrator/components/com_breezingforms/libraries/crosstec/classes/BFText.php');
+        // $doc->addScript( URI::root().'media/system/js/core.js' )
+        // Add Joomla core JavaScript framework
+ //       HTMLHelper::_('bootstrap.framework');
+ //       $doc->addScript('media/system/js/core.js');
 
         Sidebar::addEntry(
             '<i class="fa fa-folder-open" aria-hidden="true"></i> ' . '<m>' .

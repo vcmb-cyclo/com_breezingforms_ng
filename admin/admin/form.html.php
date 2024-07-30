@@ -1931,6 +1931,7 @@ class HTML_facileFormsForm
     {
         global $ff_config, $ff_version;
         ?>
+        
         <script type="text/javascript">
             <!--
                 <?php
