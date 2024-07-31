@@ -491,7 +491,7 @@
 	<piece id="2">
 		<package>FF</package>
 		<name>ff_Constants</name>
-		<title>Constansts definitions</title>
+		<title>Constants definitions</title>
 		<type>Before Form</type>
 		<description>Library constants definitions</description>
 		<code>define(\x27FF_DIE\x27\x2C       \x27_ff_die_on_errors_\x27)\x3B\r\ndefine(\x27FF_DONTDIE\x27\x2C   \x27_ff_stay_alive_\x27)\x3B\r\ndefine(\x27FF_IGNOREDIE\x27\x2C \x27_ff_ignore_if_dying_\x27)\x3B\r\n\r\ndefine(\x27FF_ARRAY\x27\x2C     \x27_ff_return_as_array_\x27)\x3B\r\ndefine(\x27FF_LIST\x27\x2C      \x27_ff_return_as_list_\x27)\x3B\r\ndefine(\x27FF_SLIST\x27\x2C     \x27_ff_return_as_slist_\x27)\x3B\r\ndefine(\x27FF_DLIST\x27\x2C     \x27_ff_return_as_dlist_\x27)\x3B\r\n\r\ndefine(\x27FF_NOTRIM\x27\x2C    1)\x3B\r\ndefine(\x27FF_ALLOWHTML\x27\x2C 2)\x3B\r\ndefine(\x27FF_ALLOWRAW\x27\x2C  4)\x3B</code>
