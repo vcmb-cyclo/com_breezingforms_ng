@@ -1255,7 +1255,7 @@ function bfTriggerRules() {
 						$type = 'number';
 
 						if ($mdata['range']) {
-							$type= 'range';
+							$type = 'range';
 						}
 						$maxlength = '';
 						if(is_numeric($mdata['maxLength'])){
