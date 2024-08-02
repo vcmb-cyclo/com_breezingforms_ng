@@ -740,7 +740,7 @@ class BFQuickModeBootstrap
                     case 'bfNumberInput':
                         $type = 'number';
 
-					if ($mdata['range') {
+					if ($mdata['range']) {
 						$type = 'range';
 					}
                         $maxlength = '';
