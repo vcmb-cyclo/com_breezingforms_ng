@@ -25,6 +25,7 @@ use Joomla\Filesystem\Path;
 use Joomla\CMS\Environment\Browser;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Log\Log;
 
 class bfMobile
 {
@@ -350,8 +351,8 @@ function _ff_errorHandler($errno, $errstr, $errfile, $errline)
     );
 
     $n = 0;
-    if (isset($ff_processor) && is_countable($ff_processor->traceStack)) {
-        $n = count($ff_processor->traceStack);
+    if (isset($ff_processor)) {
+        $n = (is_countable($ff_processor->traceStack)) ? count($ff_processor->traceStack) : 1;
     }
 
     if ($n) {
@@ -861,10 +862,12 @@ class HTML_facileFormsProcessor
             $this->dying
         )
             return;
+        
         $level = count($this->traceStack);
         for ($l = 0; $l < $level; $l++)
             $this->traceBuffer .= '  ';
-        $this->traceBuffer .= htmlspecialchars("eval($name)\n", ENT_QUOTES);
+        
+            $this->traceBuffer .= htmlspecialchars("eval($name)\n", ENT_QUOTES);
         if ($this->traceMode & _FF_TRACEMODE_DIRECT)
             $this->dumpTrace();
     }
@@ -1317,7 +1320,9 @@ class HTML_facileFormsProcessor
                 $ret = eval($code);
             } catch (Error $e) {
                 $this->app->enqueueMessage($e->getMessage() . " in $name.", 'error');
-                // Report error somehow
+                if (\defined('JDEBUG') && JDEBUG) {
+                    Log::add( "PHP piece '$name' : " .$e->getMessage(), Log::DEBUG, 'BF Piece');
+                }
             }
         } // if
         return $ret;
@@ -1425,7 +1430,14 @@ class HTML_facileFormsProcessor
     function execQueryValue($code, &$elem, &$row, &$coldef, $value)
     {
         $this->traceEval(BFText::_('COM_BREEZINGFORMS_PROCESS_QVALUEOF') . " " . $elem->name . "::" . $coldef->name);
-        return eval($code);
+        try {
+            return eval($code);
+        } catch (Error $e) {
+            if (\defined('JDEBUG') && JDEBUG) {
+                $this->app->enqueueMessage($e->getMessage() . " in $name.", 'error');
+                Log::add( "Piece PHP '$name' invalid :"  . $e->getMessage(), Log::DEBUG, 'BF Piece');
+            }
+        }
     }
 
     // execQueryValue
@@ -1437,7 +1449,16 @@ class HTML_facileFormsProcessor
         if ($this->prepareEvalCode($code, BFText::_('COM_BREEZINGFORMS_PROCESS_QPIECEOF') . " " . $elem->name, 'e', $elem->id, 1)) {
             $rows = array();
             $this->traceEval(BFText::_('COM_BREEZINGFORMS_PROCESS_QPIECEOF') . " " . $elem->name);
-            eval($code);
+
+            try {
+                eval($code);
+            } catch (Error $e) {
+                if (\defined('JDEBUG') && JDEBUG) {
+                    $this->app->enqueueMessage($e->getMessage() . " in $name.", 'error');
+                    Log::add( "PHP piece '$name' : " .$e->getMessage(), Log::DEBUG, 'BF Piece');
+                }
+            }
+
             $rcnt = count($rows);
             $ccnt = count($coldefs);
             $valrows = array();
