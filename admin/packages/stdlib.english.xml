@@ -222,8 +222,8 @@
 		<package>FF</package>
 		<name>ff_setChecked</name>
 		<title>Set radiobutton checked</title>
-		<description>Set a radiobutton checked/unchecked</description>
-		<code>function ff_setChecked(name\x2C value\x2C checked)\r\n{\r\n    if (arguments.length\x3C3) checked = true\x3B\r\n    for (var i = 0\x3B i \x3C ff_elements.length\x3B i++)\r\n        if (ff_elements[i][2]==name) {\r\n            var e = ff_getElementByIndex(i)\x3B\r\n            if (e.value == value) {\r\n                e.checked = checked\x3B\r\n                break\x3B\r\n            } // if\r\n        } // if\r\n} // ff_setChecked</code>
+		<description>Set a radiobutton checked/unchecked\r\n\r\nExemple : \r\nff_setChecked(\x27Civility\x27\x2C \x27Female\x27\x2C false)\x3B\r\n\r\nVersion 1.1 : fix issue (check only the first item).</description>
+		<code>function ff_setChecked(name\x2C value\x2C checked)\r\n{\r\n    if (arguments.length\x3C3) checked = true\x3B\r\n    for (var i = 0\x3B i \x3C ff_elements.length\x3B i++) {\r\n        if (ff_elements[i][2] == name) {\r\n            var e = ff_getElementByIndex(i)\x3B\r\n            radiobuttons = document.getElementsByName(e.name)\x3B\r\n            for (var radiobutton of radiobuttons) {\r\n                if (radiobutton.value == value) {\r\n                    radiobutton.checked = checked\x3B\r\n                    break\x3B\r\n                } // if\r\n            } // for\r\n        } // if\r\n    } // for\r\n} // ff_setChecked</code>
 	</script>
 	<script id="29">
 		<package>FF</package>
