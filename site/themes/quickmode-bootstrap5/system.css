@@ -54,6 +54,51 @@
     padding-top: 5px;
 }
 
+/* BEGIN CHECKBOX DESIGN TOGGLE */
+.bfQuickMode input[type=checkbox].switcher {
+    appearance: none;
+    position:relative;
+    width: 44px;
+    height: 24px;
+    background-color:rgb(143,143,156);
+    border-radius: 1em;
+    vertical-align: middle;
+    transition:.15s;
+}
+.bfQuickMode input[type=checkbox].switcher:hover {
+    background-color:rgb(103,103,115);
+}
+.bfQuickMode input[type=checkbox].switcher:before {
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:20px;
+    height:20px;
+    margin:2px;
+    background-color:white;
+    border-radius:1em;
+    transition:.15s;
+}
+.bfQuickMode input[type=checkbox].switcher:checked {
+    background-color:rgb(55,123,246);
+}
+.bfQuickMode input[type=checkbox].switcher:checked:hover {
+    background-color:rgb(55,103,214);
+}
+.bfQuickMode input[type=checkbox].switcher:checked:before {
+    transform:translateX(100%);
+}
+
+/* END CHECKBOX DESIGN TOGGLE */
+
+/* DESIGN INVALID EMAIL BEGIN */
+
+.bfQuickMode input[type="email"]:invalid {
+    border-color:red;
+}
+/* END DESIGN EMAIL INVALID */
+
 .bfQuickMode .bfbs5-radio-form-group, .bfQuickMode .bfbs5-checkbox-form-group,
 .bfQuickMode .radio-form-group, .bfQuickMode .checkbox-form-group {
     padding-top: 5px !important;
