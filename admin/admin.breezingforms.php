@@ -476,10 +476,8 @@ function _ff_query($sql, $insert = 0)
     $database = Factory::getContainer()->get(DatabaseInterface::class);
     $id = null;
 
-    $database->setQuery($sql);
-    $database->execute();
-
     try {
+        $database->setQuery($sql);
         $database->execute();
     } catch (\Exception $e) {
         if (isset($errmode) && $errmode == 'log') {
@@ -499,8 +497,8 @@ function _ff_select($sql)
 {
     global $database, $errors;
     $database = Factory::getContainer()->get(DatabaseInterface::class);
-    $database->setQuery($sql);
     try {
+        $database->setQuery($sql);
         $rows = $database->loadObjectList();
     } catch (\Exception $e) {
         if (isset($errmode) && $errmode == 'log') {
@@ -518,9 +516,9 @@ function _ff_selectValue($sql)
 {
     global $database, $errors;
     $database = Factory::getContainer()->get(DatabaseInterface::class);
-    $database->setQuery($sql);
 
     try {
+        $database->setQuery($sql);
         $value = $database->loadResult();
     } catch (\Exception $e) {
         if (isset($errmode) && $errmode == 'log') {
@@ -593,8 +591,19 @@ function addComponentMenu($row, $parent, $copy = false)
 
     $parent = $parent == 0 ? 1 : $parent;
 
-    $db->setQuery("Select component_id From #__menu Where link = 'index.php?option=com_breezingforms' And parent_id = 1");
-    $result = $db->loadResult();
+    try {
+        $db->setQuery("Select component_id From #__menu Where link = 'index.php?option=com_breezingforms' And parent_id = 1");
+        $result = $db->loadResult();
+    } catch (\Exception $e) {
+        if (isset($errmode) && $errmode == 'log') {
+            $errors[] = $e->getMessage();
+            Log::add(Text::sprintf('JLIB_DATABASE_ERROR_FUNCTION_FAILED', $e->getCode(), $e->getMessage()), Log::WARNING, 'jerror');
+        } else {
+            die($e->getMessage());
+        } // if
+    }
+
+
     if ($result) {
 
         return _ff_query(

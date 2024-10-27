@@ -57,11 +57,8 @@ class BFDbo
     {
 
         try {
-
             $this->dbo->setQuery($query, $offset, $limit);
-
         } catch (Exception $e) {
-
             $this->last_query = false;
             $this->last_failed_query = $query;
             $this->errNo = $e->getCode();

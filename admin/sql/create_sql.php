@@ -342,7 +342,8 @@ $_29 = "CREATE TABLE `#__facileforms_integrator_rules` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $_30 = "ALTER TABLE `#__facileforms_compmenus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT";
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,
+  ADD PRIMARY KEY (id)";
 
 $_31 = "ALTER TABLE `#__facileforms_config`
   ADD PRIMARY KEY (`id`)";

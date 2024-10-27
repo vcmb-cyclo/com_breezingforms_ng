@@ -303,14 +303,13 @@ class facileFormsConf
 				$ids[] = "'" . $prop . "'";
 			\Joomla\Utilities\ArrayHelper::toInteger($ids);
 
-			$database->setQuery(
-				"select id, value from #__facileforms_config " .
-				"where id in (" . implode(',', $ids) . ")"
-			);
-
-
 			$rows = array();
+
 			try {
+				$database->setQuery(
+					"select id, value from #__facileforms_config " .
+					"where id in (" . implode(',', $ids) . ")"
+				);
 				$rows = $database->loadObjectList();
 			} catch (Exception $e) {
 			}

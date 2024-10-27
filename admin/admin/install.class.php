@@ -93,8 +93,8 @@ class facileFormsInstaller
 		$cnt = NULL;
 		$rep = 0;
 		$olderr = error_reporting($rep);
-		$database->setQuery("select count(" . $column . ") from " . $table);
 		try {
+			$database->setQuery("select count(" . $column . ") from " . $table);
 			$cnt = $database->loadResult();
 		} catch (Exception $e) {
 
