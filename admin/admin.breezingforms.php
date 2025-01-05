@@ -430,6 +430,12 @@ switch ($act) {
     //case 'easymode':
     //    require_once ($ff_admpath . '/admin/easymode.php');
     //    break;
+    case 'quickmode':
+        require_once ($ff_admpath . '/admin/quickmode.php');
+        break;
+    case 'quickmode_editor':
+        require_once ($ff_admpath . '/admin/quickmode-editor.php');
+        break;
     case 'integrate':
         require_once ($ff_admpath . '/admin/integrator.php');
         break;
