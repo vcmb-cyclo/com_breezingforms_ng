@@ -3,7 +3,7 @@
  * @package     BreezingForms
  * @author      Markus Bopp
  * @link        http://www.crosstec.de
- * @copyright   (C) 2024 by XDA+GIL
+ * @copyright   (C) 2025 by XDA+GIL
  * @license     GNU/GPL
  */
 defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
@@ -313,7 +313,7 @@ class BFDbo
 
     public function getConnection()
     {
-        return $this->dbo->getConnection();
+        return $this->dbo;
     }
 
     public function getAffectedRows()
@@ -498,6 +498,7 @@ class com_breezingformsInstallerScript
         $plugins = $this->getPlugins();
 
         $installer = new Installer();
+        $installer->setDatabase($db->getConnection());
 
         foreach ($plugins as $folder => $subplugs) {
 
@@ -550,7 +551,8 @@ class com_breezingformsInstallerScript
             if (count($folders) != 0) {
 
                 $installer = new Installer();
-
+                $installer->setDatabase($db->getConnection());
+                
                 foreach ($folders as $folder) {
                     $installer->install($base_path . DS . $folder);
                 }
