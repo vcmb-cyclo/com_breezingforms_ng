@@ -15,8 +15,6 @@ define('_JEXEC', 1);
 
 defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
-define('DS', DIRECTORY_SEPARATOR);
-
 require_once dirname(__FILE__) . '/../../../../includes/app.php';
 /* To use Joomla's Database Class */
 
