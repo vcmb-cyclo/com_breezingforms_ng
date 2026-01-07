@@ -8,7 +8,7 @@
   
 <extension type="component" version="6.0.0" method="upgrade">
 	<name>COM_BREEZINGFORMS</name>
-	<creationDate>2025-10-22</creationDate>
+	<creationDate>2026-01-07</creationDate>
 	<author>XDA/GIL (J6)</author>
 	<copyright>This Joomla! component is released under the GNU/GPL license</copyright>
         <license>GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html</license>
