@@ -441,9 +441,12 @@ class facileFormsForm
 
     static function publish($option, $pkg, $ids, $publish)
     {
-        global $database, $my;
+        global $database;
         ArrayHelper::toInteger($ids);
+        // Récupérer l'application et la base de données
+        $app = Factory::getApplication();
         $database = Factory::getContainer()->get(DatabaseInterface::class);
+ 
         $ids = implode(',', $ids);
         $database->setQuery(
             "update #__facileforms_forms set published='$publish' where id in ($ids)"
@@ -454,7 +457,8 @@ class facileFormsForm
             echo "<script> alert('" . $e->getMessage() . "'); window.history.go(-1); </script>\n";
             exit();
         }
-        Factory::getApplication()->redirect("index.php?option=$option&act=manageforms&pkg=$pkg");
+        
+        $app->redirect("index.php?option=$option&act=manageforms&pkg=$pkg");
     }
 
     // publish
