@@ -22,7 +22,7 @@
         <scriptfile>script.php</scriptfile>
 
         <updateservers>
-            <server type="extension" name="BreezingForms" priority="1">https://breezingforms.vcmb.fr/download/breezingforms_update.xml</server>
+            <server type="extension" name="BreezingForms" priority="1">https://breezingforms.vcmb.fr/download/com_breezingforms_update.xml</server>
          </updateservers>
 
 	<targetplatform>
@@ -123,5 +123,6 @@
 	</administration>
 
 </extension>
+
 
 
