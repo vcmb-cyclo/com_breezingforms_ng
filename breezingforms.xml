@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--~
   ~ @component Breezinforms
-  ~ @author: XDA/GIL (Joomla! 5, 2025) | Markus Bopp | until FacileForms v1.4.7: Peter Koch
-  ~ @copyright Copyright (c)20xx-2025
+  ~ @author: XDA/GIL (Joomla! 6, 2026) | Markus Bopp | until FacileForms v1.4.7: Peter Koch
+  ~ @copyright Copyright (c)20xx-2026
   ~ @license GNU General Public License version 2, or later
   -->
   
 <extension type="component" version="6.0.0" method="upgrade">
 	<name>COM_BREEZINGFORMS</name>
-	<creationDate>2026-01-07</creationDate>
+	<creationDate>2026-01-08</creationDate>
 	<author>XDA/GIL (J6)</author>
 	<copyright>This Joomla! component is released under the GNU/GPL license</copyright>
         <license>GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>no-reply@vcmb.fr</authorEmail>
 	<authorUrl>https://breezingforms.vcmb.fr</authorUrl>
-	<version>6.0.0-RC1</version>
+	<version>6.0.0</version>
 	<description>Installation successful. Next find BreezingForms in the Components menu, and finish the installation process.</description>
 	<installfile>install.php</installfile>
         <uninstallfile>uninstall.php</uninstallfile>
@@ -123,3 +123,4 @@
 	</administration>
 
 </extension>
+
