@@ -358,7 +358,7 @@ class HTML_facileFormsPiece
 						<td valign="top" align="left">
 							<?php
 							$lastModified = $row->modified ?: $row->created;
-							echo $lastModified ? HTMLHelper::date($lastModified, 'Y-m-d H:i') : '-';
+							echo $lastModified ? HTMLHelper::date($lastModified, 'Y-m-d H:i', true) : '-';
 							?>
 						</td>
 						<td valign="top" align="center">
@@ -417,13 +417,13 @@ class HTML_facileFormsPiece
 				<div class="card-body">
 					<div class="row">
 						<div class="col-sm-6 col-md-4">
-							<strong>Piece ID:</strong> <?php echo (int) $row->id; ?>
+							<strong>PHP Piece ID :</strong> <?php echo (int) $row->id; ?>
 						</div>
 						<div class="col-sm-6 col-md-4">
-							<strong>Package:</strong> <?php echo htmlspecialchars($row->package, ENT_QUOTES); ?>
+							<strong>Package :</strong> <?php echo htmlspecialchars($row->package, ENT_QUOTES); ?>
 						</div>
 						<div class="col-sm-6 col-md-4">
-							<strong>Function:</strong> <?php echo htmlspecialchars($functionName, ENT_QUOTES); ?>
+							<strong>Function :</strong> <?php echo htmlspecialchars($functionName, ENT_QUOTES); ?>
 						</div>
 					</div>
 				</div>
@@ -432,16 +432,16 @@ class HTML_facileFormsPiece
 				<div class="card-body">
 					<div class="row">
 						<div class="col-sm-6 col-md-3">
-							<strong>Created:</strong> <?php echo htmlspecialchars((string) $row->created, ENT_QUOTES); ?>
+							<strong>Created :</strong> <?php echo $row->created ? HTMLHelper::date($row->created, 'Y-m-d H:i', true) : '-'; ?>
 						</div>
 						<div class="col-sm-6 col-md-3">
-							<strong>Created by:</strong> <?php echo htmlspecialchars((string) $row->created_by, ENT_QUOTES); ?>
+							<strong>Created by :</strong> <?php echo htmlspecialchars((string) $row->created_by, ENT_QUOTES); ?>
 						</div>
 						<div class="col-sm-6 col-md-3">
-							<strong>Modified:</strong> <?php echo htmlspecialchars((string) $row->modified, ENT_QUOTES); ?>
+							<strong>Modified :</strong> <?php echo $row->modified ? HTMLHelper::date($row->modified, 'Y-m-d H:i', true) : '-'; ?>
 						</div>
 						<div class="col-sm-6 col-md-3">
-							<strong>Modified by:</strong> <?php echo htmlspecialchars((string) $row->modified_by, ENT_QUOTES); ?>
+							<strong>Modified by :</strong> <?php echo htmlspecialchars((string) $row->modified_by, ENT_QUOTES); ?>
 						</div>
 					</div>
 				</div>
