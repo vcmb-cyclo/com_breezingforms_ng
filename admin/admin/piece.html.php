@@ -278,7 +278,7 @@ class HTML_facileFormsPiece
 				<input type="hidden" name="show_internal" value="0" />
 				<input type="checkbox" name="show_internal" value="1" onchange="submitbutton('');"
 					<?php echo $showInternal ? 'checked' : ''; ?> />
-				Afficher les fonctions internes (_)
+				Afficher les fonctions internes (préfix _fonction)
 			</label>
 
 			<table cellpadding="4" cellspacing="0" border="0" width="100%" class="adminlist table table-striped">
