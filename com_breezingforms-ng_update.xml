@@ -2,9 +2,9 @@
 <updates> 
 
 	<update>
-		<name>BreezingForms Pro</name>
+		<name>COM_BREEZINGFORMS</name>
 		<description>BreezingForms_ng Update</description>
-		<element>com_breezingforms_ng</element>
+		<element>com_breezingforms</element>
 		<type>component</type>
 		<client>1</client>
 		<version>6.0.2</version>
