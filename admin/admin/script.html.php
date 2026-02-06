@@ -22,6 +22,10 @@ class HTML_facileFormsScript
 		global $ff_mossite, $ff_admsite, $ff_config;
 		$action = $row->id ? BFText::_('COM_BREEZINGFORMS_SCRIPTS_EDITSCRIPT') : BFText::_('COM_BREEZINGFORMS_SCRIPTS_ADDSCRIPT');
 		HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
+		if ($row->id) {
+			ToolBarHelper::custom('prev', 'arrow-left', '', 'Precedent', false);
+			ToolBarHelper::custom('next', 'arrow-right', '', 'Suivant', false);
+		}
 		ToolBarHelper::custom('save', 'save.png', 'save_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_SAVE'), false);
 		ToolBarHelper::custom('cancel', 'cancel.png', 'cancel_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_QUICKMODE_CLOSE'), false);
 		?>
@@ -43,7 +47,7 @@ class HTML_facileFormsScript
 			function submitbutton(pressbutton) {
 				var form = document.adminForm;
 				var error = '';
-				if (pressbutton != 'cancel') {
+				if (pressbutton != 'cancel' && pressbutton != 'prev' && pressbutton != 'next' && pressbutton != 'test') {
 					error += checkIdentifier(form.name.value, 'name');
 					if (form.title.value == '') error += "<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_ENTTITLE'); ?>\n";
 				} // if
@@ -395,7 +399,8 @@ class HTML_facileFormsScript
 							$selected = '';
 							if ($pkgEntry[0])
 								$selected = ' selected';
-							echo '<option value="' . $pkgEntry[1] . '"' . $selected . '>' . $pkgEntry[1] . '&nbsp;</option>';
+							$label = $pkgEntry[1] === '' ? BFText::_('COM_BREEZINGFORMS_ALL_FILTER') : $pkgEntry[1];
+							echo '<option value="' . $pkgEntry[1] . '"' . $selected . '>' . $label . '&nbsp;</option>';
 						} // foreach
 					?>
 				</select>

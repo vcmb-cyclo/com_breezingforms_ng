@@ -270,7 +270,8 @@ class HTML_facileFormsPiece
 							$selected = '';
 							if ($pkgEntry[0])
 								$selected = ' selected';
-							echo '<option value="' . $pkgEntry[1] . '"' . $selected . '>' . $pkgEntry[1] . '&nbsp;</option>';
+							$label = $pkgEntry[1] === '' ? BFText::_('COM_BREEZINGFORMS_ALL_FILTER') : $pkgEntry[1];
+							echo '<option value="' . $pkgEntry[1] . '"' . $selected . '>' . $label . '&nbsp;</option>';
 						} // foreach
 					?>
 				</select>
@@ -356,7 +357,12 @@ class HTML_facileFormsPiece
 						</td>
 						<td valign="top" align="left">
 							<?php
-							$lastModified = $row->modified ?: $row->created;
+							$lastModified = null;
+							if (property_exists($row, 'modified') && !empty($row->modified)) {
+								$lastModified = $row->modified;
+							} elseif (property_exists($row, 'created') && !empty($row->created)) {
+								$lastModified = $row->created;
+							}
 							echo $lastModified ? HTMLHelper::date($lastModified, 'Y-m-d H:i', true) : '-';
 							?>
 						</td>
@@ -528,7 +534,7 @@ class HTML_facileFormsPiece
 			$isSuccess = $result !== false && $result !== null && !$isEmptyResult;
 			?>
 			<?php if ($error !== '') { ?>
-				<div class="alert alert-danger">
+				<div class="alert alert-danger bf-piece-test-alert">
 					<span class="icon-times text-danger" aria-hidden="true"></span>
 					Invalide: <?php echo htmlspecialchars($error, ENT_QUOTES); ?>
 					<?php if ($output !== '') { ?>

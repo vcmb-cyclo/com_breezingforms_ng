@@ -150,7 +150,11 @@ $_9 = "CREATE TABLE `#__facileforms_forms` (
   `prevwidth` int(11) DEFAULT NULL,
   `double_opt` tinyint(1) NOT NULL DEFAULT '0',
   `opt_mail` varchar(128) NOT NULL DEFAULT '',
-  `filter_state` text
+  `filter_state` text,
+  `created` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified` datetime NULL DEFAULT NULL,
+  `created_by` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `modified_by` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $_9_1 = "ALTER TABLE `#__facileforms_forms`

@@ -249,7 +249,19 @@ class facileFormsInstaller
 		$xmlfile = $ff_admpath . '/packages/stdlib.english.xml';
 
 		$inst = new ff_importPackage();
+		$inst->reinstallOnlyIfChanged = ($instmode === 1);
 		$inst->import($xmlfile);
+
+		// Remove deprecated GN pieces on install/update
+		$gnOldPieces =
+			"'gn_annuler_cyclo'," .
+			"'gn_page_fin'," .
+			"'gn_page4'," .
+			"'gn_validate_page_fin'";
+		_ff_query(
+			"delete from #__facileforms_pieces " .
+			"where package = 'GN' and name in ($gnOldPieces)"
+		);
 
 		// Examples.
 		if (intval($instsamp) == 1) {

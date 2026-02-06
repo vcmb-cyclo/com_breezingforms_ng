@@ -82,7 +82,9 @@ function getFormPackage()
 	if (is_null($pkg))
 		$pkg = $pkg = $ff_config->formpkg;
 	else
-		if ($pkg == '- blank -')
+		if ($pkg === '')
+			$pkg = '';
+		else if ($pkg == '- blank -')
 			$pkg = '';
 		else {
 			$ok = _ff_selectValue(

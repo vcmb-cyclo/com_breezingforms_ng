@@ -565,32 +565,36 @@ class facileFormsForm
             $dir = strtoupper((string) $dirReq);
             $session->set('bf.forms_dir', $dir);
         }
-        $allowedSorts = array(
-            'id' => 'id',
-            'title' => 'title',
-            'name' => 'name',
-            'pages' => 'pages',
-            'description' => 'description',
-            'published' => 'published',
-            'ordering' => 'ordering',
-        );
+		$allowedSorts = array(
+			'id' => 'id',
+			'title' => 'title',
+			'name' => 'name',
+			'pages' => 'pages',
+			'description' => 'description',
+			'modified' => 'modified',
+			'published' => 'published',
+			'ordering' => 'ordering',
+		);
         $sortField = isset($allowedSorts[$sort]) ? $allowedSorts[$sort] : 'ordering';
         $dir = $dir === 'DESC' ? 'DESC' : 'ASC';
         $orderBy = "order by {$sortField} {$dir}, id desc";
-        $searchFilter = '';
+        $conditions = array();
+        if ($pkg !== '') {
+            $conditions[] = "package = " . $database->Quote($pkg);
+        }
         if ($search !== '') {
             $searchLike = $database->Quote('%' . $search . '%');
-            $searchFilter = "and (" .
+            $conditions[] = "(" .
                 "title LIKE " . $searchLike . " or " .
                 "name LIKE " . $searchLike . " or " .
                 "description LIKE " . $searchLike .
-                ") ";
+                ")";
         }
+        $whereClause = count($conditions) ? "where " . implode(' and ', $conditions) . " " : "";
 
         $database->setQuery(
             "select SQL_CALC_FOUND_ROWS * from #__facileforms_forms " .
-            "where package = " . $database->Quote($pkg) . " " .
-            $searchFilter .
+            $whereClause .
             $orderBy,
             $limitstart,
             $limit

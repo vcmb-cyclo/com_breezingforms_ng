@@ -59,6 +59,7 @@ class ff_importPackage extends ff_xmlPackage
 	public $pubmenus = NULL;     	// ids of publisched menus imported
 	public $warnings = NULL;     	// warnings emitted
 	public $saveErrors = NULL;
+	public $reinstallOnlyIfChanged = false;
 
 	function __construct()
 	{
@@ -455,13 +456,36 @@ class ff_importPackage extends ff_xmlPackage
 			$row->load($id);
 		}
 
-		$row->published = $this->getInt(1, 'published', 1);
+		$incomingPublished = $this->getInt(1, 'published', 1);
+		$incomingTitle = $this->getText(1, 'title', BFText::_('COM_BREEZINGFORMS_INSTALLER_UNKNOWN'));
+		$incomingDescription = $this->getText(1, 'description');
+		$incomingType = $this->getText(1, 'type', 'Untyped');
+		$incomingCode = $this->getText(1, 'code');
+
+		if ($this->reinstallOnlyIfChanged && !empty($row->id)) {
+			$isSame = (int) $row->published === (int) $incomingPublished
+				&& (string) $row->package === (string) $package
+				&& (string) $row->name === (string) $name
+				&& (string) $row->title === (string) $incomingTitle
+				&& (string) $row->description === (string) $incomingDescription
+				&& (string) $row->type === (string) $incomingType
+				&& (string) $row->code === (string) $incomingCode;
+
+			if ($isSame) {
+				if (array_key_exists('id', $this->params[1])) {
+					$this->xscripts[] = array($this->params[1]['id'], $row->id);
+				}
+				return;
+			}
+		}
+
+		$row->published = $incomingPublished;
 		$row->package = $package;
 		$row->name = $name;
-		$row->title = $this->getText(1, 'title', BFText::_('COM_BREEZINGFORMS_INSTALLER_UNKNOWN'));
-		$row->description = $this->getText(1, 'description');
-		$row->type = $this->getText(1, 'type', 'Untyped');
-		$row->code = $this->getText(1, 'code');
+		$row->title = $incomingTitle;
+		$row->description = $incomingDescription;
+		$row->type = $incomingType;
+		$row->code = $incomingCode;
 
 		$now = Factory::getDate()->toSql();
 		$userName = (string) Factory::getApplication()->getIdentity()->username;
@@ -510,13 +534,36 @@ class ff_importPackage extends ff_xmlPackage
 			$row->load($id);
 		}
 
-		$row->published = $this->getInt(1, 'published', 1);
+		$incomingPublished = $this->getInt(1, 'published', 1);
+		$incomingTitle = $this->getText(1, 'title', BFText::_('COM_BREEZINGFORMS_INSTALLER_UNKNOWN'));
+		$incomingDescription = $this->getText(1, 'description');
+		$incomingType = $this->getText(1, 'type', 'Untyped');
+		$incomingCode = $this->getText(1, 'code');
+
+		if ($this->reinstallOnlyIfChanged && !empty($row->id)) {
+			$isSame = (int) $row->published === (int) $incomingPublished
+				&& (string) $row->package === (string) $package
+				&& (string) $row->name === (string) $name
+				&& (string) $row->title === (string) $incomingTitle
+				&& (string) $row->description === (string) $incomingDescription
+				&& (string) $row->type === (string) $incomingType
+				&& (string) $row->code === (string) $incomingCode;
+
+			if ($isSame) {
+				if (array_key_exists('id', $this->params[1])) {
+					$this->xpieces[] = array($this->params[1]['id'], $row->id);
+				}
+				return;
+			}
+		}
+
+		$row->published = $incomingPublished;
 		$row->package = $package;
 		$row->name = $name;
-		$row->title = $this->getText(1, 'title', BFText::_('COM_BREEZINGFORMS_INSTALLER_UNKNOWN'));
-		$row->description = $this->getText(1, 'description');
-		$row->type = $this->getText(1, 'type', 'Untyped');
-		$row->code = $this->getText(1, 'code');
+		$row->title = $incomingTitle;
+		$row->description = $incomingDescription;
+		$row->type = $incomingType;
+		$row->code = $incomingCode;
 
 		$now = Factory::getDate()->toSql();
 		$userName = (string) Factory::getApplication()->getIdentity()->username;

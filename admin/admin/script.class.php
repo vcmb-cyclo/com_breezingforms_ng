@@ -211,20 +211,23 @@ class facileFormsScript
 		$sortField = isset($allowedSorts[$sort]) ? $allowedSorts[$sort] : 'name';
 		$dir = $dir === 'DESC' ? 'DESC' : 'ASC';
 		$orderBy = "order by {$sortField} {$dir}, id desc";
-		$searchFilter = '';
+		$conditions = array();
+		if ($pkg !== '') {
+			$conditions[] = "package = " . $database->Quote($pkg);
+		}
 		if ($search !== '') {
 			$searchLike = $database->Quote('%' . $search . '%');
-			$searchFilter = "and (" .
+			$conditions[] = "(" .
 				"title LIKE " . $searchLike . " or " .
 				"name LIKE " . $searchLike . " or " .
 				"description LIKE " . $searchLike .
-				") ";
+				")";
 		}
+		$whereClause = count($conditions) ? "where " . implode(' and ', $conditions) . " " : "";
 
 		$database->setQuery(
 			"select * from #__facileforms_scripts " .
-				"where package =  " . $database->Quote($pkg) . " " .
-				$searchFilter .
+				$whereClause .
 				$orderBy
 		);
 
@@ -293,14 +296,15 @@ class facileFormsScript
 		}
 
 		$currentId = (int) $ids[0];
+		$pkgCondition = $pkg !== '' ? "package = " . $database->Quote($pkg) : "1=1";
 		if ($direction === 'prev') {
 			$database->setQuery(
-				"SELECT id FROM #__facileforms_scripts WHERE package = " . $database->Quote($pkg) .
+				"SELECT id FROM #__facileforms_scripts WHERE " . $pkgCondition .
 				" AND id < " . $currentId . " ORDER BY id DESC LIMIT 1"
 			);
 		} else {
 			$database->setQuery(
-				"SELECT id FROM #__facileforms_scripts WHERE package = " . $database->Quote($pkg) .
+				"SELECT id FROM #__facileforms_scripts WHERE " . $pkgCondition .
 				" AND id > " . $currentId . " ORDER BY id ASC LIMIT 1"
 			);
 		}
@@ -308,12 +312,12 @@ class facileFormsScript
 		if (!$targetId) {
 			if ($direction === 'prev') {
 				$database->setQuery(
-					"SELECT id FROM #__facileforms_scripts WHERE package = " . $database->Quote($pkg) .
+					"SELECT id FROM #__facileforms_scripts WHERE " . $pkgCondition .
 					" ORDER BY id DESC LIMIT 1"
 				);
 			} else {
 				$database->setQuery(
-					"SELECT id FROM #__facileforms_scripts WHERE package = " . $database->Quote($pkg) .
+					"SELECT id FROM #__facileforms_scripts WHERE " . $pkgCondition .
 					" ORDER BY id ASC LIMIT 1"
 				);
 			}

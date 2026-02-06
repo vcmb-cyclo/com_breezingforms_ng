@@ -2058,7 +2058,7 @@ class HTML_facileFormsForm
                             $selected = '';
                             if ($pkgEntry[0])
                                 $selected = ' selected';
-                            echo '<option value="' . $pkgEntry[1] . '"' . $selected . '>' . ($pkgEntry[1] == '' ? ' - ' . BFText::_('COM_BREEZINGFORMS_SELECT') . ' - ' : $pkgEntry[1]) . '&nbsp;</option>';
+                            echo '<option value="' . $pkgEntry[1] . '"' . $selected . '>' . ($pkgEntry[1] == '' ? BFText::_('COM_BREEZINGFORMS_ALL_FILTER') : $pkgEntry[1]) . '&nbsp;</option>';
                         } // foreach
                     ?>
                 </select>
@@ -2095,6 +2095,11 @@ class HTML_facileFormsForm
                     <th align="left">
                         <a href="<?php echo $baseQuery . '&sort=description&dir=' . $toggleDir('description'); ?>">
                             <?php echo BFText::_('COM_BREEZINGFORMS_FORMS_DESCRIPTION'); ?>
+                        </a>
+                    </th>
+                    <th align="left">
+                        <a href="<?php echo $baseQuery . '&sort=modified&dir=' . $toggleDir('modified'); ?>">
+                            <?php echo BFText::_('JGLOBAL_MODIFIED'); ?>
                         </a>
                     </th>
                     <th align="center">
@@ -2162,6 +2167,17 @@ class HTML_facileFormsForm
                         </td>
                         <td valign="top" align="left">
                             <?php echo htmlspecialchars($desc, ENT_QUOTES); ?>
+                        </td>
+                        <td valign="top" align="left">
+                            <?php
+                            $lastModified = null;
+                            if (property_exists($row, 'modified') && !empty($row->modified)) {
+                                $lastModified = $row->modified;
+                            } elseif (property_exists($row, 'created') && !empty($row->created)) {
+                                $lastModified = $row->created;
+                            }
+                            echo $lastModified ? HTMLHelper::date($lastModified, 'd/m/Y H:i', true) : '-';
+                            ?>
                         </td>
                         <td valign="top" align="center">
                             <?php

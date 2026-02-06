@@ -164,15 +164,21 @@ class facileFormsPiece
 	{
 		$database = Factory::getContainer()->get(DatabaseInterface::class);
 		ArrayHelper::toInteger($ids);
-		if (count($ids)) {
-			$ids = implode(',', $ids);
-			$database->setQuery("delete from #__facileforms_pieces where id in ($ids)");
+		$total = count($ids);
+		if ($total) {
+			$idsList = implode(',', $ids);
+			$database->setQuery("delete from #__facileforms_pieces where id in ($idsList)");
 			try {
 				$database->execute();
 			} catch (RuntimeException $e) {
 				echo "<script> alert('" . $e->getMessage() . "'); window.history.go(-1); </script>\n";
 			}
 		} // if
+		if ($total) {
+			$msg = $total . ' ' . BFText::_('COM_BREEZINGFORMS_PIECES_SUCCDELETED');
+			Factory::getApplication()->redirect("index.php?option=$option&act=managepieces&pkg=$pkg&mosmsg=$msg");
+			return;
+		}
 		Factory::getApplication()->redirect("index.php?option=$option&act=managepieces&pkg=$pkg");
 	} // del
 
@@ -248,16 +254,22 @@ class facileFormsPiece
 			$search = trim((string) $searchReq);
 			$session->set('bf.pieces_search', $search);
 		}
-		$internalFilter = $showInternal ? '' : "and name NOT LIKE '\\_%' ";
-		$searchFilter = '';
+		$conditions = array();
+		if ($pkg !== '') {
+			$conditions[] = "package = " . $database->Quote($pkg);
+		}
+		if (!$showInternal) {
+			$conditions[] = "name NOT LIKE '\\_%'";
+		}
 		if ($search !== '') {
 			$searchLike = $database->Quote('%' . $search . '%');
-			$searchFilter = "and (" .
+			$conditions[] = "(" .
 				"title LIKE " . $searchLike . " or " .
 				"name LIKE " . $searchLike . " or " .
 				"description LIKE " . $searchLike .
-				") ";
+				")";
 		}
+		$whereClause = count($conditions) ? "where " . implode(' and ', $conditions) . " " : "";
 		$sortReq = BFRequest::getVar('sort', null);
 		$dirReq = BFRequest::getVar('dir', null);
 		if ($sortReq === null) {
@@ -286,13 +298,9 @@ class facileFormsPiece
 		$orderBy = "order by {$sortField} {$dir}, id desc";
 		$database->setQuery(
 			"select * from #__facileforms_pieces " .
-			"where package =  " . $database->Quote($pkg) . " " .
-			$internalFilter .
-			$searchFilter .
+			$whereClause .
 			$orderBy
 		);
-		$rows = $database->loadObjectList();
-
 		try {
 			$rows = $database->loadObjectList();
 		} catch (Exception $e) {
@@ -484,14 +492,15 @@ class facileFormsPiece
 		}
 
 		$currentId = (int) $ids[0];
+		$pkgCondition = $pkg !== '' ? "package = " . $database->Quote($pkg) : "1=1";
 		if ($direction === 'prev') {
 			$database->setQuery(
-				"SELECT id FROM #__facileforms_pieces WHERE package = " . $database->Quote($pkg) .
+				"SELECT id FROM #__facileforms_pieces WHERE " . $pkgCondition .
 				" AND id < " . $currentId . " ORDER BY id DESC LIMIT 1"
 			);
 		} else {
 			$database->setQuery(
-				"SELECT id FROM #__facileforms_pieces WHERE package = " . $database->Quote($pkg) .
+				"SELECT id FROM #__facileforms_pieces WHERE " . $pkgCondition .
 				" AND id > " . $currentId . " ORDER BY id ASC LIMIT 1"
 			);
 		}
@@ -499,12 +508,12 @@ class facileFormsPiece
 		if (!$targetId) {
 			if ($direction === 'prev') {
 				$database->setQuery(
-					"SELECT id FROM #__facileforms_pieces WHERE package = " . $database->Quote($pkg) .
+					"SELECT id FROM #__facileforms_pieces WHERE " . $pkgCondition .
 					" ORDER BY id DESC LIMIT 1"
 				);
 			} else {
 				$database->setQuery(
-					"SELECT id FROM #__facileforms_pieces WHERE package = " . $database->Quote($pkg) .
+					"SELECT id FROM #__facileforms_pieces WHERE " . $pkgCondition .
 					" ORDER BY id ASC LIMIT 1"
 				);
 			}

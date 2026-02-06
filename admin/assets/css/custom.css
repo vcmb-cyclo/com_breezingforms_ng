@@ -2273,3 +2273,16 @@ Mobile view
             display: none !important;
         }
     }
+
+    /* Piece test error box: keep long errors contained with scroll */
+    .bf-piece-test-alert {
+        max-height: 60vh;
+        overflow: auto;
+    }
+
+    .bf-piece-test-alert pre {
+        max-height: 20vh;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
