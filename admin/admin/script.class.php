@@ -88,7 +88,7 @@ class facileFormsScript
 		}
 
 		$app->enqueueMessage(BFText::_('COM_BREEZINGFORMS_SCRIPTS_SAVED'));
-		$app->redirect("index.php?option=$option&act=managescripts&pkg=$pkg");
+		$app->redirect("index.php?option=$option&act=managescripts&task=edit&pkg=$pkg&ids[]=" . (int) $row->id);
 	}
 
 
@@ -266,7 +266,21 @@ class facileFormsScript
 		}
 
 		list($functionName, $params, $paramDefaults) = self::extractFunctionSignature((string) $row->code, (string) $row->name);
-		HTML_facileFormsScript::test($option, $pkg, $row, $functionName, $params, $paramDefaults);
+		$autoRun = false;
+		if (count($params) === 0) {
+			$autoRun = true;
+		} else {
+			$allDefaults = true;
+			for ($i = 0; $i < count($params); $i++) {
+				$default = isset($paramDefaults[$i]) ? trim((string) $paramDefaults[$i]) : '';
+				if ($default === '') {
+					$allDefaults = false;
+					break;
+				}
+			}
+			$autoRun = $allDefaults;
+		}
+		HTML_facileFormsScript::test($option, $pkg, $row, $functionName, $params, $paramDefaults, $autoRun);
 	}
 
 	static function prev($option, $pkg, $ids)

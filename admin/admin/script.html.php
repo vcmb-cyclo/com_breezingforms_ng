@@ -23,8 +23,9 @@ class HTML_facileFormsScript
 		$action = $row->id ? BFText::_('COM_BREEZINGFORMS_SCRIPTS_EDITSCRIPT') : BFText::_('COM_BREEZINGFORMS_SCRIPTS_ADDSCRIPT');
 		HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
 		if ($row->id) {
-			ToolBarHelper::custom('prev', 'arrow-left', '', 'Precedent', false);
-			ToolBarHelper::custom('next', 'arrow-right', '', 'Suivant', false);
+			ToolBarHelper::custom('prev', 'arrow-left', '', BFText::_('COM_BREEZINGFORMS_PROCESS_PAGEPREV'), false);
+			ToolBarHelper::custom('next', 'arrow-right', '', BFText::_('COM_BREEZINGFORMS_PROCESS_PAGENEXT'), false);
+			ToolBarHelper::custom('test', 'eye', '', 'Test', false);
 		}
 		ToolBarHelper::custom('save', 'save.png', 'save_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_SAVE'), false);
 		ToolBarHelper::custom('cancel', 'cancel.png', 'cancel_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_QUICKMODE_CLOSE'), false);
@@ -181,23 +182,26 @@ class HTML_facileFormsScript
 						<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_TITLE'); ?>:
 					</td>
 					<td nowrap>
-						<input type="text" size="50" maxlength="50" name="title" value="<?php echo $row->title; ?>"
+						<input type="text" size="70" maxlength="50" name="title" value="<?php echo $row->title; ?>"
 							class="inputbox" />
 						<?php
 						echo '<span><span title="' . bf_ToolTipText(BFText::_('COM_BREEZINGFORMS_SCRIPTS_TIPTITLE')) . '" class="icon-question-circle hasTooltip" aria-hidden="true"></span></span>';
 						?>
 					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
 					<td nowrap>
-						<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_PUBLISHED'); ?>:
+						<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_TYPE'); ?>:
+						<select id="type" name="type" class="inputbox" size="1">
+							<?php
+							for ($t = 0; $t < count($typelist); $t++) {
+								$tl = $typelist[$t];
+								$selected = '';
+								if ($tl[0] == $row->type)
+									$selected = ' selected';
+								echo '<option value="' . $tl[0] . '"' . $selected . '>' . $tl[1] . '</option>';
+							} // for
+							?>
+						</select>
 					</td>
-					<td nowrap>
-						<?php echo HTMLHelper::_('select.booleanlist', "published", "", $row->published); ?>
-					</td>
-					<td></td>
 				</tr>
 				<tr>
 					<td></td>
@@ -222,31 +226,14 @@ class HTML_facileFormsScript
 						echo '<span><span title="' . bf_ToolTipText(BFText::_('COM_BREEZINGFORMS_SCRIPTS_TIPNAME')) . '" class="icon-question-circle hasTooltip" aria-hidden="true"></span></span>';
 						?>
 					</td>
-					<td></td>
+					<td nowrap>
+						<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_PUBLISHED'); ?>:
+						<?php echo HTMLHelper::_('select.booleanlist', "published", "", $row->published); ?>
+					</td>
 				</tr>
 				<tr>
 					<td></td>
-					<td nowrap>
-						<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_TYPE'); ?>:
-					</td>
-					<td nowrap>
-						<select id="type" name="type" class="inputbox" size="1">
-							<?php
-							for ($t = 0; $t < count($typelist); $t++) {
-								$tl = $typelist[$t];
-								$selected = '';
-								if ($tl[0] == $row->type)
-									$selected = ' selected';
-								echo '<option value="' . $tl[0] . '"' . $selected . '>' . $tl[1] . '</option>';
-							} // for
-							?>
-						</select>
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td nowrap colspan="2">
+					<td nowrap colspan="3">
 						<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_DESCRIPTION'); ?>:
 						<a href="javascript:void(0);"
 							onClick="textAreaResize('description',<?php echo $ff_config->areasmall; ?>);">[
@@ -261,15 +248,14 @@ class HTML_facileFormsScript
 							<?php echo $ff_config->arealarge; ?>]
 						</a>
 						<br />
-						<textarea wrap="off" name="description" style="width:100%;" rows="<?php echo $ff_config->areasmall; ?>"
+						<textarea wrap="off" name="description" style="width:100%;" rows="12"
 							class="inputbox"><?php echo $row->description; ?></textarea>
 					</td>
-					<td></td>
 				</tr>
 
 				<tr>
 					<td></td>
-					<td nowrap colspan="2">
+					<td nowrap colspan="3">
 						<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_CODE'); ?>:
 						<br />
 
@@ -280,7 +266,6 @@ class HTML_facileFormsScript
 						?>
 
 					</td>
-					<td></td>
 				</tr>
 			</table>
 			<input type="hidden" name="pkg" value="<?php echo $pkg; ?>" />
@@ -337,7 +322,6 @@ class HTML_facileFormsScript
 									case 'publish':
 									case 'unpublish':
 									case 'remove':
-									case 'test':
 										if (form.boxchecked.value==0) {
 											alert("<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_SELSCRIPTSFIRST'); ?>");
 			return;
@@ -365,7 +349,6 @@ class HTML_facileFormsScript
 			ToolBarHelper::custom('copy', 'copy.png', 'copy_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_COPY'), false);
 			ToolBarHelper::custom('publish', 'publish.png', 'publish_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_PUBLISH'), false);
 			ToolBarHelper::custom('unpublish', 'unpublish.png', 'unpublish_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_UNPUBLISH'), false);
-			ToolBarHelper::custom('test', 'eye', '', 'Test', false);
 			ToolBarHelper::custom('remove', 'delete.png', 'delete_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_DELETE'), false);
 			?>
 
@@ -451,7 +434,6 @@ class HTML_facileFormsScript
 							<?php echo BFText::_('COM_BREEZINGFORMS_SCRIPTS_PUBLISHED'); ?>
 						</a>
 					</th>
-					<th align="center">Test</th>
 				</tr>
 				<?php
 				$k = 0;
@@ -500,11 +482,6 @@ class HTML_facileFormsScript
 							} // if
 							?>
 						</td>
-						<td valign="top" align="center">
-							<a class="tbody-icon" href="javascript:void(0);"
-								onClick="return listItemTask('cb<?php echo $i; ?>','test')"><span class="icon-eye"
-									aria-hidden="true"></span></a>
-						</td>
 					</tr>
 					<?php
 					$k = 1 - $k;
@@ -520,13 +497,14 @@ class HTML_facileFormsScript
 		<?php
 	} // listitems
 
-	static function test($option, $pkg, &$row, $functionName, $paramNames, $paramDefaults)
+	static function test($option, $pkg, &$row, $functionName, $paramNames, $paramDefaults, $autoRun = false)
 	{
 		ToolBarHelper::custom('edit', 'cancel.png', 'cancel_f2.png', 'Retour', false);
-		ToolBarHelper::custom('prev', 'arrow-left', '', 'Precedent', false);
-		ToolBarHelper::custom('next', 'arrow-right', '', 'Suivant', false);
+		ToolBarHelper::custom('prev', 'arrow-left', '', BFText::_('COM_BREEZINGFORMS_PROCESS_PAGEPREV'), false);
+		ToolBarHelper::custom('next', 'arrow-right', '', BFText::_('COM_BREEZINGFORMS_PROCESS_PAGENEXT'), false);
 		$safeCode = json_encode((string) $row->code);
 		$safeFunction = json_encode((string) $functionName);
+		$safeAutoRun = $autoRun ? 'true' : 'false';
 		?>
 		<script type="text/javascript">
 			(function () {
@@ -587,30 +565,62 @@ class HTML_facileFormsScript
 
 				window.bfRunScriptTest = function () {
 					var fnField = document.getElementById('bf-script-function');
-					var output = document.getElementById('bf-script-test-output');
-					var result = document.getElementById('bf-script-test-result');
-					var error = document.getElementById('bf-script-test-error');
-					var logs = document.getElementById('bf-script-test-logs');
+					var errorBox = document.getElementById('bf-script-test-error');
+					var errorMessage = document.getElementById('bf-script-test-error-message');
+					var errorOutputWrap = document.getElementById('bf-script-test-error-output-wrap');
+					var errorOutput = document.getElementById('bf-script-test-error-output');
+					var errorResultWrap = document.getElementById('bf-script-test-error-result-wrap');
+					var errorResult = document.getElementById('bf-script-test-error-result');
+					var errorParams = document.getElementById('bf-script-test-error-params');
 
-					if (!fnField || !output || !result || !error || !logs) {
+					var outputWrap = document.getElementById('bf-script-test-output-wrap');
+					var output = document.getElementById('bf-script-test-output');
+
+					var statusBox = document.getElementById('bf-script-test-status');
+					var statusResult = document.getElementById('bf-script-test-result');
+					var statusWarning = document.getElementById('bf-script-test-status-warning');
+					var statusSuccess = document.getElementById('bf-script-test-status-success');
+					var statusInvalid = document.getElementById('bf-script-test-status-invalid');
+					var statusParamsWrap = document.getElementById('bf-script-test-status-params-wrap');
+					var statusParams = document.getElementById('bf-script-test-status-params');
+
+					if (!fnField || !errorBox || !statusBox) {
 						return false;
+					}
+
+					function resetUi() {
+						errorBox.style.display = 'none';
+						errorMessage.textContent = '';
+						errorOutputWrap.style.display = 'none';
+						errorOutput.textContent = '';
+						errorResultWrap.style.display = 'none';
+						errorResult.textContent = '';
+						errorParams.textContent = '';
+
+						outputWrap.style.display = 'none';
+						output.textContent = '';
+
+						statusBox.style.display = 'none';
+						statusBox.className = 'alert';
+						statusResult.textContent = '';
+						statusWarning.style.display = 'none';
+						statusSuccess.style.display = 'none';
+						statusInvalid.style.display = 'none';
+						statusParamsWrap.style.display = 'none';
+						statusParams.textContent = '';
 					}
 
 					var functionName = String(fnField.value || '').trim();
 					if (!functionName) {
-						output.style.display = 'block';
-						result.style.display = 'none';
-						logs.style.display = 'none';
-						error.style.display = 'block';
-						error.textContent = 'Veuillez renseigner le nom de la fonction a tester.';
+						resetUi();
+						errorBox.style.display = 'block';
+						errorMessage.textContent = 'Veuillez renseigner le nom de la fonction a tester.';
 						return false;
 					}
 					if (!/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(functionName)) {
-						output.style.display = 'block';
-						result.style.display = 'none';
-						logs.style.display = 'none';
-						error.style.display = 'block';
-						error.textContent = 'Nom de fonction invalide.';
+						resetUi();
+						errorBox.style.display = 'block';
+						errorMessage.textContent = 'Nom de fonction invalide.';
 						return false;
 					}
 
@@ -636,13 +646,7 @@ class HTML_facileFormsScript
 						}
 					};
 
-					output.style.display = 'block';
-					result.style.display = 'none';
-					error.style.display = 'none';
-					logs.style.display = 'none';
-					result.textContent = '';
-					error.textContent = '';
-					logs.textContent = '';
+					resetUi();
 
 					try {
 						var runner = new Function('scriptCode', 'fnName', 'args', 'consoleProxy',
@@ -665,20 +669,45 @@ class HTML_facileFormsScript
 						);
 
 						var executed = runner(testCode, functionName, args, consoleProxy);
-						result.style.display = 'block';
-						result.textContent =
-							'Result:\n' + formatValue(executed) +
-							'\n\nParameters:\n' + formatValue(labels.map(function (name, idx) { return [name, args[idx]]; }));
-					} catch (e) {
-						error.style.display = 'block';
-						error.textContent =
-							'Error: ' + (e && e.message ? e.message : e) +
-							'\n\nParameters:\n' + formatValue(labels.map(function (name, idx) { return [name, args[idx]]; }));
-					}
+						var paramsMap = {};
+						for (var p = 0; p < labels.length; p++) {
+							paramsMap[labels[p]] = args[p];
+						}
+						var paramsText = formatValue(paramsMap);
+						var outputText = consoleLines.length ? consoleLines.join('\n') : '';
 
-					if (consoleLines.length) {
-						logs.style.display = 'block';
-						logs.textContent = consoleLines.join('\n');
+						if (outputText) {
+							outputWrap.style.display = 'block';
+							output.textContent = outputText;
+						}
+
+						var isEmptyResult = executed === '';
+						var isSuccess = executed !== false && executed !== null && typeof executed !== 'undefined' && !isEmptyResult;
+						statusBox.style.display = 'block';
+						statusBox.className = 'alert ' + (isEmptyResult ? 'alert-warning' : (isSuccess ? 'alert-success' : 'alert-danger'));
+						statusResult.textContent = formatValue(executed);
+						statusWarning.style.display = isEmptyResult ? 'block' : 'none';
+						statusSuccess.style.display = isSuccess ? 'block' : 'none';
+						statusInvalid.style.display = (!isSuccess && !isEmptyResult) ? 'block' : 'none';
+						if (!isSuccess && !isEmptyResult) {
+							statusParamsWrap.style.display = 'block';
+							statusParams.textContent = paramsText;
+						}
+					} catch (e) {
+						var paramsMap = {};
+						for (var p = 0; p < labels.length; p++) {
+							paramsMap[labels[p]] = args[p];
+						}
+						var paramsText = formatValue(paramsMap);
+						var outputText = consoleLines.length ? consoleLines.join('\n') : '';
+
+						errorBox.style.display = 'block';
+						errorMessage.textContent = e && e.message ? e.message : String(e);
+						if (outputText) {
+							errorOutputWrap.style.display = 'block';
+							errorOutput.textContent = outputText;
+						}
+						errorParams.textContent = paramsText;
 					}
 
 					return false;
@@ -688,6 +717,9 @@ class HTML_facileFormsScript
 					var field = document.getElementById('bf-script-function');
 					if (field && !field.value) {
 						field.value = defaultFunctionName || '';
+					}
+					if (<?php echo $safeAutoRun; ?>) {
+						window.bfRunScriptTest();
 					}
 				});
 				if (window.Joomla) {
@@ -708,16 +740,34 @@ class HTML_facileFormsScript
 				<div class="card-body">
 					<div class="row">
 						<div class="col-sm-6 col-md-3">
-							<strong>Script ID:</strong> <?php echo (int) $row->id; ?>
+							<strong>Script ID :</strong> <?php echo (int) $row->id; ?>
 						</div>
 						<div class="col-sm-6 col-md-3">
-							<strong>Package:</strong> <?php echo htmlspecialchars((string) $row->package, ENT_QUOTES); ?>
+							<strong>Package :</strong> <?php echo htmlspecialchars((string) $row->package, ENT_QUOTES); ?>
 						</div>
 						<div class="col-sm-6 col-md-3">
-							<strong>Name:</strong> <?php echo htmlspecialchars((string) $row->name, ENT_QUOTES); ?>
+							<strong>Name :</strong> <?php echo htmlspecialchars((string) $row->name, ENT_QUOTES); ?>
 						</div>
 						<div class="col-sm-6 col-md-3">
-							<strong>Type:</strong> <?php echo htmlspecialchars(self::typeName((string) $row->type), ENT_QUOTES); ?>
+							<strong>Type :</strong> <?php echo htmlspecialchars(self::typeName((string) $row->type), ENT_QUOTES); ?>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card mb-3 bg-light">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-6 col-md-3">
+							<strong>Created :</strong> <?php echo $row->created ? HTMLHelper::date($row->created, 'Y-m-d H:i', true) : '-'; ?>
+						</div>
+						<div class="col-sm-6 col-md-3">
+							<strong>Created by :</strong> <?php echo htmlspecialchars((string) $row->created_by, ENT_QUOTES); ?>
+						</div>
+						<div class="col-sm-6 col-md-3">
+							<strong>Modified :</strong> <?php echo $row->modified ? HTMLHelper::date($row->modified, 'Y-m-d H:i', true) : '-'; ?>
+						</div>
+						<div class="col-sm-6 col-md-3">
+							<strong>Modified by :</strong> <?php echo htmlspecialchars((string) $row->modified_by, ENT_QUOTES); ?>
 						</div>
 					</div>
 				</div>
@@ -732,54 +782,6 @@ class HTML_facileFormsScript
 					</div>
 				</div>
 			<?php } ?>
-			<div class="card mb-3 bg-light">
-				<div class="card-body">
-					<label for="bf-script-function"><strong>Function</strong></label>
-					<input type="text" id="bf-script-function" class="form-control" value="<?php echo htmlspecialchars((string) $functionName, ENT_QUOTES); ?>" />
-					<small class="text-muted">Valeurs: null, true, false, nombres, JSON ({}/[]), ou texte.</small>
-				</div>
-			</div>
-			<div class="card mb-3">
-				<div class="card-header">Arguments</div>
-				<div class="card-body">
-					<table cellpadding="4" cellspacing="0" border="0" class="adminlist table table-striped">
-						<tr>
-							<th>Parametre</th>
-							<th>Valeur</th>
-						</tr>
-						<?php if (!count($paramNames)) { ?>
-							<tr>
-								<td colspan="2">Aucun parametre detecte.</td>
-							</tr>
-						<?php } else { ?>
-							<?php for ($i = 0; $i < count($paramNames); $i++) { ?>
-								<?php
-								$name = $paramNames[$i];
-								$default = isset($paramDefaults[$i]) ? $paramDefaults[$i] : '';
-								?>
-								<tr>
-									<td><?php echo htmlspecialchars($name, ENT_QUOTES); ?></td>
-									<td>
-										<input
-											type="text"
-											class="inputbox bf-test-arg"
-											data-param="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>"
-											value="<?php echo htmlspecialchars($default, ENT_QUOTES); ?>" />
-									</td>
-								</tr>
-							<?php } ?>
-						<?php } ?>
-					</table>
-				</div>
-			</div>
-			<div id="bf-script-test-output" class="card mb-3" style="display:none;">
-				<div class="card-header">Resultat</div>
-				<div class="card-body">
-					<pre id="bf-script-test-result" class="alert alert-success" style="display:none;"></pre>
-					<pre id="bf-script-test-error" class="alert alert-danger" style="display:none;"></pre>
-					<pre id="bf-script-test-logs" class="alert alert-secondary" style="display:none;"></pre>
-				</div>
-			</div>
 			<div class="accordion" id="bfScriptCodeAccordion">
 				<div class="accordion-item bg-light">
 					<h2 class="accordion-header" id="bfScriptCodeHeading">
@@ -796,7 +798,94 @@ class HTML_facileFormsScript
 					</div>
 				</div>
 			</div>
-
+			<div class="card mb-3 bg-light">
+				<div class="card-body">
+					<label for="bf-script-function"><strong>Function</strong></label>
+					<input type="text" id="bf-script-function" class="form-control" value="<?php echo htmlspecialchars((string) $functionName, ENT_QUOTES); ?>" />
+					<small class="text-muted">Valeurs: null, true, false, nombres, JSON ({}/[]), ou texte.</small>
+				</div>
+			</div>
+			<div class="card mb-3">
+				<div class="card-header">Arguments</div>
+				<div class="card-body">
+					<table cellpadding="4" cellspacing="0" border="0" class="adminlist table table-striped">
+						<tr>
+							<th>Parametre</th>
+							<th>Valeur</th>
+							<th></th>
+						</tr>
+						<?php if (!count($paramNames)) { ?>
+							<tr>
+								<td colspan="3">Aucun parametre detecte.</td>
+							</tr>
+						<?php } else { ?>
+							<?php $lastParamIndex = count($paramNames) - 1; ?>
+							<?php for ($i = 0; $i < count($paramNames); $i++) { ?>
+								<?php
+								$name = $paramNames[$i];
+								$default = isset($paramDefaults[$i]) ? $paramDefaults[$i] : '';
+								?>
+								<tr>
+									<td><?php echo htmlspecialchars($name, ENT_QUOTES); ?></td>
+									<td>
+										<input
+											type="text"
+											class="inputbox bf-test-arg"
+											data-param="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>"
+											value="<?php echo htmlspecialchars($default, ENT_QUOTES); ?>" />
+									</td>
+									<td>
+										<?php if ($i === $lastParamIndex) { ?>
+											<button type="button" class="btn btn-primary" onclick="return bfRunScriptTest();">
+												<span class="icon-eye" aria-hidden="true"></span>
+												Lancer
+											</button>
+										<?php } ?>
+									</td>
+								</tr>
+							<?php } ?>
+						<?php } ?>
+					</table>
+				</div>
+			</div>
+			<div id="bf-script-test-error" class="alert alert-danger bf-piece-test-alert" style="display:none;">
+				<span class="icon-times text-danger" aria-hidden="true"></span>
+				Invalide: <span id="bf-script-test-error-message"></span>
+				<div id="bf-script-test-error-output-wrap" style="display:none;">
+					<div><strong>Output:</strong></div>
+					<pre id="bf-script-test-error-output"></pre>
+				</div>
+				<div id="bf-script-test-error-result-wrap" style="display:none;">
+					<div><strong>Result:</strong></div>
+					<pre id="bf-script-test-error-result"></pre>
+				</div>
+				<div><strong>Parameters:</strong></div>
+				<pre id="bf-script-test-error-params"></pre>
+			</div>
+			<div id="bf-script-test-output-wrap" style="display:none;">
+				<p><strong>Output:</strong></p>
+				<pre id="bf-script-test-output"></pre>
+			</div>
+			<div id="bf-script-test-status" class="alert" style="display:none;">
+				<strong>Result:</strong>
+				<pre id="bf-script-test-result"></pre>
+				<div id="bf-script-test-status-warning" style="display:none;">
+					<span class="icon-warning text-warning" aria-hidden="true"></span>
+					Warning: resultat vide
+				</div>
+				<div id="bf-script-test-status-success" style="display:none;">
+					<span class="icon-check text-success" aria-hidden="true"></span>
+					Valide
+				</div>
+				<div id="bf-script-test-status-invalid" style="display:none;">
+					<span class="icon-times text-danger" aria-hidden="true"></span>
+					Invalide: resultat faux
+				</div>
+				<div id="bf-script-test-status-params-wrap" style="display:none;">
+					<div><strong>Parameters:</strong></div>
+					<pre id="bf-script-test-status-params"></pre>
+				</div>
+			</div>
 			<input type="hidden" name="option" value="<?php echo $option; ?>" />
 			<input type="hidden" name="task" value="test" />
 			<input type="hidden" name="act" value="managescripts" />

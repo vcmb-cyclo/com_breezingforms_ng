@@ -21,8 +21,8 @@ class HTML_facileFormsPiece
 		global $ff_mossite, $ff_admsite, $ff_config;
 		$action = $row->id ? BFText::_('COM_BREEZINGFORMS_PIECES_EDITPIECE') : BFText::_('COM_BREEZINGFORMS_PIECES_ADDPIECE');
 		if ($row->id) {
-			ToolBarHelper::custom('prev', 'arrow-left', '', 'Precedent', false);
-			ToolBarHelper::custom('next', 'arrow-right', '', 'Suivant', false);
+			ToolBarHelper::custom('prev', 'arrow-left', '', BFText::_('COM_BREEZINGFORMS_PROCESS_PAGEPREV'), false);
+			ToolBarHelper::custom('next', 'arrow-right', '', BFText::_('COM_BREEZINGFORMS_PROCESS_PAGENEXT'), false);
 			ToolBarHelper::custom('test', 'eye', '', 'Test', false);
 		}
 		ToolBarHelper::custom('save', 'save.png', 'save_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_SAVE'), false);
@@ -75,17 +75,20 @@ class HTML_facileFormsPiece
 						echo '<span><span title="' . bf_ToolTipText(BFText::_('COM_BREEZINGFORMS_PIECES_TIPTITLE')) . '" class="icon-question-circle hasTooltip" aria-hidden="true"></span></span>';
 						?>
 					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
 					<td nowrap>
-						<?php echo BFText::_('COM_BREEZINGFORMS_PIECES_PUBLISHED'); ?>:
+						<?php echo BFText::_('COM_BREEZINGFORMS_PIECES_TYPE'); ?>:
+						<select id="type" name="type" class="inputbox" size="1">
+							<?php
+							for ($t = 0; $t < count($typelist); $t++) {
+								$tl = $typelist[$t];
+								$selected = '';
+								if ($tl[0] == $row->type)
+									$selected = ' selected';
+								echo '<option value="' . $tl[0] . '"' . $selected . '>' . $tl[1] . '</option>';
+							} // for
+							?>
+						</select>
 					</td>
-					<td nowrap>
-						<?php echo HTMLHelper::_('select.booleanlist', "published", "", $row->published); ?>
-					</td>
-					<td></td>
 				</tr>
 				<tr>
 					<td></td>
@@ -110,31 +113,14 @@ class HTML_facileFormsPiece
 						echo '<span><span title="' . bf_ToolTipText(BFText::_('COM_BREEZINGFORMS_PIECES_TIPNAME')) . '" class="icon-question-circle hasTooltip" aria-hidden="true"></span></span>';
 						?>
 					</td>
-					<td></td>
+					<td nowrap>
+						<?php echo BFText::_('COM_BREEZINGFORMS_PIECES_PUBLISHED'); ?>:
+						<?php echo HTMLHelper::_('select.booleanlist', "published", "", $row->published); ?>
+					</td>
 				</tr>
 				<tr>
 					<td></td>
-					<td nowrap>
-						<?php echo BFText::_('COM_BREEZINGFORMS_PIECES_TYPE'); ?>:
-					</td>
-					<td nowrap>
-						<select id="type" name="type" class="inputbox" size="1">
-							<?php
-							for ($t = 0; $t < count($typelist); $t++) {
-								$tl = $typelist[$t];
-								$selected = '';
-								if ($tl[0] == $row->type)
-									$selected = ' selected';
-								echo '<option value="' . $tl[0] . '"' . $selected . '>' . $tl[1] . '</option>';
-							} // for
-							?>
-						</select>
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td nowrap colspan="2">
+					<td nowrap colspan="3">
 						<?php echo BFText::_('COM_BREEZINGFORMS_PIECES_DESCRIPTION'); ?>:
 						<br />
 						<?php
@@ -143,11 +129,10 @@ class HTML_facileFormsPiece
 						echo $editor->display('description', $row->description, '100%', 200, 40, 10, false, 'description', null, null, $params);
 						?>
 					</td>
-					<td></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td nowrap colspan="2">
+					<td nowrap colspan="3">
 						<?php echo BFText::_('COM_BREEZINGFORMS_PIECES_CODE'); ?>:
 						<br />
 
@@ -158,7 +143,6 @@ class HTML_facileFormsPiece
 						?>
 
 					</td>
-					<td></td>
 				</tr>
 			</table>
 			<input type="hidden" name="pkg" value="<?php echo $pkg; ?>" />
@@ -213,7 +197,6 @@ class HTML_facileFormsPiece
 									case 'publish':
 									case 'unpublish':
 									case 'remove':
-									case 'test':
 										if (form.boxchecked.value==0) {
 											alert("<?php echo BFText::_('COM_BREEZINGFORMS_PIECES_SELPIECESFIRST'); ?>");
 			return;
@@ -237,7 +220,6 @@ class HTML_facileFormsPiece
 			ToolBarHelper::custom('copy', 'copy.png', 'copy_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_COPY'), false);
 			ToolBarHelper::custom('publish', 'publish.png', 'publish_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_PUBLISH'), false);
 			ToolBarHelper::custom('unpublish', 'unpublish.png', 'unpublish_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_UNPUBLISH'), false);
-			ToolBarHelper::custom('test', 'eye', '', 'Test', false);
 			ToolBarHelper::custom('remove', 'delete.png', 'delete_f2.png', BFText::_('COM_BREEZINGFORMS_TOOLBAR_DELETE'), false);
 			?>
 
@@ -327,7 +309,6 @@ class HTML_facileFormsPiece
 							<?php echo BFText::_('COM_BREEZINGFORMS_PIECES_PUBLISHED'); ?>
 						</a>
 					</th>
-					<th align="center">Test</th>
 				</tr>
 				<?php
 				$k = 0;
@@ -381,11 +362,6 @@ class HTML_facileFormsPiece
 							} // if
 							?>
 						</td>
-						<td valign="top" align="center">
-							<a class="tbody-icon" href="javascript:void(0);"
-								onClick="return listItemTask('cb<?php echo $i; ?>','test')"><span class="icon-eye"
-									aria-hidden="true"></span></a>
-						</td>
 					</tr>
 					<?php
 					$k = 1 - $k;
@@ -404,8 +380,8 @@ class HTML_facileFormsPiece
 	static function test($option, $pkg, &$row, $functionName, $paramNames, $paramDefaults, $paramValues = array(), $result = null, $output = '', $error = '', $safeMode = 1, $autoRun = false, $errorDetails = array())
 	{
 		ToolBarHelper::custom('edit', 'cancel.png', 'cancel_f2.png', 'Retour', false);
-		ToolBarHelper::custom('prev', 'arrow-left', '', 'Precedent', false);
-		ToolBarHelper::custom('next', 'arrow-right', '', 'Suivant', false);
+		ToolBarHelper::custom('prev', 'arrow-left', '', BFText::_('COM_BREEZINGFORMS_PROCESS_PAGEPREV'), false);
+		ToolBarHelper::custom('next', 'arrow-right', '', BFText::_('COM_BREEZINGFORMS_PROCESS_PAGENEXT'), false);
 		?>
 		<?php if ($autoRun) { ?>
 			<script type="text/javascript">
@@ -551,22 +527,6 @@ class HTML_facileFormsPiece
 					<?php } ?>
 					<div><strong>Parameters:</strong></div>
 					<pre><?php echo htmlspecialchars(print_r(array_combine($paramNames, $paramValues), true), ENT_QUOTES); ?></pre>
-					<div class="accordion" id="bfPieceCodeAccordion">
-						<div class="accordion-item">
-							<h2 class="accordion-header" id="bfPieceCodeHeading">
-								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-									data-bs-target="#bfPieceCodeCollapse" aria-expanded="false" aria-controls="bfPieceCodeCollapse">
-									Piece code
-								</button>
-							</h2>
-							<div id="bfPieceCodeCollapse" class="accordion-collapse collapse" aria-labelledby="bfPieceCodeHeading"
-								data-bs-parent="#bfPieceCodeAccordion">
-								<div class="accordion-body">
-									<pre><?php echo htmlspecialchars($row->code, ENT_QUOTES); ?></pre>
-								</div>
-							</div>
-						</div>
-					</div>
 				</div>
 			<?php } ?>
 			<?php if ($error === '' && $output !== '') { ?>

@@ -717,6 +717,7 @@ class facileFormsConfig extends facileFormsConf
 		$errors = array();
 		$errmode = 'log';
 		$inst = new ff_importPackage();
+		$inst->reinstallOnlyIfChanged = true;
 		$ok = $inst->import($installfile);
 		if (!$ok) {
 			$msg = '';
@@ -749,6 +750,7 @@ class facileFormsConfig extends facileFormsConf
 			$errors = array();
 			$errmode = 'log';
 			$inst = new ff_importPackage();
+			$inst->reinstallOnlyIfChanged = true;
 			$ok = $inst->import($path);
 			if (!$ok && count($errors))
 				foreach ($errors as $err)
