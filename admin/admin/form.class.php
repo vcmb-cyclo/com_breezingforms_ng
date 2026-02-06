@@ -318,6 +318,20 @@ class facileFormsForm
 		$row->email_custom_template = $email_custom_template;
 		$row->mb_email_custom_template = $mb_email_custom_template;
 
+		$now = Factory::getDate()->toSql();
+		$userId = (string) Factory::getApplication()->getIdentity()->username;
+
+		if (empty($row->id)) {
+			if (empty($row->created)) {
+				$row->created = $now;
+			}
+			if (empty($row->created_by)) {
+				$row->created_by = $userId;
+			}
+		}
+
+		$row->modified = $now;
+		$row->modified_by = $userId;
 
         // Store it in the db
         if (!$row->store()) {
@@ -365,6 +379,8 @@ class facileFormsForm
         $total = count($ids);
         $row = new facileFormsForms($database);
         $elem = new facileFormsElements($database);
+        $now = Factory::getDate()->toSql();
+        $userId = (string) Factory::getApplication()->getIdentity()->username;
 
         if (count($ids))
             foreach ($ids as $id) {
@@ -373,6 +389,10 @@ class facileFormsForm
                 $row->ordering = 999999;
                 $row->title = 'Copy of ' . $row->title;
                 $row->name = 'copy_' . $row->name;
+                $row->created = $now;
+                $row->created_by = $userId;
+                $row->modified = $now;
+                $row->modified_by = $userId;
                 $row->store();
                 $row->reorder('');
 
@@ -435,8 +455,9 @@ class facileFormsForm
     {
         global $database;
         ArrayHelper::toInteger($ids);
+        $total = count($ids);
         $database = Factory::getContainer()->get(DatabaseInterface::class);
-        if (count($ids)) {
+        if ($total) {
             $ids = implode(',', $ids);
             $database->setQuery("delete from #__facileforms_elements where form in ($ids)");
             try {
@@ -451,6 +472,12 @@ class facileFormsForm
                 echo "<script> alert('" . $e->getMessage() . "'); window.history.go(-1); </script>\n";
             }
         } // if
+        if ($total) {
+            Factory::getApplication()->enqueueMessage(
+                $total . ' ' . BFText::_('COM_BREEZINGFORMS_FORMS_SUCCDELETED'),
+                'message'
+            );
+        }
         Factory::getApplication()->redirect("index.php?option=$option&act=manageforms&pkg=$pkg");
     }
 

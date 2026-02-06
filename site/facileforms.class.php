@@ -530,6 +530,10 @@ class facileFormsForms extends Table
 	public $dropbox_submission_types = 'pdf';
 	public $double_opt = '';
 	public $opt_mail = '';
+	public $created = null;
+	public $created_by = null;
+	public $modified = null;
+	public $modified_by = null;
 
 	function __construct(&$db)
 	{

@@ -1997,8 +1997,6 @@ class HTML_facileFormsForm
                         default:
                             break;
                     } // switch
-                    if (pressbutton == 'remove')
-                        if (!confirm(" . json_encode(BFText::_('COM_BREEZINGFORMS_FORMS_ASKDEL')) . ")) return;
                     if (pressbutton == '' && form.pkgsel.value == '')
                         form.pkg.value = '- blank -';
 
@@ -2010,6 +2008,29 @@ class HTML_facileFormsForm
                         form.pkg.value = form.pkgsel.value;
                     form.task.value = pressbutton;
                     form.submit();
+                });
+
+                jQuery(document).on('submit', '#adminForm', function(e){
+                    var form = this;
+                    var task = (form.task && form.task.value) ? form.task.value : '';
+                    var requiresSelection = ['copy', 'publish', 'unpublish', 'remove'];
+
+                    if (requiresSelection.indexOf(task) !== -1) {
+                        if (form.boxchecked && parseInt(form.boxchecked.value, 10) === 0) {
+                            alert(" . json_encode(BFText::_('COM_BREEZINGFORMS_FORMS_SELFORMSFIRST')) . ");
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            return false;
+                        }
+                    }
+
+                    if (task === 'remove') {
+                        if (!confirm(" . json_encode(BFText::_('COM_BREEZINGFORMS_FORMS_ASKDEL')) . ")) {
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            return false;
+                        }
+                    }
                 });
             
             });

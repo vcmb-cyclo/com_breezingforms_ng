@@ -118,7 +118,8 @@ class facileFormsScript
 	static function del($option, $pkg, $ids)
 	{
 		$database = Factory::getContainer()->get(DatabaseInterface::class);
-		if (count($ids)) {
+		$total = count($ids);
+		if ($total) {
 			$ids = implode(',', $ids);
 			$database->setQuery("delete from #__facileforms_scripts where id in ($ids)");
 			try {
@@ -127,6 +128,12 @@ class facileFormsScript
 				echo "<script> alert('" . $e->getMessage() . "'); window.history.go(-1); </script>\n";
 			}
 		} // if
+		if ($total) {
+			Factory::getApplication()->enqueueMessage(
+				$total . ' ' . BFText::_('COM_BREEZINGFORMS_SCRIPTS_SUCCDELETED'),
+				'message'
+			);
+		}
 		Factory::getApplication()->redirect("index.php?option=$option&act=managescripts&pkg=$pkg");
 	} // del
 

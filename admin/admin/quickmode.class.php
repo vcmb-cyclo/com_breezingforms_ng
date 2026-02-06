@@ -432,6 +432,8 @@ class QuickMode
 
 		$dataObject = Zend_Json::decode(bf_b64dec($templateCode));
 		$mdata = $dataObject['properties'];
+		$now = Factory::getDate()->toSql();
+		$userId = (string) Factory::getApplication()->getIdentity()->username;
 
 		$this->db->setQuery("Select id From #__facileforms_forms Where id = " . $this->db->Quote($form) . "");
 
@@ -465,6 +467,11 @@ class QuickMode
 							emailntf,
 							emailadr
                             " . $scriptCond1 . "
+							,
+							created,
+							created_by,
+							modified,
+							modified_by
 						)
 						Values
 						(
@@ -482,6 +489,11 @@ class QuickMode
 							" . $this->db->Quote($mdata['mailNotification'] ? 2 : 0) . ",
 							" . $this->db->Quote($mdata['mailRecipient']) . "
                                                         " . $scriptCond2 . "
+							,
+							" . $this->db->Quote($now) . ",
+							" . $this->db->Quote($userId) . ",
+							" . $this->db->Quote($now) . ",
+							" . $this->db->Quote($userId) . "
 
 						)"
 			);
@@ -541,6 +553,9 @@ class QuickMode
 							emailntf = " . $this->db->Quote($emailntf) . ",
 							emailadr = " . $this->db->Quote($mdata['mailRecipient']) . "
                                                         " . $scriptCond . "
+							,
+							modified = " . $this->db->Quote($now) . ",
+							modified_by = " . $this->db->Quote($userId) . "
 						 Where
 							id = " . $this->db->Quote($form) . "
 						"

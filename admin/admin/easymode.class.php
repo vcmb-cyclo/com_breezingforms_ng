@@ -25,6 +25,8 @@ class EasyMode{
 	public function save($form, $formName, $formTitle, array $formOptions, $templateCode, array $areas, $pages = 1){
 		
 		$templateCodeProcessed = $templateCode;
+		$now = Factory::getDate()->toSql();
+		$userId = (string) Factory::getApplication()->getIdentity()->username;
 		
 		$this->db->setQuery("Select id From #__facileforms_forms Where id = ".$this->db->Quote($form)."");
 		
@@ -42,7 +44,11 @@ class EasyMode{
 							class1,
 							width,
 							height,
-							pages
+							pages,
+							created,
+							created_by,
+							modified,
+							modified_by
 						) 
 						Values 
 						(
@@ -55,7 +61,11 @@ class EasyMode{
 							'',
 							'400',
 							'500',
-							".$this->db->Quote($pages)."
+							".$this->db->Quote($pages).",
+							".$this->db->Quote($now).",
+							".$this->db->Quote($userId).",
+							".$this->db->Quote($now).",
+							".$this->db->Quote($userId)."
 						)"
 			);
 			
@@ -72,7 +82,9 @@ class EasyMode{
 							template_areas = ".$this->db->Quote(Zend_Json::encode($areas)).",
 							name = ".trim($this->db->Quote($formName), "\t, ,\n,\r").",
 							title = ".trim($this->db->Quote($formTitle), "\t, ,\n,\r").",
-							pages = ".$this->db->Quote($pages)."
+							pages = ".$this->db->Quote($pages).",
+							modified = ".$this->db->Quote($now).",
+							modified_by = ".$this->db->Quote($userId)."
 						 Where
 							id = ".$this->db->Quote($form)."
 						"
