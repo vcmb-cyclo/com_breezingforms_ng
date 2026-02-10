@@ -1,6 +1,4 @@
 <?php
-defined( '_JEXEC' ) or die( 'Restricted access' );
-
 //============================================================+
 // File name   : tcpdf_config.php
 // Begin       : 2004-06-11
@@ -213,6 +211,14 @@ define('K_THAI_TOPCHARS', true);
  * IMPORTANT: For security reason, disable this feature if you are printing user HTML content.
  */
 define('K_TCPDF_CALLS_IN_HTML', false);
+
+/**
+ * List of TCPDF methods that are allowed to be called using HTML syntax.
+ * Note: each method name must end with surrounded with | (pipe) character.
+ * The constant K_TCPDF_CALLS_IN_HTML must be set to true.
+ * IMPORTANT: For security reason, disable this feature if you are allowing user HTML content.
+ */
+define('K_ALLOWED_TCPDF_TAGS', '');
 
 /**
  * If true and PHP version is greater than 5, then the Error() method throw new exception instead of terminating the execution.

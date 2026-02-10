@@ -1,12 +1,4 @@
 <?php
-/**
- * @package     BreezingCommerce
- * @author      Markus Bopp
- * @link        http://www.crosstec.de
- * @license     GNU/GPL
- */
-defined( '_JEXEC' ) or die( 'Restricted access' );
-
 // TCPDF FONT FILE DESCRIPTION
 $type='core';
 $name='Helvetica';
