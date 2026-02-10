@@ -1973,14 +1973,18 @@ class HTML_facileFormsForm
                     }
                 });
 
-                jQuery(document).on('click', 'joomla-toolbar-button button', function(e){
+                jQuery(document).on('click', 'joomla-toolbar-button, joomla-toolbar-button button', function(e){
 
                     e.preventDefault();
                     e.stopPropagation();
 
-                    let pressbutton = jQuery(this).closest('joomla-toolbar-button').attr('task');
+                    const host = jQuery(this).is('joomla-toolbar-button')
+                        ? jQuery(this)
+                        : jQuery(this).closest('joomla-toolbar-button');
+
+                    let pressbutton = host.attr('task') || host.data('task') || jQuery(this).data('task') || jQuery(this).attr('task') || '';
                     if (!pressbutton) {
-                        pressbutton = jQuery(this).data('task') || jQuery(this).attr('task') || '';
+                        pressbutton = '';
                     }
 
                     var form = document.adminForm;

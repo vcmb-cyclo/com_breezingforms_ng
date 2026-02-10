@@ -409,6 +409,9 @@ switch ($act) {
             case 'manageforms':
                 require_once ($ff_admpath . '/admin/quickmode.php');
                 break;
+            case 'quickmode':
+                require_once ($ff_admpath . '/admin/quickmode.php');
+                break;
             case 'quickmode_editor':
                 require_once ($ff_admpath . '/admin/quickmode-editor.php');
                 break;

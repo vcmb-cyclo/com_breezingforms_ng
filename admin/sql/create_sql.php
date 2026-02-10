@@ -266,7 +266,7 @@ $_17 = "CREATE TABLE `#__facileforms_records` (
   `title` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
   `ip` varchar(45) NOT NULL DEFAULT '',
-  `browser` TEXT NOT NULL DEFAULT '',
+  `browser` TEXT NOT NULL,
   `opsys` varchar(255) NOT NULL DEFAULT '',
   `provider` varchar(255) NOT NULL DEFAULT '',
   `viewed` tinyint(1) NOT NULL DEFAULT '0',
