@@ -1656,7 +1656,7 @@ Manage records table
     #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel span.jtable-page-info {
         display: inline-block;
         font-weight: 400;
-        padding: 21px;
+        padding: 4px;
     }
     #bfRecordsTableContainer .jtable-title:first-child{
         display: none !important;
@@ -1703,6 +1703,29 @@ Manage records table
     /*
 Manage records table > pagination
 */
+    #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel {
+        position: relative;
+    }
+    #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel div.jtable-left-area {
+        position: relative;
+        z-index: 20;
+        background: #fff;
+    }
+    #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel div.jtable-right-area {
+        z-index: 10;
+        pointer-events: none;
+    }
+    #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel div.jtable-right-area * {
+        pointer-events: none;
+    }
+    #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel span.jtable-page-size-change,
+    #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel span.jtable-page-size-change select,
+    #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel span.jtable-goto-page,
+    #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel span.jtable-goto-page select,
+    #bfRecordsTableContainer div.jtable-main-container > div.jtable-bottom-panel span.jtable-page-list {
+        position: relative;
+        z-index: 30;
+    }
     div.jtable-main-container > div.jtable-bottom-panel .jtable-page-list .jtable-page-number,
     div.jtable-main-container > div.jtable-bottom-panel .jtable-page-list .jtable-page-number-space,
     div.jtable-main-container > div.jtable-bottom-panel .jtable-page-list .jtable-page-number-first,
