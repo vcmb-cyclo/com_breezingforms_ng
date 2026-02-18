@@ -27,6 +27,17 @@ class QuickModeHtml
         HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
         HTMLHelper::_('behavior.keepalive');
         $iconBase = '../administrator/components/com_breezingforms/libraries/jquery/themes/quickmode/i/';
+        $decodedThemeObject = null;
+        try {
+            $decodedThemeObject = Zend_Json::decode($dataObjectString);
+        } catch (\Exception $e) {
+            $decodedThemeObject = null;
+        }
+        $isAzureBootstrapTheme = is_array($decodedThemeObject)
+            && isset($decodedThemeObject['properties'])
+            && is_array($decodedThemeObject['properties'])
+            && (($decodedThemeObject['properties']['themebootstrapThemeEngine'] ?? '') === 'bootstrap')
+            && (($decodedThemeObject['properties']['themebootstrap'] ?? '') === 'Azure');
         Factory::getApplication()->getDocument()->addStyleSheet(Uri::root() . 'administrator/components/com_breezingforms/libraries/jquery/themes/quickmode/quickmode.all.css');
         Factory::getApplication()->getDocument()->addStyleSheet(Uri::root() . 'administrator/components/com_breezingforms/libraries/jquery/jtree/tree_component.css');
         Factory::getApplication()->getDocument()->addStyleSheet(Uri::root() . 'administrator/components/com_breezingforms/admin/style.css');
@@ -461,8 +472,6 @@ class QuickModeHtml
 
                     JQuery('#bfElementTypeNumberInputHint').val(mdata.hint);
                     JQuery('#bfElementTypeNumberInputHintTrans').val(typeof mdata['hint_translation<?php echo $active_language_code; ?>'] != "undefined" ? mdata['hint_translation<?php echo $active_language_code; ?>'] : "");
-
-                    JQuery('bfElementType').attr('checked', mdata.range); // EVH Champ de type Range
         
                     JQuery('#bfElementAdvancedLabelPosition').val(mdata.labelPosition);
                     JQuery('#bfElementAdvancedTabIndex').val(mdata.tabIndex);
@@ -1864,7 +1873,7 @@ class QuickModeHtml
 
                                 switch (mdata.bfType) {
                                     case 'bfNumberInput':
-                                        JQuery('#bfElementType').val('bfElementTypeNumberInput');
+                                        JQuery('#bfElementType').val(mdata.range ? 'bfElementTypeSlider' : 'bfElementTypeNumberInput');
                                         appScope.populateNumberInputProperties(mdata);
                                         appScope.populateElementValidationScript();
                                         appScope.populateElementInitScript();
@@ -1981,9 +1990,11 @@ class QuickModeHtml
                                 }
 
                                 if (JQuery('#bfElementType').val() != '') {
+                                    var selectedElementType = JQuery('#bfElementType').val();
+                                    var mappedElementType = selectedElementType === 'bfElementTypeSlider' ? 'bfElementTypeNumberInput' : selectedElementType;
                                     JQuery('#bfElementTypeClass').css('display', 'none');
-                                    JQuery('#' + JQuery('#bfElementType').val()).css('display', '');
-                                    JQuery('#' + JQuery('#bfElementType').val() + "Advanced").css('display', '');
+                                    JQuery('#' + mappedElementType).css('display', '');
+                                    JQuery('#' + mappedElementType + "Advanced").css('display', '');
                                     if (mdata.bfType != 'bfHidden') {
                                         JQuery('#bfElementValidationRequiredSet').css('display', '');
                                     }
@@ -2906,6 +2917,10 @@ class QuickModeHtml
                                 break;
                             case 'bfElementTypeNumberInput':
                                 obj = appScope.createNumberInput(id);
+                                break;
+                            case 'bfElementTypeSlider':
+                                obj = appScope.createNumberInput(id);
+                                obj.properties.range = true;
                                 break;
                             case 'bfElementTypeHidden':
                                 obj = appScope.createHidden(id);
@@ -4016,6 +4031,9 @@ class QuickModeHtml
                                                     <option value="bfElementTypeNumberInput">
                                                         <?php echo BFText::_('COM_BREEZINGFORMS_NUMBER_INPUT'); ?>
                                                     </option>
+                                                    <option value="bfElementTypeSlider">
+                                                        Slider
+                                                    </option>
                                                     <option value="bfElementTypeSignature">
                                                         <?php echo BFText::_('COM_BREEZINGFORMS_SIGNATURE'); ?>
                                                     </option>
@@ -4085,12 +4103,8 @@ class QuickModeHtml
                                                 <?php
                                                 // Icon for Textfield
                                                 // This code is only for NEW THEME
-                                        
-                                                $dataTheme = Zend_Json::decode($dataObjectString);
-                                                // echo '<pre>';
-                                                // print_r($dataTheme);
-                                                // echo '</pre>';
-                                                if ($dataTheme['properties']['themebootstrapThemeEngine'] == 'bootstrap' && $dataTheme['properties']['themebootstrap'] == 'Azure') {
+
+                                                if ($isAzureBootstrapTheme) {
                                                     ?>
 
                                                     <div class="bfPropertyWrap">
@@ -4256,12 +4270,8 @@ class QuickModeHtml
                                                 <?php
                                                 // Icon for Textfield
                                                 // This code is only for NEW THEME
-                                        
-                                                $dataTheme = Zend_Json::decode($dataObjectString);
-                                                // echo '<pre>';
-                                                // print_r($dataTheme);
-                                                // echo '</pre>';
-                                                if (isset($dataTheme['properties']) && isset($dataTheme['properties']['themebootstrapThemeEngine']) && isset($dataTheme['properties']['themebootstrap']) && $dataTheme['properties']['themebootstrapThemeEngine'] == 'bootstrap' && $dataTheme['properties']['themebootstrap'] == 'Azure') {
+
+                                                if ($isAzureBootstrapTheme) {
                                                     ?>
 
                                                     <div class="bfPropertyWrap">
@@ -4360,10 +4370,8 @@ class QuickModeHtml
                                                 <?php
                                                 // Icon for Textarea
                                                 // This code is only for NEW THEME
-                                        
-                                                $dataTheme = Zend_Json::decode($dataObjectString);
 
-                                                if (isset($dataTheme['properties']) && isset($dataTheme['properties']['themebootstrap']) && isset($dataTheme['properties']['themebootstrapThemeEngine']) && $dataTheme['properties']['themebootstrapThemeEngine'] == 'bootstrap' && $dataTheme['properties']['themebootstrap'] == 'Azure') {
+                                                if ($isAzureBootstrapTheme) {
                                                     ?>
 
                                                     <div class="bfPropertyWrap">
@@ -5012,10 +5020,8 @@ class QuickModeHtml
                                                 <?php
                                                 // Icon for Responsive Calendar
                                                 // This code is only for NEW THEME
-                                        
-                                                $dataTheme = Zend_Json::decode($dataObjectString);
 
-                                                if ($dataTheme['properties']['themebootstrapThemeEngine'] == 'bootstrap' && $dataTheme['properties']['themebootstrap'] == 'Azure') {
+                                                if ($isAzureBootstrapTheme) {
                                                     ?>
 
                                                     <div class="bfPropertyWrap">
@@ -5105,10 +5111,8 @@ class QuickModeHtml
                                                 <?php
                                                 // Icon for Calendar
                                                 // This code is only for NEW THEME
-                                        
-                                                $dataTheme = Zend_Json::decode($dataObjectString);
 
-                                                if ($dataTheme['properties']['themebootstrapThemeEngine'] == 'bootstrap' && $dataTheme['properties']['themebootstrap'] == 'Azure') {
+                                                if ($isAzureBootstrapTheme) {
                                                     ?>
 
                                                     <div class="bfPropertyWrap">

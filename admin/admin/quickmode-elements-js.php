@@ -111,6 +111,7 @@ this.createNumberInput = function(id){
 						value : '',
 						maxLength : '',
 						size : '',
+						range : false,
 
 						validationCondition : 0,
 						validationId : 0,
