@@ -44,7 +44,7 @@ $_5 = "INSERT INTO `#__facileforms_packages` VALUES (
   'my.name@my.domain',
   'http://www.my.domain',
   'This is the first package that I created',
-  'This FacileForms package is released under the GNU/GPL license'
+  'This FacileForms package is released under GNU/GPL v2 or later'
 )";
 
 $_6 = "DROP TABLE IF EXISTS `#__facileforms_compmenus`";

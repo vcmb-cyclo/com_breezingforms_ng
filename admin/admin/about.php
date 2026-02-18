@@ -311,6 +311,11 @@ $aboutDescription = str_replace(
     $aboutDescription
 );
 $aboutDescription = str_replace(
+    'GPL-2.0-or-later',
+    '<a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html" target="_blank" rel="noopener noreferrer">GPL-2.0-or-later</a>',
+    $aboutDescription
+);
+$aboutDescription = str_replace(
     'GPL-2.0+',
     '<a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html" target="_blank" rel="noopener noreferrer">GPL-2.0+</a>',
     $aboutDescription
