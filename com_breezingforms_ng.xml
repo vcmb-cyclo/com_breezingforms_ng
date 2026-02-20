@@ -8,7 +8,7 @@
   
 <extension type="component" version="6.0.3" method="upgrade">
 	<name>COM_BREEZINGFORMS</name>
-	<creationDate>2026-02-18</creationDate>
+	<creationDate>2026-02-19</creationDate>
 	<author>XDA/GIL</author>
 	<copyright>Copyright 2004 - 2026 by XDA+GIL</copyright>
         <license>GNU/GPL v2 or later</license>
@@ -152,6 +152,7 @@
 	</administration>
 
 </extension>
+
 
 
 
