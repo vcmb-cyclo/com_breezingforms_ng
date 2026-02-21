@@ -1,4 +1,4 @@
-public\<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--~
   ~ @component BreezingForms-ng (transition)
   ~ @author: XDA/GIL (Joomla! 6, 2026) | Markus Bopp | until FacileForms v1.4.7: Peter Koch
@@ -23,7 +23,7 @@ public\<?xml version="1.0" encoding="utf-8"?>
 	<scriptfile>script.php</scriptfile>
 
 	<updateservers>
-		<server type="extension" name="BreezingForms-ng" priority="1">https://breezingforms-ng.vcmb.fr/download/com_breezingforms_ng_update.xml</server>
+		<server type="extension" name="BreezingForms-ng" priority="1">https://breezingforms-ng.vcmb.fr/download/com_breezingforms-ng_update.xml</server>
 	</updateservers>
 
 	<targetplatform>
